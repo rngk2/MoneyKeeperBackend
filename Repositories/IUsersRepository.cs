@@ -17,7 +17,7 @@ namespace MoneyKeeper.Repositories
 
 		Task CreateUserAsync(User userDto);
 
-		Task UpdateUserAsync(int id, User userDto);
+		Task UpdateUserAsync(User userDto);
 
 		Task DeleteUserAsync(int id);
 
