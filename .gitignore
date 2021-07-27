@@ -206,4 +206,5 @@ appsettings.Development.json
 appsettings.json
 
 #Secrets
-*.secrets.*
+[Ss]ecrets/
+*.[Ss]ecrets.*
