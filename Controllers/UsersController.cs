@@ -52,19 +52,19 @@ namespace MoneyKeeper.Controllers
                 Password  = userDto.Password.AsSHA256Hash()
             };
 
-            try
-            {
-                await repository.CreateUser(newUser);
-            }
-            catch (SqlException e)
-            {
-                if (e.Number == 2601) // dublicate key error
-                {
-                    return StatusCode(409, $"User with email={newUser.Email} already exist");
-                }
-            }
+			try
+			{
+			    await repository.CreateUser(newUser);
+			}
+			catch (DuplicateKeyException e)
+			{
+				if (e.Number == 2627) // dublicate key error number
+				{
+					return StatusCode(409, $"User with email={newUser.Email} already exist");
+				}
+			}
 
-            return CreatedAtAction(
+			return CreatedAtAction(
                     nameof(GetUser),
                     new { id = newUser.Id },
                     newUser.AsDto()
