@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MoneyKeeper.Repositories;
+using MoneyKeeper.Settings;
 
 namespace MoneyKeeper
 {
@@ -26,8 +28,14 @@ namespace MoneyKeeper
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 
-			services.AddControllers();
+			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)).GetSection("ConnectionStrings"));
+
+			services.AddControllers(options =>
+			{
+				options.SuppressAsyncSuffixInActionNames = false;
+			});
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyKeeper", Version = "v1" });
