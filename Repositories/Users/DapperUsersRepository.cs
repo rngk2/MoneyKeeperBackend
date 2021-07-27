@@ -9,8 +9,6 @@ namespace MoneyKeeper.Repositories
 {
 	public class DapperUsersRepository : DapperRepository<User>, IUsersRepository
 	{
-		private readonly string connectionString;
-
 		public DapperUsersRepository(IOptions<DapperSettings> options) : base(options) { }
 
 		public async Task<User> GetUser(int id)
