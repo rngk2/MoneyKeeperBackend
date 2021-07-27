@@ -25,16 +25,16 @@ namespace MoneyKeeper.Controllers
 
         // GET /users
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        public async Task<IEnumerable<UserDto>> GetUsers()
         {
-            return (await repository.GetUsersAsync()).Select(user => user.AsDto());
+            return (await repository.GetUsers()).Select(user => user.AsDto());
         }
 
         // GET /users/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUserAsync(int id)
+        public async Task<ActionResult<UserDto>> GetUser(int id)
         {
-            var user = await repository.GetUserAsync(id);
+            var user = await repository.GetUser(id);
             return user is null ? NotFound() : user.AsDto();
         }
 
@@ -42,7 +42,7 @@ namespace MoneyKeeper.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<UserDto>> CreateUserAsync(CreateUserDto userDto)
+        public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto userDto)
         {
             User newUser = new()
             {
@@ -54,7 +54,7 @@ namespace MoneyKeeper.Controllers
 
             try
             {
-                await repository.CreateUserAsync(newUser);
+                await repository.CreateUser(newUser);
             }
             catch (SqlException e)
             {
@@ -65,7 +65,7 @@ namespace MoneyKeeper.Controllers
             }
 
             return CreatedAtAction(
-                    nameof(GetUserAsync),
+                    nameof(GetUser),
                     new { id = newUser.Id },
                     newUser.AsDto()
                 );
@@ -73,12 +73,12 @@ namespace MoneyKeeper.Controllers
 
 		// PUT /users/{id}
 		[HttpPut("{id}")]
-		public async Task<ActionResult> UpdateUserAsync(int id, UpdateUserDto userDto)
+		public async Task<ActionResult> UpdateUser(int id, UpdateUserDto userDto)
 		{
             Func<object, object, object> returnDefaultIfNull = (object nullable, object @default)
                 => nullable is null ? @default : nullable;
 
-            var existingUser = await repository.GetUserAsync(id);
+            var existingUser = await repository.GetUser(id);
 
             if (existingUser is null) return NotFound();
 
@@ -90,16 +90,16 @@ namespace MoneyKeeper.Controllers
                 Password  = returnDefaultIfNull(userDto.Password?.AsSHA256Hash(), existingUser.Password).ToString()
             };
 
-            await repository.UpdateUserAsync(updatedUser);
+            await repository.UpdateUser(updatedUser);
 
             return NoContent();
         }
 
 		// DELETE /users/{id}
 		[HttpDelete("{id}")]
-		public async Task<ActionResult> DeleteUserAsync(int id)
+		public async Task<ActionResult> DeleteUser(int id)
 		{
-            await repository.DeleteUserAsync(id);
+            await repository.DeleteUser(id);
 
             return NoContent();
 		}

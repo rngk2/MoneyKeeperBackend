@@ -22,7 +22,7 @@ namespace MoneyKeeper.Repositories
 			connectionString = options.Value.DefaultConnection;
 		}
 
-		public async Task<User> GetUserAsync(int id)
+		public async Task<User> GetUser(int id)
 		{
 			const string getUserQuery = "select * from users where Id = @id";
 			await using var connection = new SqlConnection(connectionString);
@@ -31,7 +31,7 @@ namespace MoneyKeeper.Repositories
 				.ToList().FirstOrDefault();
 		}
 
-		public async Task<User> GetUserAsync(string email)
+		public async Task<User> GetUser(string email)
 		{
 			const string getUserQuery = "select * from users where Email = @email";
 			await using var connection = new SqlConnection(connectionString);
@@ -40,7 +40,7 @@ namespace MoneyKeeper.Repositories
 				.ToList().FirstOrDefault();
 		}
 
-		public async Task<IEnumerable<User>> GetUsersAsync()
+		public async Task<IEnumerable<User>> GetUsers()
 		{
 			const string getUsersQuery = "select * from users";
 			await using var connection = new SqlConnection(connectionString);
@@ -48,7 +48,7 @@ namespace MoneyKeeper.Repositories
 			return await connection.QueryAsync<User>(getUsersQuery); // users
 		}
 
-		public async Task CreateUserAsync(User user)
+		public async Task CreateUser(User user)
 		{
 			const string createUserQuery = @"
 								insert into [dbo].[Users]
@@ -61,7 +61,7 @@ namespace MoneyKeeper.Repositories
 			await connection.ExecuteAsync(createUserQuery, user);
 		}
 
-		public async Task UpdateUserAsync(User userData)
+		public async Task UpdateUser(User userData)
 		{
 			const string createUserQuery = @"
 					update [dbo].[Users]
@@ -79,7 +79,7 @@ namespace MoneyKeeper.Repositories
 			await connection.ExecuteAsync(createUserQuery, userData);
 		}
 
-		public async Task DeleteUserAsync(int id)
+		public async Task DeleteUser(int id)
 		{
 			const string createUserQuery = @"
 					delete from [dbo].[Users]

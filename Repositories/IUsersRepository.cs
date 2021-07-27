@@ -9,17 +9,17 @@ namespace MoneyKeeper.Repositories
 {
 	public interface IUsersRepository
 	{
-		Task<User> GetUserAsync(int id);
+		Task<User> GetUser(int id);
 
-		Task<User> GetUserAsync(string email);
+		Task<User> GetUser(string email);
 
-		Task<IEnumerable<User>> GetUsersAsync();
+		Task<IEnumerable<User>> GetUsers();
 
-		Task CreateUserAsync(User userDto);
+		Task CreateUser(User userDto);
 
-		Task UpdateUserAsync(User userDto);
+		Task UpdateUser(User userDto);
 
-		Task DeleteUserAsync(int id);
+		Task DeleteUser(int id);
 
 	}
 }
