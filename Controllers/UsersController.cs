@@ -56,7 +56,7 @@ namespace MoneyKeeper.Controllers
 			{
 			    await repository.CreateUser(newUser);
 			}
-			catch (DuplicateKeyException e)
+			catch (SqlException e)
 			{
 				if (e.Number == 2627) // dublicate key error number
 				{
