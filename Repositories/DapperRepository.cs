@@ -26,7 +26,7 @@ namespace MoneyKeeper.Repositories
 		public async Task<IEnumerable<T>> QueryAny(string sql, object @params = null)
 		{
 			await using var conn = GetDbConnection();
-			return await conn.QueryAsync<T>(sql, parameters);
+			return await conn.QueryAsync<T>(sql, @params);
 		}
 
 		public async Task ExecuteAny(string sql, object @params = null)
