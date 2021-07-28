@@ -5,7 +5,12 @@ using System.Threading.Tasks;
 
 namespace MoneyKeeper.Dtos.Category
 {
-	public class CategoryDto
+	public record CategoryDto
 	{
+		public int Id { get; init; }
+
+		public string Name { get; init; }
+
+		public int UserId { get; init; }
 	}
 }
