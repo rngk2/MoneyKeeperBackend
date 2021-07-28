@@ -18,6 +18,8 @@ namespace MoneyKeeper
 {
 	public class Startup
 	{
+		private readonly string allowFrontendPolicy = "allowFrontend";
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
@@ -28,6 +30,15 @@ namespace MoneyKeeper
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+
+			services.AddCors(options =>
+			{
+				options.AddPolicy(allowFrontendPolicy, builder =>
+				{
+					builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
+				});
+			});
+
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 
@@ -56,6 +67,8 @@ namespace MoneyKeeper
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
+
+			app.UseCors(allowFrontendPolicy);
 
 			app.UseAuthorization();
 
