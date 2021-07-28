@@ -9,31 +9,28 @@ using MoneyKeeper.Settings;
 
 namespace MoneyKeeper.Repositories
 {
-	public class DapperRepository<T>
+	public class DapperRepository : IDapperRepository
 	{
 		private readonly string connectionString;
 
 		public DapperRepository(IOptions<DapperSettings> options)
 		{
-			connectionString = options.Value.DefaultConnection;
+			connectionString = options.Value.ConnectionString;
 		}
 
-		private SqlConnection GetDbConnection()
-		{
-			return new SqlConnection(connectionString);
-		}
-
-		public async Task<IEnumerable<T>> QueryAny(string sql, object @params = null)
+		public async Task<IEnumerable<T>> QueryAny<T>(string sql, object @params = null)
 		{
 			await using var conn = GetDbConnection();
 			return await conn.QueryAsync<T>(sql, @params);
 		}
 
-		public async Task ExecuteAny(string sql, object @params = null)
+		public async Task ExecuteAny<T>(string sql, object @params = null)
 		{
 			await using var conn = GetDbConnection();
 			await conn.ExecuteAsync(sql, @params);
 		}
+
+		private SqlConnection GetDbConnection() => new SqlConnection(connectionString);
 
 	}
 }

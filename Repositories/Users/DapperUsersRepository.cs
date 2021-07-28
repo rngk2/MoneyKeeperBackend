@@ -7,26 +7,30 @@ using MoneyKeeper.Settings;
 
 namespace MoneyKeeper.Repositories
 {
-	public class DapperUsersRepository : DapperRepository<User>, IUsersRepository
+	public class DapperUsersRepository : IUsersRepository
 	{
-		public DapperUsersRepository(IOptions<DapperSettings> options) : base(options) { }
+		private readonly IDapperRepository dapperRepository;
+
+		public DapperUsersRepository(IDapperRepository dapperRepository) {
+			this.dapperRepository = dapperRepository;
+		}
 
 		public async Task<User> GetUser(int id)
 		{
 			const string getUserQuery = "select * from users where Id = @id";
-			return (await QueryAny(getUserQuery, new { id })).FirstOrDefault();
+			return (await dapperRepository.QueryAny<User>(getUserQuery, new { id })).FirstOrDefault();
 		}
 
 		public async Task<User> GetUser(string email)
 		{
 			const string getUserQuery = "select * from users where Email = @email";
-			return (await QueryAny(getUserQuery, new { email })).FirstOrDefault();
+			return (await dapperRepository.QueryAny<User>(getUserQuery, new { email })).FirstOrDefault();
 		}
 
 		public async Task<IEnumerable<User>> GetUsers()
 		{
 			const string getUsersQuery = "select * from users";
-			return await QueryAny(getUsersQuery);
+			return await dapperRepository.QueryAny<User>(getUsersQuery);
 		}
 
 		public async Task CreateUser(User user)
@@ -38,7 +42,7 @@ namespace MoneyKeeper.Repositories
 									(@FirstName, @LastName, @Email, @Password)
 			";
 
-			await ExecuteAny(createUserQuery, user);
+			await dapperRepository.ExecuteAny<User>(createUserQuery, user);
 		}
 
 		public async Task UpdateUser(User userData)
@@ -55,7 +59,7 @@ namespace MoneyKeeper.Repositories
 							
 			";
 
-			await ExecuteAny(updateUserQuery, userData);
+			await dapperRepository.ExecuteAny<User>(updateUserQuery, userData);
 		}
 
 		public async Task DeleteUser(int id)
@@ -67,7 +71,7 @@ namespace MoneyKeeper.Repositories
 							
 			";
 			
-			await ExecuteAny(deleteUserQuery, new { id });
+			await dapperRepository.ExecuteAny<User>(deleteUserQuery, new { id });
 		}
 
 	}
