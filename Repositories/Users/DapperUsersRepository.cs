@@ -33,9 +33,9 @@ namespace MoneyKeeper.Repositories
 		{
 			const string createUserQuery = @"
 								insert into [dbo].[Users]
-									([Id], [FirstName], [LastName], [Email], [Password])
+									([FirstName], [LastName], [Email], [Password])
 								values 
-									(@Id, @FirstName, @LastName, @Email, @Password)
+									(@FirstName, @LastName, @Email, @Password)
 			";
 
 			await ExecuteAny(createUserQuery, user);
