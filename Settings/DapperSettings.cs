@@ -7,6 +7,6 @@ namespace MoneyKeeper.Settings
 {
 	public class DapperSettings
 	{
-		public string DefaultConnection { get; set; }
+		public string ConnectionString { get; set; }
 	}
 }

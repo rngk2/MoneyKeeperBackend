@@ -30,7 +30,7 @@ namespace MoneyKeeper
 		{
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 
-			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)).GetSection("ConnectionStrings"));
+			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
 
 			services.AddControllers(options =>
 			{
