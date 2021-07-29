@@ -19,8 +19,14 @@ namespace MoneyKeeper.Repositories.Categories
 
 		public async Task<IEnumerable<Category>> GetCategoriesOfUser(int userId)
 		{
-			string getCategoryQuery = $"select * from {TABLE_NAME} where UserId = @userId";
-			return await dapperRepository.QueryAny<Category>(getCategoryQuery, new { userId });
+			string getCategoriesQuery = $"select * from {TABLE_NAME} where UserId = @userId";
+			return await dapperRepository.QueryAny<Category>(getCategoriesQuery, new { userId });
+		}
+
+		public async Task<IEnumerable<Category>> GetCategories()
+		{
+			string getCategoriesQuery = $"select * from {TABLE_NAME}";
+			return await dapperRepository.QueryAny<Category>(getCategoriesQuery);
 		}
 
 		public async Task<Category> GetCategory(int id)

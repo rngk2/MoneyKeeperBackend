@@ -41,6 +41,7 @@ namespace MoneyKeeper
 			});
 
 			services.AddSingleton<IUserService, UserService>();
+			services.AddSingleton<ICategoryService, CategoryService>();
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();

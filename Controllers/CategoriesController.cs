@@ -8,6 +8,8 @@ using MoneyKeeper.Dtos.Category;
 using MoneyKeeper.Entities;
 using MoneyKeeper.Repositories.Categories;
 using MoneyKeeper.Extensions;
+using MoneyKeeper.Services;
+using System.Data.SqlClient;
 
 namespace MoneyKeeper.Controllers
 {
@@ -15,56 +17,50 @@ namespace MoneyKeeper.Controllers
 	[ApiController]
 	public class CategoriesController : ControllerBase
 	{
-		private readonly ICategoriesRepository repository;
+		private readonly ICategoryService categoryService;
 
-		public CategoriesController(ICategoriesRepository repository)
+		public CategoriesController(ICategoryService categoryService)
 		{
-			this.repository = repository;
+			this.categoryService = categoryService;
+		}
+
+		// GET /categories
+		[HttpGet]
+		public async Task<IEnumerable<CategoryDto>> GetCategories()
+		{
+			return (await categoryService.GetCategories()).Select(category => category.AsDto());
 		}
 
 		// GET /categories/{id}
 		[HttpGet("{id}")]
 		public async Task<ActionResult<CategoryDto>> GetCategory(int id)
 		{
-			var category = await repository.GetCategory(id);
+			var category = await categoryService.GetCategory(id);
 			return category is null ? NotFound() : category.AsDto();
 		}
 
-		// GET /categories/ofUser
-		[HttpGet("ofUser/{userId}")]
+		// GET /categories/user/{userId}
+		[HttpGet("user/{userId}")]
 		public async Task<IEnumerable<CategoryDto>> GetCategoriesOfUser(int userId)
 		{
-			return (await repository.GetCategoriesOfUser(userId)).Select(category => category.AsDto());
+			return (await categoryService.GetCategoriesOfUser(userId)).Select(category => category.AsDto());
 		}
 
 		// POST /categories
 		[HttpPost]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status409Conflict)]
 		public async Task<ActionResult<CategoryDto>> AddCategoryToUser(CreateCategoryDto categoryDto)
 		{
-			Category category = new()
+			if ((await categoryService.GetCategory(categoryDto.UserId, categoryDto.Name)) is not null)
 			{
-				Name = categoryDto.Name,
-				UserId = categoryDto.UserId
-			};
-
-			if ((await repository.GetCategory(category.UserId, category.Name)) is not null)
-			{
-				return StatusCode(409, $"User#{category.UserId} alredy has category with name={category.Name}");
+				return StatusCode(409, $"User#{categoryDto.UserId} alredy has category with name={categoryDto.Name}");
 			}
 
-			int createdId = await repository.AddCategoryToUser(category);
-
-			Category created = category with
-			{
-				Id = createdId
-			};
+			Category createdCategory = await categoryService.AddCategoryToUser(categoryDto);
 
 			return CreatedAtAction(
 					nameof(GetCategory),
-					new { id = createdId },
-					created.AsDto()
+					new { id = createdCategory.Id },
+					createdCategory.AsDto()
 				);
 		}
 
@@ -74,33 +70,34 @@ namespace MoneyKeeper.Controllers
 		[ProducesResponseType(StatusCodes.Status409Conflict)]
 		public async Task<ActionResult> UpdateCategoryToUser(int id, UpdateCategoryDto categoryDto)
 		{
-			var existingCategory = await repository.GetCategory(id);
+			var existingCategory = await categoryService.GetCategory(id);
 
 			if (existingCategory is null) 
 			{
 				return NotFound();
 			}
 
-			else if ((await repository.GetCategory(existingCategory.UserId, categoryDto.Name)) is not null)
+			try
 			{
-				return StatusCode(409, $"User#{existingCategory.UserId} alredy has category with name={categoryDto.Name}");
+				await categoryService.UpdateCategoryToUser(existingCategory, categoryDto);
+				return NoContent();
 			}
-
-			Category updatedCategory = existingCategory with
+			catch (SqlException e)
 			{
-				Name = categoryDto.Name is null ? existingCategory.Name : categoryDto.Name
-			};
+				if (e.Number == 2627) // dublicate key error number
+				{
+					return StatusCode(409, $"User#{existingCategory.UserId} alredy has category with name={categoryDto.Name}");
+				}
 
-			await repository.UpdateCategoryToUser(updatedCategory);
-
-			return NoContent();
+				return StatusCode(500);
+			}
 		}
 
 		// DELETE /categories/{id}
 		[HttpDelete("{id}")]
-		public async Task<ActionResult> DeleteCategoryToUser(int id)
+		public async Task<ActionResult> DeleteCategory(int id)
 		{
-			await repository.DeleteCategoryToUser(id);
+			await categoryService.DeleteCategory(id);
 
 			return NoContent();
 		}
