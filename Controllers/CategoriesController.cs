@@ -30,8 +30,8 @@ namespace MoneyKeeper.Controllers
 			return category is null ? NotFound() : category.AsDto();
 		}
 
-		// GET /categories
-		[HttpGet]
+		// GET /categories/ofUser
+		[HttpGet("ofUser/{userId}")]
 		public async Task<IEnumerable<CategoryDto>> GetCategoriesOfUser(int userId)
 		{
 			return (await repository.GetCategoriesOfUser(userId)).Select(category => category.AsDto());
@@ -54,12 +54,17 @@ namespace MoneyKeeper.Controllers
 				return StatusCode(409, $"User#{category.UserId} alredy has category with name={category.Name}");
 			}
 
-			await repository.AddCategoryToUser(category);
+			int createdId = await repository.AddCategoryToUser(category);
+
+			Category created = category with
+			{
+				Id = createdId
+			};
 
 			return CreatedAtAction(
 					nameof(GetCategory),
-					new { id = category.Id },
-					category.AsDto()
+					new { id = createdId },
+					created.AsDto()
 				);
 		}
 
@@ -80,6 +85,13 @@ namespace MoneyKeeper.Controllers
 			{
 				return StatusCode(409, $"User#{existingCategory.UserId} alredy has category with name={categoryDto.Name}");
 			}
+
+			Category updatedCategory = existingCategory with
+			{
+				Name = categoryDto.Name is null ? existingCategory.Name : categoryDto.Name
+			};
+
+			await repository.UpdateCategoryToUser(updatedCategory);
 
 			return NoContent();
 		}

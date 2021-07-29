@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MoneyKeeper.Repositories;
+using MoneyKeeper.Repositories.Categories;
 using MoneyKeeper.Settings;
 
 namespace MoneyKeeper
@@ -30,7 +31,6 @@ namespace MoneyKeeper
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-
 			services.AddCors(options =>
 			{
 				options.AddPolicy(allowFrontendPolicy, builder =>
@@ -41,6 +41,7 @@ namespace MoneyKeeper
 
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
+			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();
 
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
 

@@ -15,7 +15,7 @@ namespace MoneyKeeper.Repositories.Categories
 
 		Task<IEnumerable<Category>> GetCategoriesOfUser(int userId);
 
-		Task AddCategoryToUser(Category category);
+		Task<int> AddCategoryToUser(Category category);
 		
 		Task UpdateCategoryToUser(Category category);
 		
