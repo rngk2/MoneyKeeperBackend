@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -20,19 +21,18 @@ namespace MoneyKeeper.Services
 			repository = usersRepository;
 		}
 
-		public async Task<IEnumerable<UserDto>> GetUsers()
+		public async Task<IEnumerable<User>> GetUsers()
 		{
-			return (await repository.GetUsers()).Select(user => user.AsDto());
+			return await repository.GetUsers();
 		}
 
-		public async Task<ActionResult<UserDto>> GetUser(int id)
+		public async Task<User> GetUser(int id)
 		{
 			var user = await repository.GetUser(id);
-			return user?.AsDto();
-			//return user is null ? NotFound() : user.AsDto();
+			return user;
 		}
 
-		public async Task<UserDto> CreateUser(CreateUserDto userDto)
+		public async Task<User> CreateUser(CreateUserDto userDto)
 		{
 			User newUser = new()
 			{
@@ -49,47 +49,30 @@ namespace MoneyKeeper.Services
 				Id = createdId
 			};
 
-			return created.AsDto();
+			return created; 
 		}
 
-		public async Task<ActionResult> UpdateUser(int id, UpdateUserDto userDto)
+
+		public async Task UpdateUser([NotNull] User existingUser, UpdateUserDto data)
 		{
 			Func<object, object, object> returnDefaultIfNull = (object nullable, object @default)
 				=> nullable is null ? @default : nullable;
 
-			var existingUser = await repository.GetUser(id);
-
-			if (existingUser is null)
-			{
-				return new NotFoundResult();
-			}
-
-			var userWithEmail = await repository.GetUser(userDto.Email);
-
-			if (userWithEmail != null && userWithEmail.Id != existingUser.Id)
-			{
-				return new ConflictResult();
-			}
-			
 			User updatedUser = existingUser with
 			{
-				FirstName = returnDefaultIfNull(userDto.FirstName, existingUser.FirstName).ToString(),
-				LastName = returnDefaultIfNull(userDto.LastName, existingUser.LastName).ToString(),
-				Email = returnDefaultIfNull(userDto.Email, existingUser.Email).ToString(),
-				Password = returnDefaultIfNull(userDto.Password?.AsSHA256Hash(), existingUser.Password).ToString()
+				FirstName = returnDefaultIfNull(data.FirstName, existingUser.FirstName).ToString(),
+				LastName = returnDefaultIfNull(data.LastName, existingUser.LastName).ToString(),
+				Email = returnDefaultIfNull(data.Email, existingUser.Email).ToString(),
+				Password = returnDefaultIfNull(data.Password?.AsSHA256Hash(), existingUser.Password).ToString()
 			};
 
 			await repository.UpdateUser(updatedUser);
 
-			return new NoContentResult();
-
 		}
 
-		public async Task<ActionResult> DeleteUser(int id)
+		public async Task DeleteUser(int id)
 		{
 			await repository.DeleteUser(id);
-
-			return new NoContentResult();
 		}
 	}
 }

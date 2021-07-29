@@ -28,7 +28,7 @@ namespace MoneyKeeper.Controllers
         [HttpGet]
         public async Task<IEnumerable<UserDto>> GetUsers()
         {
-            return await userService.GetUsers();
+            return (await userService.GetUsers()).Select(user => user.AsDto());
         }
 
         // GET /users/{id}
@@ -36,46 +36,62 @@ namespace MoneyKeeper.Controllers
         public async Task<ActionResult<UserDto>> GetUser(int id)
         {
             var user = await userService.GetUser(id);
-            return user ?? NotFound();
+            return user is null ? NotFound() : user.AsDto();
         }
 
         // POST /users
-        [HttpPost]
+        [HttpPost] 
         public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto userDto)
         {
-			try
-			{
-                UserDto created = await userService.CreateUser(userDto);
-
-                return CreatedAtAction(
-                    nameof(GetUser),
-                    new { id = created.Id },
-                    created
-                );
+            try
+            {
+                var createdUser = await userService.CreateUser(userDto);
+                return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
             }
-			catch (SqlException e)
-			{
-				if (e.Number == 2627) // dublicate key error number
-				{
-					return StatusCode(409, $"User with email={userDto.Email} already exist");
-				}
-                return StatusCode(500);
-			}
+            catch (SqlException e)
+            {
+                if (e.Number == 2627) // dublicate key error number
+                {
+                    return new ConflictObjectResult($"User with email={userDto.Email} already exist");
+                }
+
+                return new StatusCodeResult(500);
+            }
         }
 
-		// PUT /users/{id}
-		[HttpPut("{id}")]
-		public async Task<ActionResult> UpdateUser(int id, UpdateUserDto userDto)
-		{
-            var result = await userService.UpdateUser(id, userDto);
-			return result is ConflictResult ? StatusCode(409, $"User with email={userDto.Email} already exist") : result;
-		}
+        // PUT /users/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateUser(int id, UpdateUserDto userDto)
+        {
+            var existingUser = await userService.GetUser(id);
+
+            if (existingUser is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await userService.UpdateUser(existingUser, userDto);
+                return NoContent();
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627) // dublicate key error number
+                {
+                    return new ConflictObjectResult($"User with email={userDto.Email} already exist");
+                }
+
+                return new StatusCodeResult(500);
+            }
+        }
 
 		// DELETE /users/{id}
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeleteUser(int id)
 		{
-            return await userService.DeleteUser(id);
+            await userService.DeleteUser(id);
+            return NoContent();
 		}
 	}
 }
