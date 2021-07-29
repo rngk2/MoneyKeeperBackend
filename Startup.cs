@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MoneyKeeper.Repositories;
 using MoneyKeeper.Repositories.Categories;
+using MoneyKeeper.Services;
 using MoneyKeeper.Settings;
 
 namespace MoneyKeeper
@@ -39,6 +40,7 @@ namespace MoneyKeeper
 				});
 			});
 
+			services.AddSingleton<IUserService, UserService>();
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();
