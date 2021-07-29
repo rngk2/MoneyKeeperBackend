@@ -32,5 +32,10 @@ namespace MoneyKeeper.Repositories
 
 		private SqlConnection GetDbConnection() => new SqlConnection(connectionString);
 
+		public async Task<int> QuerySingle<T>(string sql, object @params = null)
+		{
+			await using var conn = GetDbConnection();
+			return await Task.FromResult(conn.QuerySingle<int>(sql, @params));
+		}
 	}
 }
