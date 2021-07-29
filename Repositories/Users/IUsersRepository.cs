@@ -15,9 +15,9 @@ namespace MoneyKeeper.Repositories
 
 		Task<IEnumerable<User>> GetUsers();
 
-		Task CreateUser(User userDto);
+		Task<int> CreateUser(User user);
 
-		Task UpdateUser(User userDto);
+		Task UpdateUser(User user);
 
 		Task DeleteUser(int id);
 

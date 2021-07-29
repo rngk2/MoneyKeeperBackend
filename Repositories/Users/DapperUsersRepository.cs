@@ -33,16 +33,17 @@ namespace MoneyKeeper.Repositories
 			return await dapperRepository.QueryAny<User>(getUsersQuery);
 		}
 
-		public async Task CreateUser(User user)
+		public async Task<int> CreateUser(User user)
 		{
 			const string createUserQuery = @"
 								insert into [dbo].[Users]
 									([FirstName], [LastName], [Email], [Password])
+								output inserted.Id
 								values 
 									(@FirstName, @LastName, @Email, @Password)
 			";
 
-			await dapperRepository.ExecuteAny<User>(createUserQuery, user);
+			return await dapperRepository.QuerySingle<User>(createUserQuery, user);
 		}
 
 		public async Task UpdateUser(User userData)
@@ -73,6 +74,5 @@ namespace MoneyKeeper.Repositories
 			
 			await dapperRepository.ExecuteAny<User>(deleteUserQuery, new { id });
 		}
-
 	}
 }

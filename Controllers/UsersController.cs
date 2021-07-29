@@ -52,9 +52,11 @@ namespace MoneyKeeper.Controllers
                 Password  = userDto.Password.AsSHA256Hash()
             };
 
+            int createdId = -1;
+
 			try
 			{
-			    await repository.CreateUser(newUser);
+			    createdId = await repository.CreateUser(newUser);
 			}
 			catch (SqlException e)
 			{
@@ -64,10 +66,15 @@ namespace MoneyKeeper.Controllers
 				}
 			}
 
+            User created = newUser with
+            {
+                Id = createdId
+            };
+
 			return CreatedAtAction(
                     nameof(GetUser),
-                    new { id = newUser.Id },
-                    newUser.AsDto()
+                    new { id = createdId },
+                    created.AsDto()
                 );
         }
 
