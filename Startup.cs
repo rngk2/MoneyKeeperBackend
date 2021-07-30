@@ -37,7 +37,7 @@ namespace MoneyKeeper
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					.AddJwtBearer(options =>
 					{
-						options.RequireHttpsMetadata = false;
+						options.RequireHttpsMetadata = true	;
 						options.TokenValidationParameters = new TokenValidationParameters
 						{
 							ValidateIssuer = true,
@@ -59,6 +59,7 @@ namespace MoneyKeeper
 			});
 
 			services.AddSingleton<IUserService, UserService>();
+			services.AddSingleton<IAuthService, AuthService>();
 			services.AddSingleton<ICategoryService, CategoryService>();
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();

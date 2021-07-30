@@ -45,7 +45,7 @@ namespace MoneyKeeper.Services
 				FirstName = userDto.FirstName,
 				LastName = userDto.LastName,
 				Email = userDto.Email,
-				Password = userDto.Password.AsSHA256Hash()
+				Password = userDto.Password.Hash()
 			};
 
 			int createdId = await repository.CreateUser(newUser);
@@ -69,7 +69,7 @@ namespace MoneyKeeper.Services
 				FirstName = returnDefaultIfNull(data.FirstName, existingUser.FirstName).ToString(),
 				LastName = returnDefaultIfNull(data.LastName, existingUser.LastName).ToString(),
 				Email = returnDefaultIfNull(data.Email, existingUser.Email).ToString(),
-				Password = returnDefaultIfNull(data.Password?.AsSHA256Hash(), existingUser.Password).ToString()
+				Password = returnDefaultIfNull(data.Password?.Hash(), existingUser.Password).ToString()
 			};
 
 			await repository.UpdateUser(updatedUser);
