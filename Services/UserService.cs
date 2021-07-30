@@ -32,6 +32,12 @@ namespace MoneyKeeper.Services
 			return user;
 		}
 
+		public async Task<User> GetUser(string email)
+		{
+			var user = await repository.GetUser(email);
+			return user;
+		}
+		
 		public async Task<User> CreateUser(CreateUserDto userDto)
 		{
 			User newUser = new()

@@ -14,6 +14,8 @@ namespace MoneyKeeper.Services
 
 		Task<User> GetUser(int id);
 
+		Task<User> GetUser(string email);
+
 		Task<IEnumerable<User>> GetUsers();
 
 		Task UpdateUser(User existingUser, UpdateUserDto userDto);
