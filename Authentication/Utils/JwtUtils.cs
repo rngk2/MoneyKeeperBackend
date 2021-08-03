@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Auth.Helpers;
+using Authenticate.Helpers;
+using DAL.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Auth
+namespace Authenticate
 {
     public interface IJwtUtils
     {
@@ -21,9 +21,9 @@ namespace Auth
 
     public class JwtUtils : IJwtUtils
     {
-        private readonly AppSettings _appSettings;
+        private readonly AuthSettings _appSettings;
 
-		public JwtUtils(IOptions<AppSettings> appSettings)
+		public JwtUtils(IOptions<AuthSettings> appSettings)
         {
             _appSettings = appSettings.Value;
         }

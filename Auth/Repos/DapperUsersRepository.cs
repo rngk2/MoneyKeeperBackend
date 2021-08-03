@@ -77,7 +77,6 @@ namespace Auth.Repositories
 
 		public async Task AddRefreshToken(RefreshToken token)
 		{
-			token.UserId = 1;
 			string sql = SqlUtils.SqlInsertBuild(token, "RTokens");
 			await dapperRepository.ExecuteAny<RefreshToken>(sql);
 		}
@@ -86,7 +85,7 @@ namespace Auth.Repositories
 		{
 			var getUserId = "select * from RTokens where token = @token";
 			var userId = (await dapperRepository.QueryAny<RefreshToken>(getUserId, new { token })).FirstOrDefault().UserId;
-			var getUserById = "select * from users where id = @userId";
+			var getUserById = "select * from users where Id = @userId";
 			return (await dapperRepository.QueryAny<User>(getUserById, new { userId })).FirstOrDefault();
 		}
 
@@ -94,7 +93,6 @@ namespace Auth.Repositories
 		{
 			var getTokenQuery = "select * from RTokens where token = @token";
 			return (await dapperRepository.QueryAny<RefreshToken>(getTokenQuery, new { token })).FirstOrDefault();
-
 		}
 	}
 }

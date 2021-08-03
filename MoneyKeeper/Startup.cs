@@ -1,4 +1,7 @@
-﻿using BL;
+﻿using Authenticate;
+using Authenticate.Helpers;
+using Authenticate.Services;
+using BL;
 using BL.Services;
 using DAL.Repositories;
 using DAL.Repositories.Categories;
@@ -52,14 +55,17 @@ namespace MoneyKeeper
 				});
 			});
 
-			services.AddSingleton<IUserService, UserService>();
-			services.AddSingleton<IAuthService, AuthService>();
-			services.AddSingleton<ICategoryService, CategoryService>();
+			services.AddTransient<IUserService, UserService>();
+			services.AddTransient<IJwtUtils, JwtUtils>();
+			services.AddTransient<IUserAuthService, UserAuthService>();
+			services.AddTransient<ICategoryService, CategoryService>();
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();
 
+			services.Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
+			
 
 			services.AddControllers(options =>
 			{

@@ -20,5 +20,11 @@ namespace DAL.Repositories
 
 		Task DeleteUser(int id);
 
+		Task AddRefreshToken(RefreshToken token);
+
+		Task<User> GetUserByRefreshToken(string token);
+
+		Task<RefreshToken> GetToken(string token);
+
 	}
 }

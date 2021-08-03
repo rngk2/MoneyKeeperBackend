@@ -14,9 +14,9 @@ namespace Auth.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
+        private IUserAuthService _userService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserAuthService userService)
         {
             _userService = userService;
         }
@@ -79,7 +79,9 @@ namespace Auth.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Expires = DateTime.UtcNow.AddDays(7),
+                SameSite = SameSiteMode.Lax,
+                Secure = true
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }

@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Auth.Helpers;
-using Auth.Services;
+using Authenticate.Helpers;
+using Authenticate.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Auth
+namespace Authenticate
 {
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly AppSettings _appSettings;
+        private readonly AuthSettings _appSettings;
 
-        public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
+        public JwtMiddleware(RequestDelegate next, IOptions<AuthSettings> appSettings)
         {
             _next = next;
             _appSettings = appSettings.Value;

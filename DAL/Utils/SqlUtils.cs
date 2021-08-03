@@ -36,10 +36,11 @@ namespace DAL.Utils
             string sqlAfter = " values(";
             Type type = obj.GetType();
             PropertyInfo[] pis = type.GetProperties();
-			foreach (PropertyInfo pi in pis)
+            bool addRemove = true; //Whether the current field is not used as a modified field
+            foreach (PropertyInfo pi in pis)
             {
-				bool addRemove = true;
-				if (remove is not null)
+                addRemove = true;
+                if (remove is not null)
                 {
                     foreach (string re in remove) //Exclude some fields (self-increasing fields)
                     {
@@ -49,6 +50,12 @@ namespace DAL.Utils
                         }
                     }
                 }
+
+                if (pi.Name.ToLower().Contains("Is".ToLower()) || pi.Name.ToLower().Equals("Id".ToLower()))
+                {
+                    addRemove = false;
+                }
+
 
                 if (addRemove)
                 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Auth.Models
+namespace Authenticate.Models
 {
     public class RevokeTokenRequest
     {

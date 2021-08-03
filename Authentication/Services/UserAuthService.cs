@@ -2,33 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Auth.Helpers;
-using Auth.Models;
-using Auth.Repositories;
+using Authenticate.Helpers;
+using Authenticate.Models;
+using Authentication.Models;
+using BCrypt.Net;
+using DAL.Entities;
+using DAL.Repositories;
 using Microsoft.Extensions.Options;
 
-namespace Auth.Services
+namespace Authenticate.Services
 {
-    public interface IUserService
+    public interface IUserAuthService
     {
         Task<AuthenticateResponse> Authenticate(AuthenticateRequest model, string ipAddress);
         Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
-    //    void RevokeToken(string token, string ipAddress);
-      //  IEnumerable<User> GetAll();
+    //  void RevokeToken(string token, string ipAddress);
+    //  IEnumerable<User> GetAll();
         Task<User> GetById(int id);
     }
 
-    public class UserService : IUserService
+    public class UserAuthService : IUserAuthService
     {
 		private IUsersRepository repository;
 		private IJwtUtils jwtUtils;
-        private readonly AppSettings appSettings;
+        private readonly AuthSettings appSettings;
 
-
-		public UserService(
+		public UserAuthService(
             IUsersRepository repository,
             IJwtUtils jwtUtils,
-            IOptions<AppSettings> appSettings)
+            IOptions<AuthSettings> appSettings)
         {
             this.repository = repository;
             this.jwtUtils = jwtUtils;
@@ -46,6 +48,8 @@ namespace Auth.Services
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = jwtUtils.GenerateJwtToken(user);
             var refreshToken = jwtUtils.GenerateRefreshToken(ipAddress);
+            refreshToken.UserId = user.Id;
+
             await repository.AddRefreshToken(refreshToken);
 
 
@@ -70,9 +74,9 @@ namespace Auth.Services
 				 _repo.SaveChanges();
 			 }
  */
-			if (!refreshToken.IsActive)
+			/*if (!refreshToken.IsActive)
 				throw new Exception("Invalid token");
-
+*/
 			// replace old refresh token with a new one (rotate token)
 			var newRefreshToken = RotateRefreshToken(refreshToken, ipAddress);
 			await repository.AddRefreshToken(newRefreshToken);

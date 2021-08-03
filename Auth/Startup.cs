@@ -40,7 +40,7 @@ namespace Auth
 				});
 			});
 
-			services.AddTransient<IUserService, UserService>();
+			services.AddTransient<IUserAuthService, UserAuthService>();
 			services.AddTransient<IDapperRepository, DapperRepository>();
 			services.AddTransient<IJwtUtils, JwtUtils>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
@@ -64,7 +64,7 @@ namespace Auth
 
 			app.UseMiddleware<JwtMiddleware>();
 
-			app.UseHttpsRedirection();
+			//app.UseHttpsRedirection();
 
 			app.UseRouting();
 
