@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using DAL.Entities;
 using DAL.Settings;
+using DAL.Utils;
 
 namespace DAL.Repositories
 {
@@ -77,8 +78,8 @@ namespace DAL.Repositories
 
 		public async Task AddRefreshToken(RefreshToken token)
 		{
-			string sql = Utils.SqlUtils.SqlInsertBuild(token, "RTokens");
-			await dapperRepository.ExecuteAny<RefreshToken>(sql);
+			string sql = SqlQueryGenerator.GenerateInsertQuerySecure(token, "RTokens");
+			await dapperRepository.ExecuteAny<RefreshToken>(sql, new { Token = token });
 		}
 
 		public async Task<User> GetUserByRefreshToken(string token)
