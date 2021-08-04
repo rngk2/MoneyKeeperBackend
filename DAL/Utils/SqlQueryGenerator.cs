@@ -6,146 +6,97 @@ using System.Text;
 using System.Threading.Tasks;
 namespace DAL.Utils
 {
-	class SqlUtils
-   	{
-        public static string SqlSelectBuild(string tableName, Dictionary<string, object> conditions = null, string selectWhat = "*")
+    public class SqlQueryGenerator
+    {
+        public static string GenerateSelectQuerySecure(string tableName, object filters = null, string selectWhat = "*")
         {
             string sql = $"select {selectWhat} from " + tableName + " where 1=1 ";
 
-            foreach (KeyValuePair<string, object> kvp in conditions ?? new())
+            if (filters is not null)
             {
-                string strType = kvp.Value.GetType().ToString().ToLower(); //Get the current type
-                bool blNum = strType.Contains("int") || strType.Contains("float") ||
-                                                                   strType.Contains("double"); //This field is a numeric type, without quotes true
-                if (blNum) //numeric field
+                Type type = filters.GetType();
+                PropertyInfo[] pis = type.GetProperties();
+
+                foreach (var pi in pis)
                 {
-                    sql += " and " + kvp.Key + "=" + kvp.Value;
-                }
-                else //non-numeric field
-                {
-                    sql += " and " + kvp.Key + "='" + kvp.Value + "'";
+                    sql += " and " + pi.Name + " = @" + pi.Name;
                 }
             }
             return sql;
         }
 
 
-        public static string SqlInsertBuild(object obj, string tableName, string[] remove = null)
+        public static string GenerateInsertQuerySecure(object obj, string tableName, string[] remove = null)
         {
-            string sqlBefor = "insert into " + tableName + "(";
+            string sqlBefore = "insert into " + tableName + "(";
             string sqlAfter = " values(";
             Type type = obj.GetType();
             PropertyInfo[] pis = type.GetProperties();
-            bool addRemove = true; //Whether the current field is not used as a modified field
+            bool toRemove = false;
+
             foreach (PropertyInfo pi in pis)
             {
-                addRemove = true;
+                toRemove = false;
                 if (remove is not null)
                 {
                     foreach (string re in remove) //Exclude some fields (self-increasing fields)
                     {
                         if (pi.Name.ToLower().Equals(re.ToLower()))
                         {
-                            addRemove = false;
+                            toRemove = true;
                         }
                     }
                 }
 
-                if (pi.Name.ToLower().Contains("Is".ToLower()) || pi.Name.ToLower().Equals("Id".ToLower()))
+                if (!toRemove)
                 {
-                    addRemove = false;
-                }
-
-
-                if (addRemove)
-                {
-                    string strType = type.GetProperty(pi.Name).PropertyType.ToString().ToLower(); //Get the current field type
-                    bool blNum = strType.Contains("int") || strType.Contains("float") ||
-                                                                   strType.Contains("double"); //This field is a numeric type, without quotes true
-                    sqlBefor += pi.Name + ",";
-                    if (blNum)
-                    {
-                        sqlAfter += type.GetProperty(pi.Name).GetValue(obj, null) + " ,";
-                    }
-                    else
-                    {
-                        sqlAfter += "'" + type.GetProperty(pi.Name).GetValue(obj, null) + "' ,";
-                    }
+                    sqlBefore += pi.Name + ",";
+                    sqlAfter += "@" + pi.Name + ",";
                 }
             }
-            return sqlBefor.Substring(0, sqlBefor.Length - 1) + ") " + sqlAfter.Substring(0, sqlAfter.Length - 1) + ")";
+            return sqlBefore[0..^1] + ") " + sqlAfter[0..^1] + ")";
         }
 
-        public static string SqlUpdateBuild(object obj, string tableName, string[] whereFieldName)
+        public static string GenerateUpdateQuerySecure(object obj, string tableName, string[] whereFieldName)
         {
+            if (whereFieldName == null)
+            {
+                throw new Exception("There is no condition for this statement");
+            }
+
             string sqlSet = "update " + tableName + " set ";
             string sqlWhere = " where ";
             Type type = obj.GetType();
             PropertyInfo[] pis = type.GetProperties();
-            
+
             foreach (PropertyInfo pi in pis)
             {
-                bool blSetOrWher = true;
-                if (whereFieldName != null)
+                bool blSetOrWhere = true; // true - set; false - where
+                foreach (string whereFile in whereFieldName) //Whether it belongs to a condition field
                 {
-                    foreach (string whereFile in whereFieldName) //Whether it belongs to a condition field
+                    if (pi.Name.ToLower().Equals(whereFile.ToLower()))
                     {
-                        if (pi.Name.ToLower().Equals(whereFile.ToLower()))
-                        {
-                            blSetOrWher = false;
-                            break;
-                        }
+                        blSetOrWhere = false;
+                        break;
                     }
                 }
-                string strType = type.GetProperty(pi.Name).PropertyType.ToString().ToLower(); //Get the current field type
-                bool blNum = strType.Contains("int") || strType.Contains("float") ||
-                                                           strType.Contains("double"); //This field is a numeric type, without quotes true
-                if (blSetOrWher)
+
+                if (blSetOrWhere)
                 {
-                    if (blNum)
-                    {
-                        sqlSet += pi.Name + "=" + type.GetProperty(pi.Name).GetValue(obj, null) + " ,";
-                    }
-                    else
-                    {
-                        sqlSet += pi.Name + "='" + type.GetProperty(pi.Name).GetValue(obj, null) + "' ,";
-                    }
+                    sqlSet += pi.Name + " = @" + pi.Name + " ,";
                 }
                 else
                 {
-                    if (blNum)
-                    {
-                        sqlWhere += pi.Name + "=" + type.GetProperty(pi.Name).GetValue(obj, null) + " and ";
-                    }
-                    else
-                    {
-                        sqlWhere += pi.Name + "='" + type.GetProperty(pi.Name).GetValue(obj, null) + "' and ";
-                    }
+                    sqlWhere += pi.Name + " = @" + pi.Name + " and ";
                 }
             }
-            if (whereFieldName == null)
-            {
-                return null; //There is no condition for this statement
-            }
-            return sqlSet.Substring(0, sqlSet.Length - 1) + sqlWhere.Substring(0, sqlWhere.Length - 4); //Condition-4 means "and"
+
+            return sqlSet[0..^1] + sqlWhere[0..^4]; //Condition-4 means "and"
         }
 
-        public static string SqlDeleteBuild(string tableName, string primaryKey, object primaryKeyvalue)
-        {
-            Type type = primaryKeyvalue.GetType();
-            string strType = type.FullName.ToLower(); //Get parameter type
-            bool blNum = strType.Contains("int") || strType.Contains("float") ||
-                                                                   strType.Contains("double"); //Whether it is a numeric type
-            if (blNum) //Number type
-            {
-                return "delete from " + tableName + " where " + primaryKey + " = " + primaryKeyvalue.ToString();
-            }
-            else //non-numeric type
-            {
-                return "delete from " + tableName + " where " + primaryKey + " = '" + primaryKeyvalue.ToString() + "'";
-            }
-        }
-
+        public static string GenerateDeleteQuerySecure(string tableName, string primaryKey) =>
+            "delete from " + tableName + " where " + primaryKey + " = @" + primaryKey;
 
     }
 }
+
