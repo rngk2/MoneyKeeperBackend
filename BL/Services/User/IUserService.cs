@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using BL.Dtos.User;
 using DAL.Entities;
+using DAL.Models;
 
 namespace BL.Services
 {
@@ -18,5 +19,7 @@ namespace BL.Services
 		Task<IEnumerable<User>> GetUsers();
 
 		Task UpdateUser(User existingUser, UpdateUserDto userDto);
+
+		Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id);
 	}
 }

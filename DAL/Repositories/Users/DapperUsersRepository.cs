@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using DAL.Entities;
 using DAL.Settings;
 using DAL.Utils;
+using DAL.Models;
 
 namespace DAL.Repositories
 {
@@ -78,8 +79,8 @@ namespace DAL.Repositories
 
 		public async Task AddRefreshToken(RefreshToken token)
 		{
-			string sql = SqlQueryGenerator.GenerateInsertQuerySecure(token, "RTokens");
-			await dapperRepository.ExecuteAny(sql, new { Token = token });
+			string sql = SqlQueryGenerator.GenerateInsertQuerySecure(token, "RTokens", new[] { "Id", "IsExpired", "IsActive", "IsRevoked" });
+			await dapperRepository.ExecuteAny(sql, token);
 		}
 
 		public async Task<User> GetUserByRefreshToken(string token)
@@ -94,6 +95,23 @@ namespace DAL.Repositories
 		{
 			var getTokenQuery = "select * from RTokens where token = @token";
 			return (await dapperRepository.QueryAny<RefreshToken>(getTokenQuery, new { token })).FirstOrDefault();
+		}
+
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
+		{
+			var getSummaryForUserQuery = @$"
+					select 
+						Users.Id UserId, Categories.Name CategoryName, Transactions.Amount, Transactions.Timestamp 
+					from 
+						Users 
+					join 
+						Categories on Users.Id = Categories.UserId
+					join 
+						Transactions on Categories.Id = Transactions.CategoryId
+					where 
+						Users.Id=@Id
+			";
+			return await dapperRepository.QueryAny<SummaryUnit>(getSummaryForUserQuery, new { Id = id });
 		}
 	}
 }

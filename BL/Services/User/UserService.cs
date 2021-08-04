@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BL.Dtos.User;
 using BL.Extensions;
 using DAL.Entities;
+using DAL.Models;
 using DAL.Repositories;
 
 namespace BL.Services
@@ -76,6 +77,11 @@ namespace BL.Services
 		public async Task DeleteUser(int id)
 		{
 			await repository.DeleteUser(id);
+		}
+
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
+		{
+			return await repository.GetSummaryForUser(id);
 		}
 
 	}
