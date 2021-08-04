@@ -8,6 +8,8 @@ using Authenticate.Services;
 using BL.Dtos.User;
 using BL.Extensions;
 using BL.Services;
+using DAL.Models;
+using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyKeeper.Attributes;
@@ -53,7 +55,7 @@ namespace MoneyKeeper.Controllers
             }
             catch (SqlException e)
             {
-                if (e.Number == 2627) // dublicate key error number
+                if (e.Number == ((int)SqlErrorCodes.DUBLICATE_KEY_ERROR))  
                 {
                     return new ConflictObjectResult($"User with email={userDto.Email} already exist");
                 }
@@ -80,7 +82,7 @@ namespace MoneyKeeper.Controllers
             }
             catch (SqlException e)
             {
-                if (e.Number == 2627) // dublicate key error number
+                if (e.Number == ((int)SqlErrorCodes.DUBLICATE_KEY_ERROR))  
                 {
                     return new ConflictObjectResult($"User with email={userDto.Email} already exist");
                 }
@@ -96,6 +98,13 @@ namespace MoneyKeeper.Controllers
             await userService.DeleteUser(id);
             return NoContent();
         }
+
+        [HttpGet("{id}/summary")]
+        public async Task<IEnumerable<SummaryUnit>> GetSummary(int id)
+        {
+            return await userService.GetSummaryForUser(id);
+        }
+
 
         [AllowAnonymous]
         [HttpPost("authenticate")]

@@ -8,6 +8,7 @@ using DAL.Entities;
 using BL.Dtos.Category;
 using BL.Extensions;
 using BL.Services;
+using Globals.Errors;
 
 namespace MoneyKeeper.Controllers
 {
@@ -82,7 +83,7 @@ namespace MoneyKeeper.Controllers
 			}
 			catch (SqlException e)
 			{
-				if (e.Number == 2627) // dublicate key error number
+				if (e.Number == ((int)SqlErrorCodes.DUBLICATE_KEY_ERROR))  
 				{
 					return StatusCode(409, $"User#{existingCategory.UserId} alredy has category with name={categoryDto.Name}");
 				}
