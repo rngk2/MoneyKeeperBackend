@@ -74,9 +74,9 @@ namespace Authenticate.Services
 				 _repo.SaveChanges();
 			 }
  */
-			/*if (!refreshToken.IsActive)
+			if (!refreshToken.IsActive)
 				throw new Exception("Invalid token");
-*/
+
 			// replace old refresh token with a new one (rotate token)
 			var newRefreshToken = RotateRefreshToken(refreshToken, ipAddress);
 			await repository.AddRefreshToken(newRefreshToken);

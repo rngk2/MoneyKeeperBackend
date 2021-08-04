@@ -51,7 +51,7 @@ namespace MoneyKeeper
 			{
 				options.AddPolicy(allowFrontendPolicy, builder =>
 				{
-					builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
+					builder.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
 				});
 			});
 

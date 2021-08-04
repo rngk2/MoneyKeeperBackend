@@ -29,7 +29,7 @@ namespace DAL.Entities
 
 		public bool IsExpired => DateTime.UtcNow >= Expires;
 
-		public bool IsRevoked => Revoked != null;
+		public bool IsRevoked => Revoked != null && Revoked != (new DateTime()).AddYears(1899);
 
 		public bool IsActive => !IsRevoked && !IsExpired;
 	}
