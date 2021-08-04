@@ -9,7 +9,7 @@ namespace DAL.Repositories
 
 		Task<IEnumerable<T>> QueryAny<T>(string sql, object @params = null);
 		
-		Task ExecuteAny<T>(string sql, object @params = null);
+		Task ExecuteAny(string sql, object @params = null);
 
 	} 
 }

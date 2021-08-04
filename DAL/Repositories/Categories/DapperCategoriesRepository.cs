@@ -60,7 +60,7 @@ namespace DAL.Repositories.Categories
 							Id = @id
 							
 			";
-			await dapperRepository.ExecuteAny<User>(deleteUserQuery, new { id });
+			await dapperRepository.ExecuteAny(deleteUserQuery, new { id });
 		}
 
 		public async Task UpdateCategoryToUser(Category category)
@@ -72,7 +72,7 @@ namespace DAL.Repositories.Categories
 					where
 						Id = @Id
 			";
-			await dapperRepository.ExecuteAny<Category>(updateCategoryQuery, category);
+			await dapperRepository.ExecuteAny(updateCategoryQuery, category);
 		}
 	}
 }

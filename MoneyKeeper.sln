@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{4A6C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication", "Authentication\Authentication.csproj", "{58A69FBE-3B2E-492C-9E5F-B31EA1F5186A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLUtils", "SQLUtils\SQLUtils.csproj", "{9106676A-2F34-4CBD-9CDA-9442A6C3EDAA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{58A69FBE-3B2E-492C-9E5F-B31EA1F5186A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58A69FBE-3B2E-492C-9E5F-B31EA1F5186A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58A69FBE-3B2E-492C-9E5F-B31EA1F5186A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9106676A-2F34-4CBD-9CDA-9442A6C3EDAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9106676A-2F34-4CBD-9CDA-9442A6C3EDAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9106676A-2F34-4CBD-9CDA-9442A6C3EDAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9106676A-2F34-4CBD-9CDA-9442A6C3EDAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

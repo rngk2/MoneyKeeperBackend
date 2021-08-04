@@ -61,7 +61,7 @@ namespace DAL.Repositories
 							
 			";
 
-			await dapperRepository.ExecuteAny<User>(updateUserQuery, userData);
+			await dapperRepository.ExecuteAny(updateUserQuery, userData);
 		}
 
 		public async Task DeleteUser(int id)
@@ -73,13 +73,13 @@ namespace DAL.Repositories
 							
 			";
 			
-			await dapperRepository.ExecuteAny<User>(deleteUserQuery, new { id });
+			await dapperRepository.ExecuteAny(deleteUserQuery, new { id });
 		}
 
 		public async Task AddRefreshToken(RefreshToken token)
 		{
 			string sql = SqlQueryGenerator.GenerateInsertQuerySecure(token, "RTokens");
-			await dapperRepository.ExecuteAny<RefreshToken>(sql, new { Token = token });
+			await dapperRepository.ExecuteAny(sql, new { Token = token });
 		}
 
 		public async Task<User> GetUserByRefreshToken(string token)

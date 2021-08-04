@@ -59,9 +59,12 @@ namespace MoneyKeeper
 			services.AddTransient<IJwtUtils, JwtUtils>();
 			services.AddTransient<IUserAuthService, UserAuthService>();
 			services.AddTransient<ICategoryService, CategoryService>();
+			services.AddTransient<ITransactionService, TransactionService>();
+			
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();
+			services.AddSingleton<ITransactionsRepository, DapperTransactionsRepository>();
 
 			services.Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
