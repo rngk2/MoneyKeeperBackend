@@ -86,7 +86,7 @@ namespace DAL.Repositories
 						Users 
 					join 
 						Categories on Users.Id = Categories.UserId
-					join 
+					left outer join 
 						Transactions on Categories.Id = Transactions.CategoryId
 					where 
 						Users.Id=@Id
