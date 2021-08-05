@@ -77,26 +77,6 @@ namespace DAL.Repositories
 			await dapperRepository.ExecuteAny(deleteUserQuery, new { id });
 		}
 
-		public async Task AddRefreshToken(RefreshToken token)
-		{
-			string sql = SqlQueryGenerator.GenerateInsertQuerySecure(token, "RTokens", new[] { "Id", "IsExpired", "IsActive", "IsRevoked" });
-			await dapperRepository.ExecuteAny(sql, token);
-		}
-
-		public async Task<User> GetUserByRefreshToken(string token)
-		{
-			var getUserId = "select * from RTokens where token = @token";
-			var userId = (await dapperRepository.QueryAny<RefreshToken>(getUserId, new { token })).FirstOrDefault().UserId;
-			var getUserById = "select * from users where Id = @userId";
-			return (await dapperRepository.QueryAny<User>(getUserById, new { userId })).FirstOrDefault();
-		}
-
-		public async Task<RefreshToken> GetToken(string token)
-		{
-			var getTokenQuery = "select * from RTokens where token = @token";
-			return (await dapperRepository.QueryAny<RefreshToken>(getTokenQuery, new { token })).FirstOrDefault();
-		}
-
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
 		{
 			var getSummaryForUserQuery = @$"

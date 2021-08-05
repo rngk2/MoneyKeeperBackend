@@ -63,6 +63,7 @@ namespace MoneyKeeper
 			
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
+			services.AddSingleton<ITokensRepository, DapperTokensRepository>();
 			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();
 			services.AddSingleton<ITransactionsRepository, DapperTransactionsRepository>();
 

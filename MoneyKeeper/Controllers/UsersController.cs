@@ -115,17 +115,16 @@ namespace MoneyKeeper.Controllers
             return Ok(response);
         }
 
-        [AllowAnonymous]
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken()
-        {
-            var refreshToken = Request.Cookies["refreshToken"];
-            var response = await authService.RefreshToken(refreshToken, IpAddress());
-            SetTokenCookie(response.RefreshToken);
-            return Ok(response);
-        }
+		[AllowAnonymous]
+		[HttpPost("refresh-token")]
+		public async Task<IActionResult> RefreshToken()
+		{
+			var refreshToken = Request.Cookies["refreshToken"];
+			var response = await authService.GetNewAccessToken(refreshToken);
+			return new JsonResult(new { jwtToken = response });
+		}
 
-        /* [HttpPost("revoke-token")]
+		/* [HttpPost("revoke-token")]
 		 public IActionResult RevokeToken(RevokeTokenRequest model)
 		 {
 			 // accept refresh token in request body or cookie
@@ -138,7 +137,7 @@ namespace MoneyKeeper.Controllers
 			 return Ok(new { message = "Token revoked" });
 		 }*/
 
-        /*[HttpGet]
+		/*[HttpGet]
 		public IActionResult GetAll()
 		{
 			var users = _userService.GetAll();
@@ -147,7 +146,7 @@ namespace MoneyKeeper.Controllers
 			return Ok();
 		}*/
 
-        /*  [HttpGet("{id}/refresh-tokens")]
+		/*  [HttpGet("{id}/refresh-tokens")]
           public async Task<IActionResult> GetRefreshTokens(int id)
           {
               var user = await _userService.GetById(id);
@@ -155,9 +154,9 @@ namespace MoneyKeeper.Controllers
               return Ok();
           }*/
 
-        // helper methods
+		// helper methods
 
-        private void SetTokenCookie(string token)
+		private void SetTokenCookie(string token)
         {
             // append cookie with refresh token to the http response
             var cookieOptions = new CookieOptions

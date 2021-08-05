@@ -14,28 +14,27 @@ namespace Authenticate
 {
     public interface IJwtUtils
     {
-        public string GenerateJwtToken(User user);
+        public string GenerateJwtToken();
         public int? ValidateJwtToken(string token);
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }
 
     public class JwtUtils : IJwtUtils
     {
-        private readonly AuthSettings _appSettings;
+        private readonly AuthSettings appSettings;
 
 		public JwtUtils(IOptions<AuthSettings> appSettings)
         {
-            _appSettings = appSettings.Value;
+            this.appSettings = appSettings.Value;
         }
 
-        public string GenerateJwtToken(User user)
+        public string GenerateJwtToken()
         {
-            // generate token that is valid for 15 minutes
+            // generate token that is valid for 5 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("this is my custom Secret key for authnetication");
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(type: "id", value: user.Id.ToString()) }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };
@@ -49,7 +48,7 @@ namespace Authenticate
                 return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("this is my custom Secret key for authnetication");
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -60,7 +59,7 @@ namespace Authenticate
                     ValidateAudience = false,
                     // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     ClockSkew = TimeSpan.FromMinutes(5)
-                }, out SecurityToken validatedToken); ;
+                }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
@@ -84,7 +83,7 @@ namespace Authenticate
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(randomBytes),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(appSettings.RefreshTokenTTL),
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress,
                 Revoked = null
