@@ -81,7 +81,7 @@ namespace DAL.Repositories
 		{
 			var getSummaryForUserQuery = @$"
 					select 
-						Users.Id UserId, Categories.Name CategoryName, Transactions.Amount, Transactions.Timestamp 
+						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.Amount, Transactions.Timestamp 
 					from 
 						Users 
 					join 
@@ -89,9 +89,9 @@ namespace DAL.Repositories
 					left outer join 
 						Transactions on Categories.Id = Transactions.CategoryId
 					where 
-						Users.Id=@Id
+						Users.Id=@id
 			";
-			return await dapperRepository.QueryAny<SummaryUnit>(getSummaryForUserQuery, new { Id = id });
+			return await dapperRepository.QueryAny<SummaryUnit>(getSummaryForUserQuery, new { id });
 		}
 	}
 }

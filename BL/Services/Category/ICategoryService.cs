@@ -20,5 +20,7 @@ namespace BL.Services
 		Task UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto);
 
 		Task<Category> GetCategory(int userId, string name);
+
+		Task DeleteCategoryToUser(int userId, string categoryName);
 	}
 }

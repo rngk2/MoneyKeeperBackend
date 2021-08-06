@@ -100,5 +100,13 @@ namespace MoneyKeeper.Controllers
 
 			return NoContent();
 		}
+
+		[HttpDelete("{userId}/{categoryName}")]	
+		public async Task<ActionResult> DeleteCategory(int userId, string categoryName)
+		{
+			await categoryService.DeleteCategoryToUser(userId, categoryName);
+
+			return NoContent();
+		}
 	}
 }

@@ -14,6 +14,6 @@ namespace BL.Dtos.Transaction
 
 		public decimal Amount { get; init; }
 
-		public DateTime Timestamp { get; init; }
+		public DateTimeOffset Timestamp { get; init; }
 	}
 }

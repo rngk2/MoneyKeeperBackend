@@ -12,6 +12,8 @@ namespace DAL.Models
 
 		public string CategoryName { get; init; }
 
+		public int CategoryId { get; set; }
+
 		public decimal Amount { get; init; }
 
 		public DateTime Timestamp { get; init; }

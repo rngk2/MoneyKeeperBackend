@@ -18,7 +18,9 @@ namespace DAL.Repositories.Categories
 		
 		Task UpdateCategoryToUser(Category category);
 		
-		Task DeleteCategoryToUser(int id);
+		Task DeleteCategory(int id);
+
+		Task DeleteCategoryToUser(int userId, string categoryName);
 
 	}
 }

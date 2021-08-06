@@ -72,13 +72,18 @@ namespace BL.Services
 
 		public async Task DeleteCategory(int id)
 		{
-			await repository.DeleteCategoryToUser(id);
+			await repository.DeleteCategory(id);
 
 		}
 
 		public async Task<Category> GetCategory(int userId, string name)
 		{
 			return await repository.GetCategory(userId, name);
+		}
+
+		public async Task DeleteCategoryToUser(int userId, string name)
+		{
+			await repository.DeleteCategoryToUser(userId, name);
 		}
 	}
 }

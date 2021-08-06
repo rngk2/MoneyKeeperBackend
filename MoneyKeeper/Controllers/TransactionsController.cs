@@ -35,7 +35,7 @@ namespace MoneyKeeper.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateTransaction(CreateTransactionDto transactionDto)
+		public async Task<ActionResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
 		{
 			var createdTransaction = await transactionService.CreateTransaction(transactionDto);
 			return CreatedAtAction(
