@@ -8,6 +8,8 @@ namespace DAL.Models
 {
 	public record SummaryUnit
 	{
+		public int Id { get; init; } // Transaction Id
+
 		public int UserId { get; init; }
 
 		public string CategoryName { get; init; }
