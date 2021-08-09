@@ -44,7 +44,7 @@ namespace MoneyKeeper.Controllers
 				createdTransaction.AsDto());
 		}
 
-		[HttpDelete]
+		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteTransaction(int id)
 		{
 			await transactionService.DeleteTransaction(id);
