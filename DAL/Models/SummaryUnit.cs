@@ -17,5 +17,7 @@ namespace DAL.Models
 		public decimal Amount { get; init; }
 
 		public DateTime Timestamp { get; init; }
+
+		public string Comment { get; init; }
 	}
 }

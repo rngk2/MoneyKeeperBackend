@@ -23,10 +23,10 @@ namespace DAL.Repositories
 		{
 			var sql = @$"
 					insert into {TABLE_NAME}
-						(CategoryId, Amount, Timestamp)
+						(CategoryId, Amount, Timestamp, Comment)
 					output inserted.Id
 					values 
-						(@CategoryId, @Amount, @Timestamp)
+						(@CategoryId, @Amount, @Timestamp, @Comment)
 			";
 			return await repository.QuerySingleWithOutput<int>(sql, transaction);
 		}

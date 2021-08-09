@@ -81,7 +81,7 @@ namespace DAL.Repositories
 		{
 			var getSummaryForUserQuery = @$"
 					select 
-						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.Amount, Transactions.Timestamp 
+						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.Amount, Transactions.Timestamp, Transactions.Comment 
 					from 
 						Users 
 					join 

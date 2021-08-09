@@ -18,5 +18,8 @@ namespace BL.Dtos.Transaction
 		[Required]
 		public DateTimeOffset Timestamp  { get; init; }
 
+		[Required]
+		public string Comment { get; init; }
+
 	}
 }

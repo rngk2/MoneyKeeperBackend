@@ -24,7 +24,8 @@ namespace BL.Services
 			{
 				CategoryId = transactionDto.CategoryId,
 				Amount = transactionDto.Amount,
-				Timestamp = transactionDto.Timestamp
+				Timestamp = transactionDto.Timestamp,
+				Comment = transactionDto.Comment
 			};
 
 			int createdId = await repository.CreateTransaction(newTransaction);

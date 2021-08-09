@@ -15,7 +15,8 @@ namespace BL.Extensions
 			Id = transaction.Id,
 			CategoryId = transaction.CategoryId,
 			Amount = transaction.Amount,
-			Timestamp = transaction.Timestamp
+			Timestamp = transaction.Timestamp,
+			Comment = transaction.Comment
 		};
 	}
 }
