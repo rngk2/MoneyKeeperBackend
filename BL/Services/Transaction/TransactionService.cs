@@ -52,5 +52,10 @@ namespace BL.Services
 		{
 			return await repository.GetTransactions();
 		}
+
+		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range)
+		{
+			return await repository.GetTransactionsOfUser(userId, range);
+		}
 	}
 }

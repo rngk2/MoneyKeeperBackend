@@ -33,6 +33,14 @@ namespace MoneyKeeper.Controllers
 		{
 			return (await transactionService.GetTransactions()).Select(t => t.AsDto());
 		}
+		
+		[HttpGet("{userId}/{from}/{to}")]
+		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int userId, int from, int to)
+		{
+			return (await transactionService.GetTransactionsOfUser(userId, new Range(from, to))).Select(t => t.AsDto());
+		}
+
+
 
 		[HttpPost]
 		public async Task<ActionResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)

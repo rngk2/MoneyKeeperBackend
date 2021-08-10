@@ -13,6 +13,8 @@ namespace BL.Services
 		
 		Task<IEnumerable<Transaction>> GetTransactions();
 
+		Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range);
+
 		Task<Transaction> GetTransaction(int id);
 
 		Task<Transaction> CreateTransaction(CreateTransactionDto transactionDto);

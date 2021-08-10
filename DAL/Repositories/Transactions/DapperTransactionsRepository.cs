@@ -48,5 +48,26 @@ namespace DAL.Repositories
 			var sql = $"select * from {TABLE_NAME}";
 			return await repository.QueryAny<Transaction>(sql);
 		}
+
+		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range)
+		{
+			var sql = @$"
+				select * from 
+					(select ROW_NUMBER() over (order by Timestamp) 
+					as Row#, Transactions.*, Categories.Name CategoryName, Categories.UserId from Transactions
+					join 
+					Categories on Categories.Id=Transactions.CategoryId ) tbl
+				where 
+					Row# between {range.Start} and {range.End}
+			";
+			return await repository.QueryAny<Transaction>(sql, new { userId });
+		}
 	}
 }
+
+/*
+ select * from 
+	(select ROW_NUMBER() over (order by Timestamp) as Row#, Transactions.*, Categories.Name CategoryName, Categories.UserId from Transactions join 
+					Categories on Categories.Id=Transactions.CategoryId ) tbl
+	where Row# between 0 and 1
+ */

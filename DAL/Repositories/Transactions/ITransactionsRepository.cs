@@ -11,6 +11,8 @@ namespace DAL.Repositories
 	{
 		Task<IEnumerable<Transaction>> GetTransactions();
 
+		Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range);
+
 		Task<Transaction> GetTransaction(int id);
 
 		Task<int> CreateTransaction(Transaction transaction);
