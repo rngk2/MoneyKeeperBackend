@@ -53,7 +53,7 @@ namespace DAL.Repositories
 		{
 			var sql = @$"
 				select * from 
-					(select ROW_NUMBER() over (order by Timestamp) 
+					(select ROW_NUMBER() over (order by Timestamp desc) 
 					as Row#, Transactions.*, Categories.Name CategoryName, Categories.UserId from Transactions
 					join 
 					Categories on Categories.Id=Transactions.CategoryId ) tbl
