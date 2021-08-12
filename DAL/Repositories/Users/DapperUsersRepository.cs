@@ -13,77 +13,82 @@ namespace DAL.Repositories
 	{
 		private readonly IDapperRepository dapperRepository;
 
+		private const string USERS_TABLE_NAME = "Users";
+
 		public DapperUsersRepository(IDapperRepository dapperRepository) {
 			this.dapperRepository = dapperRepository;
 		}
 
 		public async Task<User> GetUser(int id)
 		{
-			const string getUserQuery = "select * from users where Id = @id";
-			return (await dapperRepository.QueryAny<User>(getUserQuery, new { id })).FirstOrDefault();
+			string sql = $"select * from {USERS_TABLE_NAME} where Id = @id";
+
+			return (await dapperRepository.QueryAny<User>(sql, new { id })).FirstOrDefault();
 		}
 
 		public async Task<User> GetUser(string email)
 		{
-			const string getUserQuery = "select * from users where Email = @email";
-			return (await dapperRepository.QueryAny<User>(getUserQuery, new { email })).FirstOrDefault();
+			string sql = $"select * from {USERS_TABLE_NAME} where Email = @email";
+
+			return (await dapperRepository.QueryAny<User>(sql, new { email })).FirstOrDefault();
 		}
 
 		public async Task<IEnumerable<User>> GetUsers()
 		{
-			const string getUsersQuery = "select * from users";
-			return await dapperRepository.QueryAny<User>(getUsersQuery);
+			string sql = "select * from users";
+
+			return await dapperRepository.QueryAny<User>(sql);
 		}
 
 		public async Task<int> CreateUser(User user)
 		{
-			const string createUserQuery = @"
-								insert into [dbo].[Users]
-									([FirstName], [LastName], [Email], [Password])
-								output inserted.Id
-								values 
-									(@FirstName, @LastName, @Email, @Password)
+			string sql = @$"
+					insert into {USERS_TABLE_NAME}
+						([FirstName], [LastName], [Email], [Password])
+					output 
+						inserted.Id
+					values 
+						(@FirstName, @LastName, @Email, @Password)
 			";
 
-			return await dapperRepository.QuerySingleWithOutput<int>(createUserQuery, user);
+			return await dapperRepository.QuerySingleWithOutput<int>(sql, user);
 		}
 
 		public async Task UpdateUser(User userData)
 		{
-			const string updateUserQuery = @"
-					update [dbo].[Users]
-						set 
-							FirstName = @FirstName,
-							LastName = @LastName,
-							Email = @Email,
-							Password = @Password
-						where
-							Id = @Id
-							
+			string sql = @$"
+					update
+						{USERS_TABLE_NAME}
+					set 
+						FirstName = @FirstName,
+						LastName = @LastName,
+						Email = @Email,
+						Password = @Password
+					where
+						Id = @Id		
 			";
 
-			await dapperRepository.ExecuteAny(updateUserQuery, userData);
+			await dapperRepository.ExecuteAny(sql, userData);
 		}
 
 		public async Task DeleteUser(int id)
 		{
-			const string deleteUserQuery = @"
-					delete from [dbo].[Users]
-						where
-							Id = @id
-							
+			string sql = @$"
+					delete from {USERS_TABLE_NAME}
+					where
+						Id = @id
 			";
-			
-			await dapperRepository.ExecuteAny(deleteUserQuery, new { id });
+
+			await dapperRepository.ExecuteAny(sql, new { id });
 		}
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
 		{
-			var getSummaryForUserQuery = @$"
+			string sql = @$"
 					select 
 						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
 					from 
-						Users 
+						{USERS_TABLE_NAME} 
 					join 
 						Categories on Users.Id = Categories.UserId
 					left outer join 
@@ -91,7 +96,8 @@ namespace DAL.Repositories
 					where 
 						Users.Id=@id
 			";
-			return await dapperRepository.QueryAny<SummaryUnit>(getSummaryForUserQuery, new { id });
+
+			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
 		}
 	}
 }

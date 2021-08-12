@@ -9,7 +9,7 @@ namespace DAL.Repositories.Categories
 	{
 		private readonly IDapperRepository dapperRepository;
 
-		private const string TABLE_NAME = "Categories";
+		private const string CATEGORIES_TABLE_NAME = "Categories";
 
 		public DapperCategoriesRepository(IDapperRepository dapperRepository)
 		{
@@ -18,68 +18,77 @@ namespace DAL.Repositories.Categories
 
 		public async Task<IEnumerable<Category>> GetCategoriesOfUser(int userId)
 		{
-			string getCategoriesQuery = $"select * from {TABLE_NAME} where UserId = @userId";
-			return await dapperRepository.QueryAny<Category>(getCategoriesQuery, new { userId });
+			string sql = $"select * from {CATEGORIES_TABLE_NAME} where UserId = @userId";
+
+			return await dapperRepository.QueryAny<Category>(sql, new { userId });
 		}
 
 		public async Task<IEnumerable<Category>> GetCategories()
 		{
-			string getCategoriesQuery = $"select * from {TABLE_NAME}";
-			return await dapperRepository.QueryAny<Category>(getCategoriesQuery);
+			string sql = $"select * from {CATEGORIES_TABLE_NAME}";
+
+			return await dapperRepository.QueryAny<Category>(sql);
 		}
 
 		public async Task<Category> GetCategory(int id)
 		{
-			string getCategoryQuery = $"select * from {TABLE_NAME} where Id = @id";
-			return (await dapperRepository.QueryAny<Category>(getCategoryQuery, new { id })).FirstOrDefault();
+			string sql = $"select * from {CATEGORIES_TABLE_NAME} where Id = @id";
+
+			return (await dapperRepository.QueryAny<Category>(sql, new { id })).FirstOrDefault();
 		}
 
 		public async Task<Category> GetCategory(int userId, string categoryName)
 		{
-			string getCategoryQuery = $"select * from {TABLE_NAME} where UserId = @userId and Name = @categoryName";
-			return (await dapperRepository.QueryAny<Category>(getCategoryQuery, new { userId, categoryName })).FirstOrDefault();
+			string sql = $"select * from {CATEGORIES_TABLE_NAME} where UserId = @userId and Name = @categoryName";
+
+			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault();
 		}
 
 		public async Task<int> AddCategoryToUser(Category category)
 		{
-			string addCategoryQuery = @$"
-				insert into {TABLE_NAME}
-					(Name, UserId)
-				output inserted.Id
-				values
-					(@Name, @UserId)
+			string sql = @$"
+					insert into {CATEGORIES_TABLE_NAME}
+						(Name, UserId)
+					output 
+						inserted.Id
+					values
+						(@Name, @UserId)
 			";
-			return await dapperRepository.QuerySingleWithOutput<int>(addCategoryQuery, category);
+
+			return await dapperRepository.QuerySingleWithOutput<int>(sql, category);
 		}
 
 		public async Task DeleteCategory(int id)
 		{
-			string deleteUserQuery = @$"
-					delete from {TABLE_NAME}
-						where
-							Id = @id
+			string sql = @$"
+					delete from {CATEGORIES_TABLE_NAME}
+					where
+						Id = @id
 							
 			";
-			await dapperRepository.ExecuteAny(deleteUserQuery, new { id });
+
+			await dapperRepository.ExecuteAny(sql, new { id });
 		}
 
 		public async Task UpdateCategoryToUser(Category category)
 		{
-			string updateCategoryQuery = @$"
-				update {TABLE_NAME}
+			string sql = @$"
+					update 
+						{CATEGORIES_TABLE_NAME}
 					set
 						Name = @Name
 					where
 						Id = @Id
 			";
-			await dapperRepository.ExecuteAny(updateCategoryQuery, category);
+
+			await dapperRepository.ExecuteAny(sql, category);
 		}
 
 		public async Task DeleteCategoryToUser(int userId, string categoryName)
 		{
-			var deleteQuery = $"delete from {TABLE_NAME} where UserId = @userId and Name = @categoryName";
+			var sql = $"delete from {CATEGORIES_TABLE_NAME} where UserId = @userId and Name = @categoryName";
 
-			await dapperRepository.ExecuteAny(deleteQuery, new { userId, categoryName });
+			await dapperRepository.ExecuteAny(sql, new { userId, categoryName });
 		}
 	}
 }
