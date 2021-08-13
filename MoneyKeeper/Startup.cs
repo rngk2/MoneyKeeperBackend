@@ -52,6 +52,7 @@ namespace MoneyKeeper
 				options.AddPolicy(allowFrontendPolicy, builder =>
 				{
 					builder.WithOrigins("https://gifted-minsky-943f80.netlify.app").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
+					builder.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
 				});
 			});
 

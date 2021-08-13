@@ -64,7 +64,7 @@ namespace DAL.Repositories
 			return await repository.QueryAny<Transaction>(sql);
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range)
+		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range, string like = null)
 		{
 			string sql = @$"
 				select * from 
@@ -73,10 +73,13 @@ namespace DAL.Repositories
 				join 
 					Categories on Categories.Id=Transactions.CategoryId ) tbl
 				where 
-					Row# between {range.Start} and {range.End}
+					Row# between {range.Start} and {range.End} 
+					and UserId = @userId 
+					{(like is not null ? $"and Comment like @like" : "")}
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { userId });
+			return await repository.QueryAny<Transaction>(sql, new { userId, like });
 		}
+
 	}
 }
