@@ -79,10 +79,14 @@ namespace BL.Services
 			await repository.DeleteUser(id);
 		}
 
-		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id)
 		{
-			return await repository.GetSummaryForUser(id);
+			return await repository.GetSummaryForUser_ForMonth(id);
 		}
 
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id)
+		{
+			return await repository.GetSummaryForUser_ForYear(id);
+		}
 	}
 }

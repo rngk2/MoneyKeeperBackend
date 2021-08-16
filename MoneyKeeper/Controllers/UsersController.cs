@@ -99,10 +99,16 @@ namespace MoneyKeeper.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}/summary")]
-        public async Task<IEnumerable<SummaryUnit>> GetSummary(int id)
+        [HttpGet("{id}/summary/month")]
+        public async Task<IEnumerable<SummaryUnit>> GetSummary_ForMonth(int id)
         {
-            return await userService.GetSummaryForUser(id);
+            return await userService.GetSummaryForUser_ForMonth(id);
+        }
+        
+        [HttpGet("{id}/summary/year")]
+        public async Task<IEnumerable<SummaryUnit>> GetSummary_ForYear(int id)
+        {
+            return await userService.GetSummaryForUser_ForYear(id);
         }
 
 
