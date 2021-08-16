@@ -13,7 +13,7 @@ namespace BL.Services
 		
 		Task<IEnumerable<Transaction>> GetTransactions();
 
-		Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range, string like = null);
+		Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range, string like = null, DateTimeOffset when = default);
 
 		Task<Transaction> GetTransaction(int id);
 

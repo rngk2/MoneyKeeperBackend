@@ -34,10 +34,10 @@ namespace MoneyKeeper.Controllers
 			return (await transactionService.GetTransactions()).Select(t => t.AsDto());
 		}
 
-		[HttpGet("{userId}/{from}/{to}/{like?}")]
-		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int userId, int from, int to, string like = null)
+		[HttpGet("{userId}/{from}/{to}/{like?}/{when?}")]
+		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int userId, int from, int to, string like = null, DateTimeOffset when = default)
 		{
-			return (await transactionService.GetTransactionsOfUser(userId, new Range(from, to), like)).Select(t => t.AsDto());
+			return (await transactionService.GetTransactionsOfUser(userId, new Range(from, to), like, when)).Select(t => t.AsDto());
 		}
 
 
