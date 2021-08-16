@@ -82,6 +82,24 @@ namespace DAL.Repositories
 			await dapperRepository.ExecuteAny(sql, new { id });
 		}
 
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
+		{
+			string sql = @$"
+					select 
+						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
+					from 
+						{USERS_TABLE_NAME} 
+					join 
+						Categories on Users.Id = Categories.UserId
+					left outer join 
+						Transactions on Categories.Id = Transactions.CategoryId
+					where 
+						Users.Id=@id
+			";
+
+			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
+		}
+
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id)
 		{
 			string sql = @$"

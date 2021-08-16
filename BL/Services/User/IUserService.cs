@@ -20,8 +20,10 @@ namespace BL.Services
 
 		Task UpdateUser(User existingUser, UpdateUserDto userDto);
 
-		Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id);
+		Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id);
 
-		Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id);
+		Task<Dictionary<string, decimal>> GetTotalForUser_ForMonth(int id);
+
+		Task<Dictionary<string, decimal>> GetTotalForUser_ForYear(int id);
 	}
 }
