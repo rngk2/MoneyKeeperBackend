@@ -86,7 +86,7 @@ namespace DAL.Repositories
 					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { range.Start, next = range.End.Value - range.Start.Value, userId, like, when });
+			return await repository.QueryAny<Transaction>(sql, new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
 		}
 
 	}
