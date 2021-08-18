@@ -75,9 +75,9 @@ namespace DAL.Repositories
 				join
 					Categories on Categories.Id = Transactions.CategoryId
 				where
-					Transactions.UserId = @userId
-					{ (like is not null ? "and Comment like @like or Categories.Name like @like" : "") }
-					{ (when != default ? $" and month(Timestamp) = month(@when)" : "") }
+					(Transactions.UserId = @userId)
+					{ (like is not null ? "and (Comment like @like or Categories.Name like @like)" : "") }
+					{ (when != default ? $" and (month(Timestamp) = month(@when))" : "") }
 				order by
 					Timestamp desc
 				offset
