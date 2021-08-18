@@ -69,13 +69,13 @@ namespace DAL.Repositories
 		{
 			string sql = @$"
 				select 
-					Transactions.*, Categories.Name CategoryName, Categories.UserId UserId
+					Transactions.*, Categories.Name CategoryName
 				from
 					Transactions
 				join
 					Categories on Categories.Id = Transactions.CategoryId
 				where
-					UserId = @userId
+					Transactions.UserId = @userId
 					{ (like is not null ? "and Comment like @like " : "") }
 					{ (when != default ? $" and month(Timestamp) = month(@when)" : "") }
 				order by
