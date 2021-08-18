@@ -9,7 +9,11 @@ namespace DAL.Entities
 	{
 		public int Id { get; init; }
 
+		public int UserId { get; init; }
+			
 		public int CategoryId { get; init; }
+
+		public string CategoryName { get; init; }
 
 		public decimal Amount { get; init; }
 

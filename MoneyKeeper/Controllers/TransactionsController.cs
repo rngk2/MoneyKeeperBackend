@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using BL.Dtos.Transaction;
 using BL.Extensions;
 using BL.Services;
+using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,11 +46,24 @@ namespace MoneyKeeper.Controllers
 		[HttpPost]
 		public async Task<ActionResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
 		{
-			var createdTransaction = await transactionService.CreateTransaction(transactionDto);
-			return CreatedAtAction(
-				nameof(GetTransaction),
-				new { id = createdTransaction.Id },
-				createdTransaction.AsDto());
+			try
+			{
+				var createdTransaction = await transactionService.CreateTransaction(transactionDto);
+
+				return CreatedAtAction(
+					nameof(GetTransaction),
+					new { id = createdTransaction.Id },
+					createdTransaction.AsDto());
+			}
+			catch (SqlException e)
+			{
+				if (e.Number == ((int)SqlErrorCodes.FK_CONFLICT_ERROR))
+				{
+					return new ConflictObjectResult(e.Message);
+				}
+
+				return new StatusCodeResult(500);
+			}
 		}
 
 		[HttpDelete("{id}")]

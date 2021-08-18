@@ -22,6 +22,7 @@ namespace BL.Services
 		{
 			Transaction newTransaction = new()
 			{
+				//UserId = transactionDto.UserId,
 				CategoryId = transactionDto.CategoryId,
 				Amount = transactionDto.Amount,
 				Timestamp = transactionDto.Timestamp,

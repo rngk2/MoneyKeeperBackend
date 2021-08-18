@@ -8,6 +8,7 @@ namespace Globals.Errors
 {
 	public enum SqlErrorCodes : UInt32
 	{
-		DUBLICATE_KEY_ERROR = 2627
+		DUBLICATE_KEY_ERROR = 2627,
+		FK_CONFLICT_ERROR = 547
 	}
 }

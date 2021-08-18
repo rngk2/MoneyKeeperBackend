@@ -13,7 +13,9 @@ namespace BL.Extensions
 		public static TransactionDto AsDto(this Transaction transaction) => new TransactionDto
 		{
 			Id = transaction.Id,
+			UserId = transaction.UserId,
 			CategoryId = transaction.CategoryId,
+			CategoryName = transaction.CategoryName,
 			Amount = transaction.Amount,
 			Timestamp = transaction.Timestamp,
 			Comment = transaction.Comment

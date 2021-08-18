@@ -6,17 +6,20 @@ using DAL.Entities;
 using DAL.Settings;
 using DAL.Utils;
 using DAL.Models;
+using DAL.Repositories.Categories;
 
 namespace DAL.Repositories
 {
 	public class DapperUsersRepository : IUsersRepository
 	{
 		private readonly IDapperRepository dapperRepository;
+		private readonly ICategoriesRepository categoriesRepository;
 
 		private const string USERS_TABLE_NAME = "Users";
 
-		public DapperUsersRepository(IDapperRepository dapperRepository) {
+		public DapperUsersRepository(IDapperRepository dapperRepository, ICategoriesRepository categoriesRepository) {
 			this.dapperRepository = dapperRepository;
+			this.categoriesRepository = categoriesRepository;
 		}
 
 		public async Task<User> GetUser(int id)
@@ -51,7 +54,20 @@ namespace DAL.Repositories
 						(@FirstName, @LastName, @Email, @Password)
 			";
 
-			return await dapperRepository.QuerySingleWithOutput<int>(sql, user);
+			int createdId = await dapperRepository.QuerySingleWithOutput<int>(sql, user);
+
+			await AddDefaultCategoriesToUser(createdId);
+
+			return createdId;
+		}
+
+		private async Task AddDefaultCategoriesToUser(int userId)
+		{
+			await categoriesRepository.AddCategoryToUser(new()
+			{
+				Name = "Earnings",
+				UserId = userId
+			});
 		}
 
 		public async Task UpdateUser(User userData)
