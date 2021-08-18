@@ -57,7 +57,7 @@ namespace MoneyKeeper.Controllers
 			}
 			catch (SqlException e)
 			{
-				if (e.Number == ((int)SqlErrorCodes.FK_CONFLICT_ERROR))
+				if (e.Number == (int)SqlErrorCodes.FK_CONFLICT_ERROR)
 				{
 					return new ConflictObjectResult(e.Message);
 				}

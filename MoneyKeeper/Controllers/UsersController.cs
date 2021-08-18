@@ -55,7 +55,7 @@ namespace MoneyKeeper.Controllers
             }
             catch (SqlException e)
             {
-                if (e.Number == ((int)SqlErrorCodes.DUBLICATE_KEY_ERROR))  
+                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)  
                 {
                     return new ConflictObjectResult($"User with email={userDto.Email} already exist");
                 }

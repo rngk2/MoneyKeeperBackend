@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Globals.Errors
 {
-	public enum SqlErrorCodes : UInt32
+	public enum SqlErrorCodes : int
 	{
 		DUBLICATE_KEY_ERROR = 2627,
 		FK_CONFLICT_ERROR = 547
