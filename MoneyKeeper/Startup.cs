@@ -96,10 +96,10 @@ namespace MoneyKeeper
 
 			app.UseRouting();
 
+
 			app.UseCors(allowFrontendPolicy);
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+			app.UseMiddleware<JwtMiddleware>();
 
 			app.UseEndpoints(endpoints =>
 			{
