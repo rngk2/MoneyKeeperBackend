@@ -8,11 +8,13 @@ using Authenticate.Services;
 using BL.Dtos.User;
 using BL.Extensions;
 using BL.Services;
+using DAL.Entities;
 using DAL.Models;
 using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyKeeper.Attributes;
+using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Controllers
 {
@@ -22,25 +24,19 @@ namespace MoneyKeeper.Controllers
     {
         private readonly IUserService userService;
         private readonly IUserAuthService authService;
+        private readonly ICurrentUserProvider currentUserProvider;
 
-        public UsersController(IUserService userService, IUserAuthService authService)
+        public UsersController(IUserService userService, IUserAuthService authService, ICurrentUserProvider currentUserProvider)
         {
             this.userService = userService;
             this.authService = authService;
+            this.currentUserProvider = currentUserProvider;
         }
 
-        // GET /users
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetUsers()
+        public async Task<ActionResult<UserDto>> GetUser()
         {
-            return (await userService.GetUsers()).Select(user => user.AsDto());
-        }
-
-        // GET /users/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUser(int id)
-        {
-            var user = await userService.GetUser(id);
+            var user = await userService.GetUser(currentUserProvider.GetCurrentUser().Id);
             return user is null ? NotFound() : user.AsDto();
         }
 
@@ -64,11 +60,10 @@ namespace MoneyKeeper.Controllers
             }
         }
 
-        // PUT /users/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUser(int id, UpdateUserDto userDto)
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(UpdateUserDto userDto)
         {
-            var existingUser = await userService.GetUser(id);
+            var existingUser = await userService.GetUser(currentUserProvider.GetCurrentUser().Id);
 
             if (existingUser is null)
             {
@@ -82,7 +77,7 @@ namespace MoneyKeeper.Controllers
             }
             catch (SqlException e)
             {
-                if (e.Number == ((int)SqlErrorCodes.DUBLICATE_KEY_ERROR))  
+                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)  
                 {
                     return new ConflictObjectResult($"User with email={userDto.Email} already exist");
                 }
@@ -91,30 +86,29 @@ namespace MoneyKeeper.Controllers
             }
         }
 
-        // DELETE /users/{id}
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(int id)
+        [HttpDelete()]
+        public async Task<ActionResult> DeleteUser()
         {
-            await userService.DeleteUser(id);
+            await userService.DeleteUser(currentUserProvider.GetCurrentUser().Id);
             return NoContent();
         }
 
-        [HttpGet("{id}/summary")]
-        public async Task<IEnumerable<SummaryUnit>> GetSummary_ForMonth(int id)
+        [HttpGet("summary")]
+        public async Task<IEnumerable<SummaryUnit>> GetSummary_ForMonth()
         {
-            return await userService.GetSummaryForUser(id);
+			return await userService.GetSummaryForUser(currentUserProvider.GetCurrentUser().Id);
         }
 
-        [HttpGet("{id}/total/month")]
-        public async Task<Dictionary<string, decimal>> GetTotal_ForMonth(int id)
+        [HttpGet("total/month")]
+        public async Task<Dictionary<string, decimal>> GetTotal_ForMonth()
         {
-            return await userService.GetTotalForUser_ForMonth(id);
+            return await userService.GetTotalForUser_ForMonth(currentUserProvider.GetCurrentUser().Id);
         }
         
-        [HttpGet("{id}/total/year")]
-        public async Task<Dictionary<string, decimal>> GetTotal_ForYear(int id)
+        [HttpGet("total/year")]
+        public async Task<Dictionary<string, decimal>> GetTotal_ForYear()
         {
-            return await userService.GetTotalForUser_ForYear(id);
+            return await userService.GetTotalForUser_ForYear(currentUserProvider.GetCurrentUser().Id);
         }
 
 

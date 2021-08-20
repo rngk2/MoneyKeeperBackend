@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MoneyKeeper.Providers;
 
 namespace MoneyKeeper
 {
@@ -31,10 +32,13 @@ namespace MoneyKeeper
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+
+
+
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					.AddJwtBearer(options =>
 					{
-						options.RequireHttpsMetadata = true	;
+						options.RequireHttpsMetadata = true;
 						options.TokenValidationParameters = new TokenValidationParameters
 						{
 							ValidateIssuer = true,
@@ -45,7 +49,7 @@ namespace MoneyKeeper
 							IssuerSigningKey = JwtAuthOptions.SymmetricSecurityKey,
 							ValidateIssuerSigningKey = true,
 						};
-			});
+					});
 
 			services.AddCors(options =>
 			{
@@ -56,12 +60,15 @@ namespace MoneyKeeper
 				});
 			});
 
+			services.AddHttpContextAccessor();
+
 			services.AddTransient<IUserService, UserService>();
 			services.AddTransient<IJwtUtils, JwtUtils>();
 			services.AddTransient<IUserAuthService, UserAuthService>();
 			services.AddTransient<ICategoryService, CategoryService>();
 			services.AddTransient<ITransactionService, TransactionService>();
-			
+			services.AddTransient<ICurrentUserProvider, CurrentUserProvider>();
+
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ITokensRepository, DapperTokensRepository>();
@@ -70,7 +77,7 @@ namespace MoneyKeeper
 
 			services.Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
-			
+
 
 			services.AddControllers(options =>
 			{
@@ -79,6 +86,7 @@ namespace MoneyKeeper
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyKeeper", Version = "v1" });
+
 			});
 		}
 

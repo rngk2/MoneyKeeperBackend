@@ -9,6 +9,8 @@ using BL.Services;
 using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MoneyKeeper.Attributes;
+using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Controllers
 {
@@ -17,11 +19,13 @@ namespace MoneyKeeper.Controllers
 	public class TransactionsController : ControllerBase
 	{
 
-		private ITransactionService transactionService;
+		private readonly ITransactionService transactionService;
+		private readonly ICurrentUserProvider currentUserProvider;
 
-		public TransactionsController(ITransactionService transactionService)
+		public TransactionsController(ITransactionService transactionService, ICurrentUserProvider currentUserProvider)
 		{
 			this.transactionService = transactionService;
+			this.currentUserProvider = currentUserProvider;
 		}
 
 		[HttpGet("{id}")]
@@ -36,10 +40,11 @@ namespace MoneyKeeper.Controllers
 			return (await transactionService.GetTransactions()).Select(t => t.AsDto());
 		}
 
-		[HttpGet("{userId}/{from}/{to}/{like?}/{when?}")]
-		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int userId, int from, int to, string like = null, DateTimeOffset when = default)
+		[HttpGet("{from}/{to}/{like?}/{when?}")]
+		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int from, int to, string like = null, DateTimeOffset when = default)
 		{
-			return (await transactionService.GetTransactionsOfUser(userId, new Range(from, to), like, when)).Select(t => t.AsDto());
+			return (await transactionService.GetTransactionsOfUser(currentUserProvider.GetCurrentUser().Id, new Range(from, to), like, when))
+				.Select(t => t.AsDto());
 		}
 
 
