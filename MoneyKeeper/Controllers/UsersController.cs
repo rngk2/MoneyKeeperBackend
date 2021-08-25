@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Authenticate.Models;
 using Authenticate.Services;
+using Authentication.Models;
 using BL.Dtos.User;
 using BL.Extensions;
 using BL.Services;
@@ -18,7 +19,7 @@ using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Controllers
 {
-	[Route("[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -51,7 +52,7 @@ namespace MoneyKeeper.Controllers
             }
             catch (SqlException e)
             {
-                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)  
+                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)
                 {
                     return new ConflictObjectResult($"User with email={userDto.Email} already exist");
                 }
@@ -77,7 +78,7 @@ namespace MoneyKeeper.Controllers
             }
             catch (SqlException e)
             {
-                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)  
+                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)
                 {
                     return new ConflictObjectResult($"User with email={userDto.Email} already exist");
                 }
@@ -96,7 +97,7 @@ namespace MoneyKeeper.Controllers
         [HttpGet("summary")]
         public async Task<IEnumerable<SummaryUnit>> GetSummary_ForMonth()
         {
-			return await userService.GetSummaryForUser(currentUserProvider.GetCurrentUser().Id);
+            return await userService.GetSummaryForUser(currentUserProvider.GetCurrentUser().Id);
         }
 
         [HttpGet("total/month")]
@@ -104,7 +105,7 @@ namespace MoneyKeeper.Controllers
         {
             return await userService.GetTotalForUser_ForMonth(currentUserProvider.GetCurrentUser().Id);
         }
-        
+
         [HttpGet("total/year")]
         public async Task<Dictionary<string, decimal>> GetTotal_ForYear()
         {
@@ -114,20 +115,20 @@ namespace MoneyKeeper.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+        public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
         {
             var response = await authService.Authenticate(model, IpAddress());
             SetTokenCookie(response.RefreshToken);
             return Ok(response);
         }
 
-		[AllowAnonymous]
-		[HttpPost("refresh-token")]
-		public async Task<IActionResult> RefreshToken()
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<RefreshTokenResponse>> RefreshToken()
 		{
 			var refreshToken = Request.Cookies["refreshToken"];
 			var response = await authService.GetNewAccessToken(refreshToken);
-			return new JsonResult(new { jwtToken = response });
+            return Ok(new RefreshTokenResponse(response));
 		}
 
 		/* [HttpPost("revoke-token")]
