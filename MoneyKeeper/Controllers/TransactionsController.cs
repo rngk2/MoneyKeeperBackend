@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,8 +41,8 @@ namespace MoneyKeeper.Controllers
 			return (await transactionService.GetTransactions()).Select(t => t.AsDto());
 		}
 
-		[HttpGet("{from}/{to}/{like?}/{when?}")]
-		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int from, int to, string like = null, DateTimeOffset when = default)
+		[HttpGet("ofUser")]
+		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser([Required] int from, [Required] int to, string? like = null, DateTimeOffset? when = null)
 		{
 			return (await transactionService.GetTransactionsOfUser(currentUserProvider.GetCurrentUser().Id, new Range(from, to), like, when))
 				.Select(t => t.AsDto());

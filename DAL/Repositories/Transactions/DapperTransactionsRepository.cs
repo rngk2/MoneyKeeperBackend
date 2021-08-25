@@ -65,7 +65,7 @@ namespace DAL.Repositories
 		}
 
 		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(
-			int userId, Range range, string like = null, DateTimeOffset when = default)
+			int userId, Range range, string? like = null, DateTimeOffset? when = null)
 		{
 			string sql = @$"
 				select 
@@ -77,7 +77,7 @@ namespace DAL.Repositories
 				where
 					(Transactions.UserId = @userId)
 					{ (like is not null ? "and (Comment like @like or Categories.Name like @like)" : "") }
-					{ (when != default ? $" and (month(Timestamp) = month(@when))" : "") }
+					{ (when is not null ? $" and (month(Timestamp) = month(@when))" : "") }
 				order by
 					Timestamp desc
 				offset
