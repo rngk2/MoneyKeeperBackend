@@ -357,7 +357,7 @@
         }
       }
     },
-    "/Transactions/{from}/{to}/{like}/{when}": {
+    "/Transactions/ofUser": {
       "get": {
         "tags": [
           "Transactions"
@@ -365,7 +365,7 @@
         "parameters": [
           {
             "name": "from",
-            "in": "path",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
@@ -374,7 +374,7 @@
           },
           {
             "name": "to",
-            "in": "path",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
@@ -383,16 +383,14 @@
           },
           {
             "name": "like",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
             "name": "when",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -692,7 +690,24 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -704,7 +719,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -724,6 +756,32 @@
           },
           "password": {
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "jwtToken": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -818,6 +876,16 @@
             "pattern": "^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9])).{8,16}$",
             "type": "string",
             "format": "password"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "newToken": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -2,7 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+	  <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="OpenApis\**" />
+    <Content Remove="OpenApis\**" />
+    <EmbeddedResource Remove="OpenApis\**" />
+    <None Remove="OpenApis\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
@@ -14,9 +22,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Identity.Web" Version="1.1.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.1.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.0" />
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
@@ -29,11 +45,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.5" />
 	</ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="OpenApis\" />
-  </ItemGroup>
-
+		
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="dotnet tool restore" />
 		<Exec Command="dotnet swagger tofile --output .\OpenAPIs\swagger.json $(OutputPath)\$(AssemblyName).dll v1 " />
