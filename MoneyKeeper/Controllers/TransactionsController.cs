@@ -48,7 +48,6 @@ namespace MoneyKeeper.Controllers
 				.Select(t => t.AsDto());
 		}
 
-
 		[HttpPost]
 		public async Task<ActionResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
 		{

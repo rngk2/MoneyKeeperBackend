@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL.csproj" />
+    <ProjectReference Include="..\DAL\MoneyKeeper.DAL.csproj" />
   </ItemGroup>
 
 </Project>

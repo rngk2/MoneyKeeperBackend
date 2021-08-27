@@ -67,7 +67,8 @@ namespace MoneyKeeper
 			services.AddTransient<IUserAuthService, UserAuthService>();
 			services.AddTransient<ICategoryService, CategoryService>();
 			services.AddTransient<ITransactionService, TransactionService>();
-			services.AddTransient<ICurrentUserProvider, CurrentUserProvider>();
+			
+			services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
