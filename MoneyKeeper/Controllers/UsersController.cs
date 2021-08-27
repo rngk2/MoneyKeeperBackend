@@ -21,6 +21,7 @@ namespace MoneyKeeper.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;

@@ -16,6 +16,7 @@ namespace MoneyKeeper.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
+	[Authorize]
 	public class CategoriesController : ControllerBase
 	{
 		private readonly ICategoryService categoryService;

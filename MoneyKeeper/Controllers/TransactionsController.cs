@@ -17,6 +17,7 @@ namespace MoneyKeeper.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
+	[Authorize]
 	public class TransactionsController : ControllerBase
 	{
 
