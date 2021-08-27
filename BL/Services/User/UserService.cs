@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using BL.Dtos.User;
 using BL.Extensions;
@@ -83,6 +84,29 @@ namespace BL.Services
 		{
 			return await repository.GetSummaryForUser(id);
 		}
+		
+		public async Task<Dictionary<string, decimal>> GetTotalForUser_ForYear(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUser_ForYear(id));
+		}
+		
+		public async Task<Dictionary<string, decimal>> GetTotalForUser_ForMonth(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUser_ForMonth(id));
+		}
 
+		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<SummaryUnit> summaryUnits)
+		{
+			Dictionary<string, decimal> computed = new();
+			foreach (var unit in summaryUnits)
+			{
+				decimal unitAmount = unit.Amount;
+				decimal contained = computed.GetValueOrDefault(unit.CategoryName);
+				decimal newVal = contained is default(decimal) ? unitAmount : contained + unitAmount;
+				
+				computed[unit.CategoryName] = newVal;
+			}
+			return computed;
+		}
 	}
 }

@@ -51,7 +51,7 @@ namespace Authenticate.Services
                 throw new Exception("Username or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
-            var jwtToken = jwtUtils.GenerateJwtToken();
+            var jwtToken = jwtUtils.GenerateJwtToken(user.Id);
             var refreshToken = jwtUtils.GenerateRefreshToken(ipAddress);
             refreshToken.UserId = user.Id;
 
@@ -79,7 +79,7 @@ namespace Authenticate.Services
             await tokensRepository.RemoveOldRefreshTokensOf(user.Id);
 
 			// generate new jwt
-			var jwtToken = jwtUtils.GenerateJwtToken();
+			var jwtToken = jwtUtils.GenerateJwtToken(user.Id);
 
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
         }
@@ -93,7 +93,7 @@ namespace Authenticate.Services
                 throw new Exception("Invalid token");
             }
 
-            return jwtUtils.GenerateJwtToken();
+            return jwtUtils.GenerateJwtToken((await GetUserByRefreshToken(token)).Id);
 
         }
 

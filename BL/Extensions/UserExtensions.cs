@@ -3,7 +3,7 @@ using DAL.Entities;
 
 namespace BL.Extensions
 {
-	public static class UserExtension
+	public static class UserExtensions
 	{
 		public static UserDto AsDto(this User user) => new UserDto
         {

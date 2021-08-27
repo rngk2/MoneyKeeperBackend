@@ -22,6 +22,7 @@ namespace BL.Services
 		{
 			Transaction newTransaction = new()
 			{
+				UserId = transactionDto.UserId,
 				CategoryId = transactionDto.CategoryId,
 				Amount = transactionDto.Amount,
 				Timestamp = transactionDto.Timestamp,
@@ -53,9 +54,9 @@ namespace BL.Services
 			return await repository.GetTransactions();
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range)
+		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = default)
 		{
-			return await repository.GetTransactionsOfUser(userId, range);
+			return await repository.GetTransactionsOfUser(userId, range, like, when);
 		}
 	}
 }

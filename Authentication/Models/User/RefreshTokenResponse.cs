@@ -4,11 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Globals.Errors
+namespace Authentication.Models
 {
-	public enum SqlErrorCodes : int
-	{
-		DUBLICATE_KEY_ERROR = 2627,
-		FK_CONFLICT_ERROR = 547
-	}
+	public record RefreshTokenResponse (string NewToken);
 }

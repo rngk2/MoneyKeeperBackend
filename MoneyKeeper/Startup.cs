@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MoneyKeeper.Providers;
 
 namespace MoneyKeeper
 {
@@ -31,10 +32,13 @@ namespace MoneyKeeper
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+
+
+
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					.AddJwtBearer(options =>
 					{
-						options.RequireHttpsMetadata = true	;
+						options.RequireHttpsMetadata = true;
 						options.TokenValidationParameters = new TokenValidationParameters
 						{
 							ValidateIssuer = true,
@@ -45,15 +49,18 @@ namespace MoneyKeeper
 							IssuerSigningKey = JwtAuthOptions.SymmetricSecurityKey,
 							ValidateIssuerSigningKey = true,
 						};
-			});
+					});
 
 			services.AddCors(options =>
 			{
 				options.AddPolicy(allowFrontendPolicy, builder =>
 				{
 					builder.WithOrigins("https://gifted-minsky-943f80.netlify.app").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
+					builder.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
 				});
 			});
+
+			services.AddHttpContextAccessor();
 
 			services.AddTransient<IUserService, UserService>();
 			services.AddTransient<IJwtUtils, JwtUtils>();
@@ -61,6 +68,8 @@ namespace MoneyKeeper
 			services.AddTransient<ICategoryService, CategoryService>();
 			services.AddTransient<ITransactionService, TransactionService>();
 			
+			services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+
 			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ITokensRepository, DapperTokensRepository>();
@@ -69,7 +78,7 @@ namespace MoneyKeeper
 
 			services.Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
-			
+
 
 			services.AddControllers(options =>
 			{
@@ -78,6 +87,7 @@ namespace MoneyKeeper
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyKeeper", Version = "v1" });
+
 			});
 		}
 
@@ -95,10 +105,10 @@ namespace MoneyKeeper
 
 			app.UseRouting();
 
+
 			app.UseCors(allowFrontendPolicy);
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+			app.UseMiddleware<JwtMiddleware>();
 
 			app.UseEndpoints(endpoints =>
 			{

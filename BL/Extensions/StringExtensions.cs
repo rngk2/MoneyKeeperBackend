@@ -1,6 +1,6 @@
 ﻿namespace BL.Extensions
 {
-	public static class StringExtension
+	public static class StringExtensions
 	{
         public static string Hash(this string str) => BCrypt.Net.BCrypt.HashPassword(str, BCrypt.Net.BCrypt.GenerateSalt(12));
         

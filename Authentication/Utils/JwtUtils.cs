@@ -14,7 +14,7 @@ namespace Authenticate
 {
     public interface IJwtUtils
     {
-        public string GenerateJwtToken();
+        public string GenerateJwtToken(int userId);
         public int? ValidateJwtToken(string token);
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }
@@ -28,13 +28,14 @@ namespace Authenticate
             this.appSettings = appSettings.Value;
         }
 
-        public string GenerateJwtToken()
+        public string GenerateJwtToken(int userId)
         {
             // generate token that is valid for 5 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Subject = new ClaimsIdentity(new[] {new Claim(type: "id", value: userId.ToString()) }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };

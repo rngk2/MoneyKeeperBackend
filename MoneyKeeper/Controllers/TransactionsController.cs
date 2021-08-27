@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using BL.Dtos.Transaction;
 using BL.Extensions;
 using BL.Services;
+using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MoneyKeeper.Attributes;
+using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
+	[Authorize]
 	public class TransactionsController : ControllerBase
 	{
 
-		private ITransactionService transactionService;
+		private readonly ITransactionService transactionService;
+		private readonly ICurrentUserProvider currentUserProvider;
 
-		public TransactionsController(ITransactionService transactionService)
+		public TransactionsController(ITransactionService transactionService, ICurrentUserProvider currentUserProvider)
 		{
 			this.transactionService = transactionService;
+			this.currentUserProvider = currentUserProvider;
 		}
 
 		[HttpGet("{id}")]
@@ -33,23 +41,35 @@ namespace MoneyKeeper.Controllers
 		{
 			return (await transactionService.GetTransactions()).Select(t => t.AsDto());
 		}
-		
-		[HttpGet("{userId}/{from}/{to}")]
-		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser(int userId, int from, int to)
+
+		[HttpGet("ofUser")]
+		public async Task<IEnumerable<TransactionDto>> GetTransactionsOfUser([Required] int from, [Required] int to, string? like = null, DateTimeOffset? when = null)
 		{
-			return (await transactionService.GetTransactionsOfUser(userId, new Range(from, to))).Select(t => t.AsDto());
+			return (await transactionService.GetTransactionsOfUser(currentUserProvider.GetCurrentUser().Id, new Range(from, to), like, when))
+				.Select(t => t.AsDto());
 		}
-
-
 
 		[HttpPost]
 		public async Task<ActionResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
 		{
-			var createdTransaction = await transactionService.CreateTransaction(transactionDto);
-			return CreatedAtAction(
-				nameof(GetTransaction),
-				new { id = createdTransaction.Id },
-				createdTransaction.AsDto());
+			try
+			{
+				var createdTransaction = await transactionService.CreateTransaction(transactionDto);
+
+				return CreatedAtAction(
+					nameof(GetTransaction),
+					new { id = createdTransaction.Id },
+					createdTransaction.AsDto());
+			}
+			catch (SqlException e)
+			{
+				if (e.Number == (int)SqlErrorCodes.FK_CONFLICT_ERROR)
+				{
+					return new ConflictObjectResult(e.Message);
+				}
+
+				return new StatusCodeResult(500);
+			}
 		}
 
 		[HttpDelete("{id}")]

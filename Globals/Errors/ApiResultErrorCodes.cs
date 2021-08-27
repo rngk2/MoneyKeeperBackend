@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Globals.Errors
+namespace MoneyKeeper.Globals.Errors
 {
-	public enum SqlErrorCodes : int
+	public enum ApiResultErrorCodes
 	{
-		DUBLICATE_KEY_ERROR = 2627,
-		FK_CONFLICT_ERROR = 547
+		USER_IS_MISSING
 	}
 }

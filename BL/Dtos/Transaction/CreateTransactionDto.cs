@@ -10,6 +10,9 @@ namespace BL.Dtos.Transaction
 	public record CreateTransactionDto
 	{
 		[Required]
+		public int UserId { get; init; }
+
+		[Required]
 		public int CategoryId { get; init; }
 
 		[Required]

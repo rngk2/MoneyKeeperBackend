@@ -9,28 +9,26 @@ using BL.Dtos.Category;
 using BL.Extensions;
 using BL.Services;
 using Globals.Errors;
+using MoneyKeeper.Attributes;
+using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Controllers
 {
 	[Route("[controller]")]
 	[ApiController]
+	[Authorize]
 	public class CategoriesController : ControllerBase
 	{
 		private readonly ICategoryService categoryService;
+		private readonly ICurrentUserProvider currentUserProvider;
 
-		public CategoriesController(ICategoryService categoryService)
+		public CategoriesController(ICategoryService categoryService, ICurrentUserProvider currentUserProvider)
 		{
 			this.categoryService = categoryService;
+			this.currentUserProvider = currentUserProvider;
 		}
 
-		// GET /categories
-		[HttpGet]
-		public async Task<IEnumerable<CategoryDto>> GetCategories()
-		{
-			return (await categoryService.GetCategories()).Select(category => category.AsDto());
-		}
 
-		// GET /categories/{id}
 		[HttpGet("{id}")]
 		public async Task<ActionResult<CategoryDto>> GetCategory(int id)
 		{
@@ -38,14 +36,13 @@ namespace MoneyKeeper.Controllers
 			return category is null ? NotFound() : category.AsDto();
 		}
 
-		// GET /categories/user/{userId}
-		[HttpGet("user/{userId}")]
-		public async Task<IEnumerable<CategoryDto>> GetCategoriesOfUser(int userId)
+		[HttpGet]
+		public async Task<IEnumerable<CategoryDto>> GetCategoriesOfUser()
 		{
-			return (await categoryService.GetCategoriesOfUser(userId)).Select(category => category.AsDto());
+			return (await categoryService.GetCategoriesOfUser(currentUserProvider.GetCurrentUser().Id))
+				.Select(category => category.AsDto());
 		}
 
-		// POST /categories
 		[HttpPost]
 		public async Task<ActionResult<CategoryDto>> AddCategoryToUser(CreateCategoryDto categoryDto)
 		{
@@ -63,10 +60,7 @@ namespace MoneyKeeper.Controllers
 				);
 		}
 
-		// PUT /categories/{id}
 		[HttpPut("{id}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status409Conflict)]
 		public async Task<ActionResult> UpdateCategoryToUser(int id, UpdateCategoryDto categoryDto)
 		{
 			var existingCategory = await categoryService.GetCategory(id);
@@ -92,7 +86,6 @@ namespace MoneyKeeper.Controllers
 			}
 		}
 
-		// DELETE /categories/{id}
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeleteCategory(int id)
 		{
@@ -101,10 +94,10 @@ namespace MoneyKeeper.Controllers
 			return NoContent();
 		}
 
-		[HttpDelete("{userId}/{categoryName}")]	
-		public async Task<ActionResult> DeleteCategory(int userId, string categoryName)
+		[HttpDelete("byname/{categoryName}")]	
+		public async Task<ActionResult> DeleteCategory(string categoryName)
 		{
-			await categoryService.DeleteCategoryToUser(userId, categoryName);
+			await categoryService.DeleteCategoryToUser(currentUserProvider.GetCurrentUser().Id, categoryName);
 
 			return NoContent();
 		}

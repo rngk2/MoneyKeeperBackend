@@ -14,6 +14,8 @@ namespace Authenticate
         private readonly RequestDelegate _next;
         private readonly AuthSettings _appSettings;
 
+        private static readonly string[] _skipRoutes = {"/authenticate"};  
+
         public JwtMiddleware(RequestDelegate next, IOptions<AuthSettings> appSettings)
         {
             _next = next;
@@ -22,12 +24,15 @@ namespace Authenticate
 
         public async Task Invoke(HttpContext context, IUserAuthService userService, IJwtUtils jwtUtils)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var userId = jwtUtils.ValidateJwtToken(token);
-            if (userId != null)
+            if (!context.Request.Path.Value.Contains(_skipRoutes.First()))
             {
-                // attach user to context on successful jwt validation
-                context.Items["User"] = await userService.GetById(userId.Value);
+                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                var userId = jwtUtils.ValidateJwtToken(token);
+                if (userId != null)
+                {
+                    // attach user to context on successful jwt validation
+                    context.Items["User"] = await userService.GetById(userId.Value);
+                }
             }
 
             await _next(context);

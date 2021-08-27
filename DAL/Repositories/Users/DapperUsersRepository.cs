@@ -6,17 +6,20 @@ using DAL.Entities;
 using DAL.Settings;
 using DAL.Utils;
 using DAL.Models;
+using DAL.Repositories.Categories;
 
 namespace DAL.Repositories
 {
 	public class DapperUsersRepository : IUsersRepository
 	{
 		private readonly IDapperRepository dapperRepository;
+		private readonly ICategoriesRepository categoriesRepository;
 
 		private const string USERS_TABLE_NAME = "Users";
 
-		public DapperUsersRepository(IDapperRepository dapperRepository) {
+		public DapperUsersRepository(IDapperRepository dapperRepository, ICategoriesRepository categoriesRepository) {
 			this.dapperRepository = dapperRepository;
+			this.categoriesRepository = categoriesRepository;
 		}
 
 		public async Task<User> GetUser(int id)
@@ -51,7 +54,20 @@ namespace DAL.Repositories
 						(@FirstName, @LastName, @Email, @Password)
 			";
 
-			return await dapperRepository.QuerySingleWithOutput<int>(sql, user);
+			int createdId = await dapperRepository.QuerySingleWithOutput<int>(sql, user);
+
+			await AddDefaultCategoriesToUser(createdId);
+
+			return createdId;
+		}
+
+		private async Task AddDefaultCategoriesToUser(int userId)
+		{
+			await categoriesRepository.AddCategoryToUser(new()
+			{
+				Name = "Earnings",
+				UserId = userId
+			});
 		}
 
 		public async Task UpdateUser(User userData)
@@ -95,6 +111,42 @@ namespace DAL.Repositories
 						Transactions on Categories.Id = Transactions.CategoryId
 					where 
 						Users.Id=@id
+			";
+
+			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
+		}
+
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id)
+		{
+			string sql = @$"
+					select 
+						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
+					from 
+						{USERS_TABLE_NAME} 
+					join 
+						Categories on Users.Id = Categories.UserId
+					left outer join 
+						Transactions on Categories.Id = Transactions.CategoryId
+					where 
+						Users.Id=@id and month(Timestamp) = month(getdate())
+			";
+
+			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
+		}
+		
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id)
+		{
+			string sql = @$"
+					select 
+						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
+					from 
+						{USERS_TABLE_NAME} 
+					join 
+						Categories on Users.Id = Categories.UserId
+					left outer join 
+						Transactions on Categories.Id = Transactions.CategoryId
+					where 
+						Users.Id=@id and year(Timestamp) = year(getdate())
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });

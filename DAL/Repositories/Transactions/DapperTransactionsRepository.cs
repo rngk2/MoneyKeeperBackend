@@ -23,11 +23,11 @@ namespace DAL.Repositories
 		{
 			string sql = @$"
 				insert into {TRANSACTIONS_TABLE_NAME}
-					(CategoryId, Amount, Timestamp, Comment)
+					(UserId, CategoryId, Amount, Timestamp, Comment)
 				output 
 					inserted.Id
 				values 
-					(@CategoryId, @Amount, @Timestamp, @Comment)
+					(@UserId, @CategoryId, @Amount, @Timestamp, @Comment)
 			";
 
 			return await repository.QuerySingleWithOutput<int>(sql, transaction);
@@ -64,19 +64,31 @@ namespace DAL.Repositories
 			return await repository.QueryAny<Transaction>(sql);
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range)
+		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(
+			int userId, Range range, string? like = null, DateTimeOffset? when = null)
 		{
 			string sql = @$"
-				select * from 
-					(select ROW_NUMBER() over (order by Timestamp desc) 
-					as Row#, Transactions.*, Categories.Name CategoryName, Categories.UserId from Transactions
-				join 
-					Categories on Categories.Id=Transactions.CategoryId ) tbl
-				where 
-					Row# between {range.Start} and {range.End}
+				select 
+					Transactions.*, Categories.Name CategoryName
+				from
+					Transactions
+				join
+					Categories on Categories.Id = Transactions.CategoryId
+				where
+					(Transactions.UserId = @userId)
+					{ (like is not null ? "and (Comment like @like or Categories.Name like @like)" : "") }
+					{ (when is not null ? $" and (month(Timestamp) = month(@when))" : "") }
+				order by
+					Timestamp desc
+				offset
+					@start rows
+				fetch
+					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { userId });
+			return await repository.QueryAny<Transaction>(sql, new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
 		}
+
 	}
 }
+

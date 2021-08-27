@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper", "MoneyKeeper\MoneyKeeper.csproj", "{ADF21A95-DE58-4B21-9192-A69FA9938C54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.Api", "MoneyKeeper\MoneyKeeper.Api.csproj", "{ADF21A95-DE58-4B21-9192-A69FA9938C54}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{3F648206-711C-4B2B-9525-CC2C4BD8927C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.DAL", "DAL\MoneyKeeper.DAL.csproj", "{3F648206-711C-4B2B-9525-CC2C4BD8927C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{4A6C8F13-44C1-490B-8EAA-D027FAB2EF2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.BL", "BL\MoneyKeeper.BL.csproj", "{4A6C8F13-44C1-490B-8EAA-D027FAB2EF2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication", "Authentication\Authentication.csproj", "{58A69FBE-3B2E-492C-9E5F-B31EA1F5186A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.Authentication", "Authentication\MoneyKeeper.Authentication.csproj", "{58A69FBE-3B2E-492C-9E5F-B31EA1F5186A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Globals", "Globals\Globals.csproj", "{02451381-0C1C-4F88-AB48-476522B6FB79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.Globals", "Globals\MoneyKeeper.Globals.csproj", "{02451381-0C1C-4F88-AB48-476522B6FB79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
