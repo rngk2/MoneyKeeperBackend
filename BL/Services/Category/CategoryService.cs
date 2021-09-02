@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using BL.Dtos.Category;
 using DAL.Entities;
 using DAL.Repositories.Categories;
+using MoneyKeeper.Api.Results;
+using MoneyKeeper.Globals.Errors;
 
 namespace BL.Services
 {
@@ -15,33 +18,37 @@ namespace BL.Services
 			this.repository = repository;
 		}
 
-		public async Task<Category> GetCategory(int id)
+		public async Task<Result<Category>>GetCategory(int id)
 		{
-			return await repository.GetCategory(id);
+			var category = await repository.GetCategory(id);
+			return category is not null
+				? category
+				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find category: #{id}");
 		}
 
-		public async Task<IEnumerable<Category>> GetCategories()
+		/*public async Task<Result<IEnumerable<Category>>> GetCategories()
 		{
 			return await repository.GetCategories();
+		}*/
+
+		public async Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId)
+		{
+			return new SuccessResult<IEnumerable<Category>>(await repository.GetCategoriesOfUser(userId));
 		}
 
-		public async Task<IEnumerable<Category>> GetCategoriesOfUser(int userId)
+		public async Task<Result<Category>> AddCategoryToUser(CreateCategoryDto categoryDto)
 		{
-			return await repository.GetCategoriesOfUser(userId);
-		}
+			if (await GetCategory(categoryDto.UserId, categoryDto.Name) is not null)
+			{
+				return new Error(ApiResultErrorCodes.ALREADY_EXISTS.ToString(), 
+					$"User: {categoryDto.UserId} already has category with name: {categoryDto.Name}");
+			}
 
-		public async Task<Category> AddCategoryToUser(CreateCategoryDto categoryDto)
-		{
 			Category category = new()
 			{
 				Name = categoryDto.Name,
 				UserId = categoryDto.UserId
 			};
-
-			/*if ((await repository.GetCategory(category.UserId, category.Name)) is not null)
-			{
-				return 
-			}*/
 
 			int createdId = await repository.AddCategoryToUser(category);
 
@@ -53,37 +60,42 @@ namespace BL.Services
 			return created;
 		}
 
-		public async Task UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto)
+		public async Task<Result<Category>> UpdateCategoryToUser([NotNull] Category existingCategory, [NotNull] UpdateCategoryDto categoryDto)
 		{
-		
-			/*if ((await repository.GetCategory(existingCategory.UserId, categoryDto.Name)) is not null)
-			{
-				return StatusCode(409, $"User#{existingCategory.UserId} alredy has category with name={categoryDto.Name}");
-			}*/
-
 			Category updatedCategory = existingCategory with
 			{
 				Name = categoryDto.Name is null ? existingCategory.Name : categoryDto.Name
 			};
 
-			await repository.UpdateCategoryToUser(updatedCategory);
-
+			return await repository.UpdateCategoryToUser(updatedCategory)
+				? updatedCategory
+				: new Error(ApiResultErrorCodes.CANNOT_UPDATE.ToString(), $"Error occured while updating category: #{existingCategory.Id}");
 		}
 
+		/*
 		public async Task DeleteCategory(int id)
 		{
 			await repository.DeleteCategory(id);
-
 		}
+		*/
 
 		public async Task<Category> GetCategory(int userId, string name)
 		{
 			return await repository.GetCategory(userId, name);
 		}
 
-		public async Task DeleteCategoryToUser(int userId, string name)
+		public async Task<Result<Category>> DeleteCategoryToUser(int userId, string name)
 		{
-			await repository.DeleteCategoryToUser(userId, name);
+			Category toDelete = await GetCategory(userId, name);
+
+			if (toDelete is null) 
+			{
+				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find category: {name} of user: {userId} to delete");
+			}
+
+			return await repository.DeleteCategoryToUser(userId, name)
+				? toDelete
+				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), "Error occured while deleting");
 		}
 	}
 }

@@ -14,6 +14,7 @@ using DAL.Models;
 using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MoneyKeeper.Api.Results;
 using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
 
@@ -36,100 +37,123 @@ namespace MoneyKeeper.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetUser()
+        public async Task<ApiResult<UserDto>> GetUser()
         {
-            var user = await userService.GetUser(currentUserProvider.GetCurrentUser().Id);
-            return user is null ? NotFound() : user.AsDto();
+            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+            if (provider_error)
+            {
+                return provider_error.Wrap(); 
+            }
+
+            var (user, service_error) = await userService.GetUser(contextUser.Id).Unwrap();
+            
+            return service_error is not null
+                ? service_error.Wrap()
+                : user.AsDto();
         }
 
         // POST /users
         [HttpPost]
-        public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto userDto)
+        public async Task<ApiResult<UserDto>> CreateUser(CreateUserDto userDto)
         {
-            try
-            {
-                var createdUser = await userService.CreateUser(userDto);
-                return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
-            }
-            catch (SqlException e)
-            {
-                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)
-                {
-                    return new ConflictObjectResult($"User with email={userDto.Email} already exist");
-                }
-
-                return new StatusCodeResult(500);
-            }
+			var (user, error) = await userService.CreateUser(userDto).Unwrap();
+            return error ? error.Wrap() : user.AsDto();
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateUser(UpdateUserDto userDto)
+        public async Task<ApiResult<UserDto>> UpdateUser(UpdateUserDto userDto)
         {
-            var existingUser = await userService.GetUser(currentUserProvider.GetCurrentUser().Id);
+            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
 
-            if (existingUser is null)
+            if (provider_error)
             {
-                return NotFound();
+                return provider_error.Wrap();
             }
 
-            try
-            {
-                await userService.UpdateUser(existingUser, userDto);
-                return NoContent();
-            }
-            catch (SqlException e)
-            {
-                if (e.Number == (int)SqlErrorCodes.DUBLICATE_KEY_ERROR)
-                {
-                    return new ConflictObjectResult($"User with email={userDto.Email} already exist");
-                }
+            var (updatedUser, service_error) = await userService.UpdateUser(contextUser.Id, userDto).Unwrap();
 
-                return new StatusCodeResult(500);
-            }
+            return service_error
+                ? service_error.Wrap()
+                : updatedUser.AsDto();
         }
 
-        [HttpDelete()]
-        public async Task<ActionResult> DeleteUser()
+        [HttpDelete]
+        public async Task<ApiResult<UserDto>> DeleteUser()
         {
-            await userService.DeleteUser(currentUserProvider.GetCurrentUser().Id);
-            return NoContent();
+            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+            if (provider_error)
+            {
+                return provider_error.Wrap();
+            }
+
+            var (deleted, service_error) = await userService.DeleteUser(contextUser.Id).Unwrap();
+
+            return service_error
+                ? service_error.Wrap()
+                : deleted.AsDto();
         }
 
         [HttpGet("summary")]
-        public async Task<IEnumerable<SummaryUnit>> GetSummary_ForMonth()
+        public async Task<ApiResult<IEnumerable<SummaryUnit>>> GetSummary_ForMonth()
         {
-            return await userService.GetSummaryForUser(currentUserProvider.GetCurrentUser().Id);
+            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+            if (provider_error)
+            {
+                return provider_error.Wrap();
+            }
+
+            return (await userService.GetSummaryForUser(contextUser.Id).Unwrap()).Value!.ToList();
         }
 
         [HttpGet("total/month")]
-        public async Task<Dictionary<string, decimal>> GetTotal_ForMonth()
+        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal_ForMonth()
         {
-            return await userService.GetTotalForUser_ForMonth(currentUserProvider.GetCurrentUser().Id);
+            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+            if (provider_error)
+            {
+                return provider_error.Wrap();
+            }
+
+            return (await userService.GetTotalForUser_ForMonth(contextUser.Id).Unwrap()).Value!;
         }
 
         [HttpGet("total/year")]
-        public async Task<Dictionary<string, decimal>> GetTotal_ForYear()
+        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal_ForYear()
         {
-            return await userService.GetTotalForUser_ForYear(currentUserProvider.GetCurrentUser().Id);
+            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+            if (provider_error)
+            {
+                return provider_error.Wrap();
+            }
+
+            return (await userService.GetTotalForUser_ForYear(contextUser.Id).Unwrap()).Value!;
         }
 
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
+        public async Task<ApiResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
         {
             var response = await authService.Authenticate(model, IpAddress());
+            
             SetTokenCookie(response.RefreshToken);
-            return Ok(response);
+            
+            return response;
         }
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<RefreshTokenResponse>> RefreshToken()
+        public async Task<ApiResult<RefreshTokenResponse>> RefreshToken()
 		{
 			var refreshToken = Request.Cookies["refreshToken"];
 			var response = await authService.GetNewAccessToken(refreshToken);
-            return Ok(new RefreshTokenResponse(response));
+            
+            return new RefreshTokenResponse(response);
 		}
 
 		/* [HttpPost("revoke-token")]

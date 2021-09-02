@@ -5,20 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using BL.Dtos.Transaction;
 using DAL.Entities;
+using MoneyKeeper.Api.Results;
 
 namespace BL.Services
 {
 	public interface ITransactionService
 	{
 		
-		Task<IEnumerable<Transaction>> GetTransactions();
+		//Task<Result<IEnumerable<Transaction>>> GetTransactions();
 
-		Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = null);
+		Task<Result<IEnumerable<Transaction>>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = null);
 
-		Task<Transaction> GetTransaction(int id);
+		Task<Result<Transaction>> GetTransaction(int id, int userId);
 
-		Task<Transaction> CreateTransaction(CreateTransactionDto transactionDto);
+		Task<Result<Transaction>> CreateTransaction(CreateTransactionDto transactionDto);
 
-		Task DeleteTransaction(int id);
+		Task<Result<Transaction>> DeleteTransaction(int id, int userId);
 	}
 }

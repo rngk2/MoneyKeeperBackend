@@ -6,21 +6,21 @@ namespace DAL.Repositories.Categories
 {
 	public interface ICategoriesRepository
 	{
-		Task<Category> GetCategory(int id);
+		//Task<Category> GetCategory(int id);
 
 		Task<Category> GetCategory(int userId, string categoryName);
 
 		Task<IEnumerable<Category>> GetCategoriesOfUser(int userId);
 
-		Task<IEnumerable<Category>> GetCategories();
+		//Task<IEnumerable<Category>> GetCategories();
 
 		Task<int> AddCategoryToUser(Category category);
 		
-		Task UpdateCategoryToUser(Category category);
+		Task<bool> UpdateCategoryToUser(Category category);
 		
-		Task DeleteCategory(int id);
+		//Task<Category> DeleteCategory(int id);
 
-		Task DeleteCategoryToUser(int userId, string categoryName);
+		Task<bool> DeleteCategoryToUser(int userId, string categoryName);
 
 	}
 }

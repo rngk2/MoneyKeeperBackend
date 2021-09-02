@@ -11,6 +11,7 @@ using BL.Services;
 using Globals.Errors;
 using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
+using MoneyKeeper.Api.Results;
 
 namespace MoneyKeeper.Controllers
 {
@@ -30,7 +31,7 @@ namespace MoneyKeeper.Controllers
 
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+		public async Task<ApiResult<CategoryDto>> GetCategory(int id)
 		{
 			var category = await categoryService.GetCategory(id);
 			return category is null ? NotFound() : category.AsDto();
@@ -39,6 +40,7 @@ namespace MoneyKeeper.Controllers
 		[HttpGet]
 		public async Task<IEnumerable<CategoryDto>> GetCategoriesOfUser()
 		{
+
 			return (await categoryService.GetCategoriesOfUser(currentUserProvider.GetCurrentUser().Id))
 				.Select(category => category.AsDto());
 		}
@@ -94,12 +96,12 @@ namespace MoneyKeeper.Controllers
 			return NoContent();
 		}
 
-		[HttpDelete("byname/{categoryName}")]	
+		/*[HttpDelete("byname/{categoryName}")]	
 		public async Task<ActionResult> DeleteCategory(string categoryName)
 		{
 			await categoryService.DeleteCategoryToUser(currentUserProvider.GetCurrentUser().Id, categoryName);
 
 			return NoContent();
-		}
+		}*/
 	}
 }

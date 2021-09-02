@@ -2,25 +2,26 @@
 using System.Threading.Tasks;
 using BL.Dtos.Category;
 using DAL.Entities;
+using MoneyKeeper.Api.Results;
 
 namespace BL.Services
 {
 	public interface ICategoryService
 	{
-		Task<Category> AddCategoryToUser(CreateCategoryDto categoryDto);
+		Task<Result<Category>> AddCategoryToUser(CreateCategoryDto categoryDto);
 
-		Task DeleteCategory(int id);
+		//Task<Result<Category>> DeleteCategory(int id);
 
-		Task<IEnumerable<Category>> GetCategoriesOfUser(int userId);
+		Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId);
 
-		Task<IEnumerable<Category>> GetCategories();
+		Task<Result<IEnumerable<Category>>> GetCategories();
 
-		Task<Category> GetCategory(int id);
+		Task<Result<Category>> GetCategory(int id);
 
-		Task UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto);
+		Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto);
 
-		Task<Category> GetCategory(int userId, string name);
+		Task<Result<Category>> GetCategory(int userId, string name);
 
-		Task DeleteCategoryToUser(int userId, string categoryName);
+		Task<Result<Category>> DeleteCategoryToUser(string categoryName);
 	}
 }

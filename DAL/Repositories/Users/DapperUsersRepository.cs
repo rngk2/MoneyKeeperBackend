@@ -7,6 +7,7 @@ using DAL.Settings;
 using DAL.Utils;
 using DAL.Models;
 using DAL.Repositories.Categories;
+using MoneyKeeper.Globals;
 
 namespace DAL.Repositories
 {
@@ -70,7 +71,7 @@ namespace DAL.Repositories
 			});
 		}
 
-		public async Task UpdateUser(User userData)
+		public async Task<bool> UpdateUser(User userData)
 		{
 			string sql = @$"
 					update
@@ -84,18 +85,18 @@ namespace DAL.Repositories
 						Id = @Id		
 			";
 
-			await dapperRepository.ExecuteAny(sql, userData);
+			return await dapperRepository.ExecuteAny(sql, userData) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
-		public async Task DeleteUser(int id)
+		public async Task<bool> DeleteUser(int id)
 		{
-			string sql = @$"
+			string sql_deleteUser = @$"
 					delete from {USERS_TABLE_NAME}
 					where
 						Id = @id
 			";
 
-			await dapperRepository.ExecuteAny(sql, new { id });
+			return await dapperRepository.ExecuteAny(sql_deleteUser, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED
 		}
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)

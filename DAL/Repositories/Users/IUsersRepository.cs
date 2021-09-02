@@ -17,9 +17,9 @@ namespace DAL.Repositories
 
 		Task<int> CreateUser(User user);
 
-		Task UpdateUser(User user);
+		Task<bool> UpdateUser(User user);
 
-		Task DeleteUser(int id);
+		Task<bool> DeleteUser(int id);
 
 		Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id);
 

@@ -24,10 +24,10 @@ namespace DAL.Repositories
 			return await conn.QueryAsync<T>(sql, @params);
 		}
 
-		public async Task ExecuteAny(string sql, object @params = null)
+		public async Task<int> ExecuteAny(string sql, object @params = null)
 		{
 			await using var conn = GetDbConnection();
-			await conn.ExecuteAsync(sql, @params);
+			return await conn.ExecuteAsync(sql, @params);
 		}
 
 		private SqlConnection GetDbConnection() => new SqlConnection(connectionString);

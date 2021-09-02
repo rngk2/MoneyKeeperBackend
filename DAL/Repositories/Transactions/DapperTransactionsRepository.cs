@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Utils;
+using MoneyKeeper.Globals;
 
 namespace DAL.Repositories
 {
@@ -33,16 +34,28 @@ namespace DAL.Repositories
 			return await repository.QuerySingleWithOutput<int>(sql, transaction);
 		}
 
-		public async Task DeleteTransaction(int id)
+		public async Task<bool> DeleteTransaction(int id)
 		{
 			string sql = @$"
 				delete 
 					from {TRANSACTIONS_TABLE_NAME} 
 				where 
-					Id=@id
+					Id = @id
 			";
 
-			await repository.ExecuteAny(sql, new { id});
+			return await repository.ExecuteAny(sql, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+		}
+		
+		public async Task<bool> DeleteTransaction(int id, int userId)
+		{
+			string sql = @$"
+				delete 
+					from {TRANSACTIONS_TABLE_NAME} 
+				where 
+					Id = @id and UserId = @userId
+			";
+
+			return await repository.ExecuteAny(sql, new { id, userId }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
 		public async Task<Transaction> GetTransaction(int id)
@@ -51,10 +64,22 @@ namespace DAL.Repositories
 				select * 
 					from {TRANSACTIONS_TABLE_NAME}
 				where
-					Id=@id
+					Id = @id
 			";
 
 			return (await repository.QueryAny<Transaction>(sql, new { id })).FirstOrDefault();
+		}
+		
+		public async Task<Transaction> GetTransaction(int id, int userId)
+		{
+			string sql = $@"
+				select * 
+					from {TRANSACTIONS_TABLE_NAME}
+				where
+					Id = @id and UserId = @userId
+			";
+
+			return (await repository.QueryAny<Transaction>(sql, new { id, userId })).FirstOrDefault();
 		}
 
 		public async Task<IEnumerable<Transaction>> GetTransactions()
@@ -86,7 +111,8 @@ namespace DAL.Repositories
 					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
+			return await repository.QueryAny<Transaction>(sql, 
+				new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
 		}
 
 	}
