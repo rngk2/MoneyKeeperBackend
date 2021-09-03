@@ -9,17 +9,19 @@ using BCrypt.Net;
 using DAL.Entities;
 using DAL.Repositories;
 using Microsoft.Extensions.Options;
+using MoneyKeeper.Api.Results;
+using MoneyKeeper.Globals.Errors;
 
 namespace Authenticate.Services
 {
     public interface IUserAuthService
     {
-        Task<AuthenticateResponse> Authenticate(AuthenticateRequest model, string ipAddress);
-        Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
-        Task<string> GetNewAccessToken(string token);
+        Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest model, string ipAddress);
+        Task<Result<AuthenticateResponse>> RefreshToken(string token, string ipAddress);
+        Task<Result<string>> GetNewAccessToken(string token);
     //  void RevokeToken(string token, string ipAddress);
     //  IEnumerable<User> GetAll();
-        Task<User> GetById(int id);
+        Task<Result<User>> GetById(int id);
     }
 
     public class UserAuthService : IUserAuthService
@@ -42,13 +44,15 @@ namespace Authenticate.Services
             this.jwtUtils = jwtUtils;
         }
 
-        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model, string ipAddress)
+        public async Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest model, string ipAddress)
         {
             var user = await usersRepository.GetUser(model.Email);
 
             // validate
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
-                throw new Exception("Username or password is incorrect");
+            if (user is null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+            {
+                return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), "Email or password is incorrect");
+            }
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = jwtUtils.GenerateJwtToken(user.Id);
@@ -63,13 +67,21 @@ namespace Authenticate.Services
             return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
         }
 
-		public async Task<AuthenticateResponse> RefreshToken(string token, string ipAddress)
+		public async Task<Result<AuthenticateResponse>> RefreshToken(string token, string ipAddress)
         {
-            var user = await GetUserByRefreshToken(token);
+            var (user, error) = await GetUserByRefreshToken(token).Unwrap();
+
+            if (error)
+            {
+                return error.Wrap();
+            }
+
             var refreshToken = await tokensRepository.GetToken(token);
 
 			if (!refreshToken.IsActive)
-				throw new Exception("Invalid token");
+            {
+                return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN.ToString(), "Invalid refresh token");
+            }
 
 			// replace old refresh token with a new one (rotate token)
 			var newRefreshToken = RotateRefreshToken(refreshToken, ipAddress);
@@ -84,17 +96,20 @@ namespace Authenticate.Services
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
         }
 
-        public async Task<string> GetNewAccessToken(string token)
+        public async Task<Result<string>> GetNewAccessToken(string token)
         {
             var refrshToken = await tokensRepository.GetToken(token);
 
             if (!refrshToken.IsActive)
             {
-                throw new Exception("Invalid token");
+                return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN.ToString(), "Invalid refresh token");
             }
 
-            return jwtUtils.GenerateJwtToken((await GetUserByRefreshToken(token)).Id);
+            var (user, error) = await GetUserByRefreshToken(token).Unwrap();
 
+            return error 
+                ? error.Wrap()
+                : jwtUtils.GenerateJwtToken(user.Id);
         }
 
       /*  public async Task RevokeToken(string token, string ipAddress)
@@ -118,23 +133,27 @@ namespace Authenticate.Services
         }
      */
 
-        public async Task<User> GetById(int id)
+        public async Task<Result<User>> GetById(int id)
         {
             var user = await usersRepository.GetUser(id);
 
-            if (user == null) 
-                throw new KeyNotFoundException("User not found");
+            if (user is null)
+            {
+                return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User: #{id} not found");
+            }
             
             return user;
         }
 
         // helper methods
-        private async Task<User> GetUserByRefreshToken(string token)
+        private async Task<Result<User>> GetUserByRefreshToken(string token)
         {
             var user = await tokensRepository.GetUserByRefreshToken(token);
 
-			if (user == null)
-				throw new Exception("Invalid token");
+			if (user is null)
+            {
+                return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), "Cannot find any user with provided token");
+            }
 
 			return user;
         }
@@ -169,8 +188,5 @@ namespace Authenticate.Services
             token.ReasonRevoked = reason;
             token.ReplacedByToken = replacedByToken;
         }
-
-
-
     }
 }

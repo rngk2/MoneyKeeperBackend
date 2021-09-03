@@ -20,6 +20,28 @@ namespace BL.Services
 			this.repository = repository;
 		}
 
+		public async Task<Result<Transaction>> GetTransaction(int id, int userId)
+		{
+			Transaction transaction = await repository.GetTransaction(id, userId);
+
+			if (transaction is null)
+			{
+				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User #{userId} has no transaction with id: {id}");
+			}
+
+			return transaction;
+		}
+
+		public async Task<Result<IEnumerable<Transaction>>> GetTransactions()
+		{
+			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactions());
+		}
+
+		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = default)
+		{
+			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactionsOfUser(userId, range, like, when));
+		}
+
 		public async Task<Result<Transaction>> CreateTransaction(CreateTransactionDto transactionDto)
 		{
 			Transaction newTransaction = new()
@@ -53,33 +75,6 @@ namespace BL.Services
 			return await repository.DeleteTransaction(id)
 				? toDelete
 				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), $"Error occured while deleting");
-		}
-
-		public async Task<Transaction> GetTransaction(int id)
-		{
-			return await repository.GetTransaction(id);
-		}
-
-		public async Task<Result<Transaction>> GetTransaction(int id, int userId)
-		{
-			Transaction transaction = await repository.GetTransaction(id, userId);
-
-			if (transaction is null)
-			{
-				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User #{userId} has no transaction with id: {id}");
-			}
-
-			return transaction;
-		}
-
-		public async Task<Result<IEnumerable<Transaction>>> GetTransactions()
-		{
-			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactions());
-		}
-
-		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = default)
-		{
-			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactionsOfUser(userId, range, like, when));
 		}
 	}
 }

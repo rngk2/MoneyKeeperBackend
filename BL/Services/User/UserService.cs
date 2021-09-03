@@ -23,11 +23,6 @@ namespace BL.Services
 			repository = usersRepository;
 		}
 
-		public async Task<IEnumerable<User>> GetUsers()
-		{
-			return await repository.GetUsers();
-		}
-
 		public async Task<Result<User>> GetUser(int id)
 		{
 			var user = await repository.GetUser(id);
@@ -43,7 +38,38 @@ namespace BL.Services
 				? user
 				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find user with email: {email}");
 		}
-		
+
+
+		public async Task<Result<IEnumerable<SummaryUnit>>> GetSummaryForUser(int id)
+		{
+			return new SuccessResult<IEnumerable<SummaryUnit>>(await repository.GetSummaryForUser(id));
+		}
+
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForYear(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUser_ForYear(id));
+		}
+
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForMonth(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUser_ForMonth(id));
+		}
+
+		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<SummaryUnit> summaryUnits)
+		{
+			Dictionary<string, decimal> computed = new();
+			foreach (var unit in summaryUnits)
+			{
+				decimal unitAmount = unit.Amount;
+				decimal contained = computed.GetValueOrDefault(unit.CategoryName);
+				decimal newVal = contained is default(decimal) ? unitAmount : contained + unitAmount;
+
+				computed[unit.CategoryName] = newVal;
+			}
+
+			return computed;
+		}
+
 		public async Task<Result<User>> CreateUser(CreateUserDto userDto)
 		{
 			if (await GetUser(userDto.Email) is not null)
@@ -79,7 +105,7 @@ namespace BL.Services
 
 			if (error)
 			{
-				return error;
+				return error.Wrap();
 			}
 
 			User updatedUser = existingUser with
@@ -101,41 +127,12 @@ namespace BL.Services
 
 			if (error)
 			{
-				return error;
+				return error.Wrap();
 			}
 
 			return await repository.DeleteUser(id)
 				? toDelete
 				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), $"Error occured while user: #{id}");
-		}
-
-		public async Task<Result<IEnumerable<SummaryUnit>>> GetSummaryForUser(int id)
-		{
-			return new SuccessResult<IEnumerable<SummaryUnit>>(await repository.GetSummaryForUser(id));
-		}
-	
-		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForYear(int id)
-		{
-			return ComputeTotal(await repository.GetSummaryForUser_ForYear(id));
-		}
-		
-		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForMonth(int id)
-		{
-			return ComputeTotal(await repository.GetSummaryForUser_ForMonth(id));
-		}
-
-		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<SummaryUnit> summaryUnits)
-		{
-			Dictionary<string, decimal> computed = new();
-			foreach (var unit in summaryUnits)
-			{
-				decimal unitAmount = unit.Amount;
-				decimal contained = computed.GetValueOrDefault(unit.CategoryName);
-				decimal newVal = contained is default(decimal) ? unitAmount : contained + unitAmount;
-				
-				computed[unit.CategoryName] = newVal;
-			}
-			return computed;
 		}
 	}
 }

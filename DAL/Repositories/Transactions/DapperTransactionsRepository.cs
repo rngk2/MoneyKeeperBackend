@@ -20,44 +20,6 @@ namespace DAL.Repositories
 			this.repository = repository;
 		}
 
-		public async Task<int> CreateTransaction(Transaction transaction)
-		{
-			string sql = @$"
-				insert into {TRANSACTIONS_TABLE_NAME}
-					(UserId, CategoryId, Amount, Timestamp, Comment)
-				output 
-					inserted.Id
-				values 
-					(@UserId, @CategoryId, @Amount, @Timestamp, @Comment)
-			";
-
-			return await repository.QuerySingleWithOutput<int>(sql, transaction);
-		}
-
-		public async Task<bool> DeleteTransaction(int id)
-		{
-			string sql = @$"
-				delete 
-					from {TRANSACTIONS_TABLE_NAME} 
-				where 
-					Id = @id
-			";
-
-			return await repository.ExecuteAny(sql, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
-		}
-		
-		public async Task<bool> DeleteTransaction(int id, int userId)
-		{
-			string sql = @$"
-				delete 
-					from {TRANSACTIONS_TABLE_NAME} 
-				where 
-					Id = @id and UserId = @userId
-			";
-
-			return await repository.ExecuteAny(sql, new { id, userId }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
-		}
-
 		public async Task<Transaction> GetTransaction(int id)
 		{
 			string sql = $@"
@@ -115,6 +77,31 @@ namespace DAL.Repositories
 				new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
 		}
 
+		public async Task<int> CreateTransaction(Transaction transaction)
+		{
+			string sql = @$"
+				insert into {TRANSACTIONS_TABLE_NAME}
+					(UserId, CategoryId, Amount, Timestamp, Comment)
+				output 
+					inserted.Id
+				values 
+					(@UserId, @CategoryId, @Amount, @Timestamp, @Comment)
+			";
+
+			return await repository.QuerySingleWithOutput<int>(sql, transaction);
+		}
+
+		public async Task<bool> DeleteTransaction(int id)
+		{
+			string sql = @$"
+				delete 
+					from {TRANSACTIONS_TABLE_NAME} 
+				where 
+					Id = @id
+			";
+
+			return await repository.ExecuteAny(sql, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+		}
 	}
 }
 

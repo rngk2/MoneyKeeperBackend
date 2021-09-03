@@ -12,6 +12,8 @@ namespace MoneyKeeper.Providers
 	public interface ICurrentUserProvider
 	{
 		Result<User> GetCurrentUser();
+
+		string GetCurrentUserIp();
 	}
 
 
@@ -30,5 +32,15 @@ namespace MoneyKeeper.Providers
 				? new Error(ApiResultErrorCodes.USER_IS_MISSING.ToString(), "No user provided in HttpContext")
 				: user;
 		}
-	}
+
+        public string GetCurrentUserIp()
+        {
+			if (httpContextAccessor.HttpContext?.Request.Headers.ContainsKey("X-Forwarded-For") is not null)
+			{
+				return httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-For"].ToString();
+			}
+			
+			return httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.MapToIPv4().ToString()!;
+		}
+    }
 }

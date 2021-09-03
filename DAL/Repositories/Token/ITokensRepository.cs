@@ -9,13 +9,13 @@ namespace DAL.Repositories
 {
 	public interface ITokensRepository
 	{
+		Task<RefreshToken> GetToken(string token);
+	
+		Task<User> GetUserByRefreshToken(string token);
+		
 		Task AddRefreshToken(RefreshToken token);
 
 		Task RemoveRefreshToken(string token);
-
-		Task<User> GetUserByRefreshToken(string token);
-
-		Task<RefreshToken> GetToken(string token);
 		
 		Task RemoveOldRefreshTokensOf(int userId);
 	}

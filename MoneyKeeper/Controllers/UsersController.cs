@@ -139,10 +139,14 @@ namespace MoneyKeeper.Controllers
         [HttpPost("authenticate")]
         public async Task<ApiResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
         {
-            var response = await authService.Authenticate(model, IpAddress());
+            var (response, error) = await authService.Authenticate(model, currentUserProvider.GetCurrentUserIp()).Unwrap();
             
+            if (error)
+            {
+                return error.Wrap();
+            }
+
             SetTokenCookie(response.RefreshToken);
-            
             return response;
         }
 
@@ -151,12 +155,15 @@ namespace MoneyKeeper.Controllers
         public async Task<ApiResult<RefreshTokenResponse>> RefreshToken()
 		{
 			var refreshToken = Request.Cookies["refreshToken"];
-			var response = await authService.GetNewAccessToken(refreshToken);
-            
-            return new RefreshTokenResponse(response);
-		}
+			var (response, error) = await authService.GetNewAccessToken(refreshToken).Unwrap();
+            RefreshTokenResponse rtResponse = response;
 
-		/* [HttpPost("revoke-token")]
+            return error
+                ? error.Wrap()  
+                : rtResponse;
+        }
+
+        /* [HttpPost("revoke-token")]
 		 public IActionResult RevokeToken(RevokeTokenRequest model)
 		 {
 			 // accept refresh token in request body or cookie
@@ -169,7 +176,7 @@ namespace MoneyKeeper.Controllers
 			 return Ok(new { message = "Token revoked" });
 		 }*/
 
-		/*[HttpGet]
+        /*[HttpGet]
 		public IActionResult GetAll()
 		{
 			var users = _userService.GetAll();
@@ -178,7 +185,7 @@ namespace MoneyKeeper.Controllers
 			return Ok();
 		}*/
 
-		/*  [HttpGet("{id}/refresh-tokens")]
+        /*  [HttpGet("{id}/refresh-tokens")]
           public async Task<IActionResult> GetRefreshTokens(int id)
           {
               var user = await _userService.GetById(id);
@@ -186,9 +193,9 @@ namespace MoneyKeeper.Controllers
               return Ok();
           }*/
 
-		// helper methods
+        // helper methods
 
-		private void SetTokenCookie(string token)
+        private void SetTokenCookie(string token)
         {
             // append cookie with refresh token to the http response
             var cookieOptions = new CookieOptions
@@ -200,15 +207,5 @@ namespace MoneyKeeper.Controllers
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
-
-        private string IpAddress()
-        {
-            // get source ip address for the current request
-            if (Request.Headers.ContainsKey("X-Forwarded-For"))
-                return Request.Headers["X-Forwarded-For"];
-            else
-                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-        }
-
     }
 }

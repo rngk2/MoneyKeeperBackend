@@ -19,18 +19,6 @@ namespace DAL.Repositories
 			this.dapperRepository = dapperRepository;
 		}
 
-		public async Task AddRefreshToken(RefreshToken token)
-		{
-			string sql = $@"
-				insert into {REFRESH_TOKENS_TABLE_NAME}
-					(UserId, Token, Expires, Created, CreatedByIp, Revoked, ReplacedByToken, ReasonRevoked, RevokedByIp)
-				values
-					(@UserId, @Token, @Expires, @Created, @CreatedByIp, @Revoked, @ReplacedByToken, @ReasonRevoked, @RevokedByIp)
-			";
-
-			await dapperRepository.ExecuteAny(sql, token);
-		}
-
 		public async Task<RefreshToken> GetToken(string token)
 		{
 			var getTokenQuery = $"select * from {REFRESH_TOKENS_TABLE_NAME} where Token = @token";
@@ -50,6 +38,18 @@ namespace DAL.Repositories
 			";
 			
 			return (await dapperRepository.QueryAny<User>(sql, new { token })).FirstOrDefault();
+		}
+
+		public async Task AddRefreshToken(RefreshToken token)
+		{
+			string sql = $@"
+				insert into {REFRESH_TOKENS_TABLE_NAME}
+					(UserId, Token, Expires, Created, CreatedByIp, Revoked, ReplacedByToken, ReasonRevoked, RevokedByIp)
+				values
+					(@UserId, @Token, @Expires, @Created, @CreatedByIp, @Revoked, @ReplacedByToken, @ReasonRevoked, @RevokedByIp)
+			";
+
+			await dapperRepository.ExecuteAny(sql, token);
 		}
 
 		public async Task RemoveOldRefreshTokensOf(int userId)
