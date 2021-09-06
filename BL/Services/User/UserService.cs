@@ -27,7 +27,7 @@ namespace BL.Services
 		{
 			var user = await repository.GetUser(id);
 			return user is not null
-				? user 
+				? user
 				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find user with id: {id}");
 		}
 
@@ -92,7 +92,7 @@ namespace BL.Services
 				Id = createdId
 			};
 
-			return created; 
+			return created;
 		}
 
 
@@ -111,9 +111,9 @@ namespace BL.Services
 			User updatedUser = existingUser with
 			{
 				FirstName = returnDefaultIfNull(userDto.FirstName, existingUser.FirstName).ToString(),
-				LastName  = returnDefaultIfNull(userDto.LastName, existingUser.LastName).ToString(),
-				Email     = returnDefaultIfNull(userDto.Email, existingUser.Email).ToString(),
-				Password  = returnDefaultIfNull(userDto.Password?.Hash(), existingUser.Password).ToString()
+				LastName = returnDefaultIfNull(userDto.LastName, existingUser.LastName).ToString(),
+				Email = returnDefaultIfNull(userDto.Email, existingUser.Email).ToString(),
+				Password = returnDefaultIfNull(userDto.Password?.Hash(), existingUser.Password).ToString()
 			};
 
 			return await repository.UpdateUser(updatedUser)

@@ -13,7 +13,7 @@ namespace DAL.Repositories
 	{
 		private readonly IDapperRepository repository;
 
-		private const string TRANSACTIONS_TABLE_NAME = "Transactions"; 
+		private const string TRANSACTIONS_TABLE_NAME = "Transactions";
 
 		public DapperTransactionsRepository(IDapperRepository repository)
 		{
@@ -31,7 +31,7 @@ namespace DAL.Repositories
 
 			return (await repository.QueryAny<Transaction>(sql, new { id })).FirstOrDefault();
 		}
-		
+
 		public async Task<Transaction> GetTransaction(int id, int userId)
 		{
 			string sql = $@"
@@ -73,7 +73,7 @@ namespace DAL.Repositories
 					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql, 
+			return await repository.QueryAny<Transaction>(sql,
 				new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
 		}
 

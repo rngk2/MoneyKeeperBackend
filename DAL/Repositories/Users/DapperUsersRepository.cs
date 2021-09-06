@@ -18,7 +18,8 @@ namespace DAL.Repositories
 
 		private const string USERS_TABLE_NAME = "Users";
 
-		public DapperUsersRepository(IDapperRepository dapperRepository, ICategoriesRepository categoriesRepository) {
+		public DapperUsersRepository(IDapperRepository dapperRepository, ICategoriesRepository categoriesRepository)
+		{
 			this.dapperRepository = dapperRepository;
 			this.categoriesRepository = categoriesRepository;
 		}

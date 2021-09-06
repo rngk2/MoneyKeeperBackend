@@ -26,7 +26,7 @@ namespace BL.Services
 				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find category: {categoryName} of user: #{userId}");
 		}
 
-		public async Task<Result<Category>>GetCategory(int categoryId, int userId)
+		public async Task<Result<Category>> GetCategory(int categoryId, int userId)
 		{
 			var category = await repository.GetCategory(categoryId);
 
@@ -44,7 +44,7 @@ namespace BL.Services
 		{
 			if (await GetCategory(categoryDto.UserId, categoryDto.Name) is not null)
 			{
-				return new Error(ApiResultErrorCodes.ALREADY_EXISTS.ToString(), 
+				return new Error(ApiResultErrorCodes.ALREADY_EXISTS.ToString(),
 					$"User: {categoryDto.UserId} already has category with name: {categoryDto.Name}");
 			}
 
@@ -80,7 +80,7 @@ namespace BL.Services
 		{
 			var (toDelete, error) = await GetCategory(userId, categoryName).Unwrap();
 
-			if (error) 
+			if (error)
 			{
 				return error.Wrap();
 			}
@@ -99,9 +99,9 @@ namespace BL.Services
 				return error.Wrap();
 			}
 			else if (toDelete.Id != userId)
-            {
+			{
 				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User {userId} has no category with id: {categoryId}");
-            }
+			}
 
 			return await repository.DeleteCategory(categoryId)
 				? toDelete

@@ -13,7 +13,7 @@ namespace DAL.Repositories.Categories
 		Task<IEnumerable<Category>> GetCategories(int userId);
 
 		Task<int> CreateCategory(Category category);
-		
+
 		Task<bool> UpdateCategory(Category category);
 
 		Task<bool> DeleteCategory(int id);

@@ -23,7 +23,7 @@ namespace Authenticate
     {
         private readonly AuthSettings appSettings;
 
-		public JwtUtils(IOptions<AuthSettings> appSettings)
+        public JwtUtils(IOptions<AuthSettings> appSettings)
         {
             this.appSettings = appSettings.Value;
         }
@@ -35,7 +35,7 @@ namespace Authenticate
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] {new Claim(type: "id", value: userId.ToString()) }),
+                Subject = new ClaimsIdentity(new[] { new Claim(type: "id", value: userId.ToString()) }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };

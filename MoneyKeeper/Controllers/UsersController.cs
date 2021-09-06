@@ -43,11 +43,11 @@ namespace MoneyKeeper.Controllers
 
             if (provider_error)
             {
-                return provider_error.Wrap(); 
+                return provider_error.Wrap();
             }
 
             var (user, service_error) = await userService.GetUser(contextUser.Id).Unwrap();
-            
+
             return service_error is not null
                 ? service_error.Wrap()
                 : user.AsDto();
@@ -57,7 +57,7 @@ namespace MoneyKeeper.Controllers
         [HttpPost]
         public async Task<ApiResult<UserDto>> CreateUser(CreateUserDto userDto)
         {
-			var (user, error) = await userService.CreateUser(userDto).Unwrap();
+            var (user, error) = await userService.CreateUser(userDto).Unwrap();
             return error ? error.Wrap() : user.AsDto();
         }
 
@@ -140,7 +140,7 @@ namespace MoneyKeeper.Controllers
         public async Task<ApiResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
         {
             var (response, error) = await authService.Authenticate(model, currentUserProvider.GetCurrentUserIp()).Unwrap();
-            
+
             if (error)
             {
                 return error.Wrap();
@@ -153,13 +153,13 @@ namespace MoneyKeeper.Controllers
         [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<ApiResult<RefreshTokenResponse>> RefreshToken()
-		{
-			var refreshToken = Request.Cookies["refreshToken"];
-			var (response, error) = await authService.GetNewAccessToken(refreshToken).Unwrap();
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var (response, error) = await authService.GetNewAccessToken(refreshToken).Unwrap();
             RefreshTokenResponse rtResponse = response;
 
             return error
-                ? error.Wrap()  
+                ? error.Wrap()
                 : rtResponse;
         }
 

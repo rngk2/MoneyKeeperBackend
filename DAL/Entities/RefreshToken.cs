@@ -27,10 +27,10 @@ namespace DAL.Entities
 
         public string ReasonRevoked { get; set; }
 
-		public bool IsExpired => DateTime.UtcNow >= Expires;
+        public bool IsExpired => DateTime.UtcNow >= Expires;
 
-		public bool IsRevoked => Revoked != null && Revoked != (new DateTime()).AddYears(1899);
+        public bool IsRevoked => Revoked != null && Revoked != (new DateTime()).AddYears(1899);
 
-		public bool IsActive => !IsRevoked && !IsExpired;
-	}
+        public bool IsActive => !IsRevoked && !IsExpired;
+    }
 }

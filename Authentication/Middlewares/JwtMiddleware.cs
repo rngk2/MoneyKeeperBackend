@@ -14,7 +14,7 @@ namespace Authenticate
         private readonly RequestDelegate _next;
         private readonly AuthSettings _appSettings;
 
-        private static readonly string[] _skipRoutes = {"/authenticate"};  
+        private static readonly string[] _skipRoutes = { "/authenticate" };
 
         public JwtMiddleware(RequestDelegate next, IOptions<AuthSettings> appSettings)
         {

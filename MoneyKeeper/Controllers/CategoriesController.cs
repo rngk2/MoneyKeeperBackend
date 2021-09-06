@@ -76,9 +76,9 @@ namespace MoneyKeeper.Controllers
 			}
 
 			if (categoryDto.UserId != contextUser.Id)
-            {
+			{
 				return new Error(ApiResultErrorCodes.PROHIBITED.ToString(), $"User: #{contextUser.Id} cannot add category to user: #{categoryDto.UserId}");
-            }
+			}
 
 			var (created, service_error) = await categoryService.AddCategoryToUser(categoryDto).Unwrap();
 
@@ -100,9 +100,9 @@ namespace MoneyKeeper.Controllers
 			var (existingCategory, service_getError) = await categoryService.GetCategory(categoryId, contextUser.Id).Unwrap();
 
 			if (service_getError)
-            {
+			{
 				return service_getError.Wrap();
-            }
+			}
 
 			var (updated, service_updateError) = await categoryService.UpdateCategoryToUser(existingCategory, categoryDto).Unwrap();
 
@@ -128,9 +128,9 @@ namespace MoneyKeeper.Controllers
 				: deleted.AsDto();
 		}
 
-        [HttpDelete("byName/{categoryName}")]
-        public async Task<ApiResult<CategoryDto>> DeleteCategory(string categoryName)
-        {
+		[HttpDelete("byName/{categoryName}")]
+		public async Task<ApiResult<CategoryDto>> DeleteCategory(string categoryName)
+		{
 			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
@@ -140,9 +140,9 @@ namespace MoneyKeeper.Controllers
 
 			var (deleted, service_error) = await categoryService.DeleteCategoryToUser(categoryName, contextUser.Id).Unwrap();
 
-            return service_error
+			return service_error
 				? service_error.Wrap()
 				: deleted.AsDto();
-        }
-    }
+		}
+	}
 }

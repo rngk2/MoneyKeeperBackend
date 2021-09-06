@@ -93,7 +93,7 @@ namespace DAL.Repositories.Categories
 		}
 
 		public async Task<bool> DeleteCategory(int id)
-        {
+		{
 			string sql = $@"
 					delete from {CATEGORIES_TABLE_NAME}
 					where 
