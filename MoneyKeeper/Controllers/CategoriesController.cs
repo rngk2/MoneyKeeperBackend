@@ -128,7 +128,7 @@ namespace MoneyKeeper.Controllers
 				: deleted.AsDto();
 		}
 
-		[HttpDelete("byName/{categoryName}")]
+		[HttpDelete]
 		public async Task<ApiResult<CategoryDto>> DeleteCategory(string categoryName)
 		{
 			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();

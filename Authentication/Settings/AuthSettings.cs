@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Authenticate.Helpers
+namespace MoneyKeeper.Authentication.Helpers
 {
     public class AuthSettings
     {

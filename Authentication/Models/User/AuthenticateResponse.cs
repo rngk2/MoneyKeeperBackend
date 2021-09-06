@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DAL.Entities;
 
-namespace Authentication.Models
+namespace MoneyKeepeer.Authentication.Models
 {
     public class AuthenticateResponse
     {

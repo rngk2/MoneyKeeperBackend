@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Authenticate.Models;
-using Authenticate.Services;
-using Authentication.Models;
+using MoneyKeeper.Authentication.Services;
 using BL.Dtos.User;
 using BL.Extensions;
 using BL.Services;
@@ -17,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
+using MoneyKeepeer.Authentication.Models;
 
 namespace MoneyKeeper.Controllers
 {

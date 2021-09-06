@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using DAL.Entities;
 using DAL.Settings;
 using DAL.Models;
-using DAL.Repositories.Categories;
 using MoneyKeeper.Globals;
 
 namespace DAL.Repositories

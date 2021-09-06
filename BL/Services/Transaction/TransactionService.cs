@@ -11,7 +11,7 @@ using MoneyKeeper.Globals.Errors;
 
 namespace BL.Services
 {
-	public class TransactionService : ITransactionService
+	internal class TransactionService : ITransactionService
 	{
 		private readonly ITransactionsRepository repository;
 

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Authenticate.Helpers;
-using Authenticate.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using MoneyKeeper.Authentication.Helpers;
 
-namespace Authenticate
+namespace MoneyKeeper.Authentication.Middlewares
 {
     public class JwtMiddleware
     {

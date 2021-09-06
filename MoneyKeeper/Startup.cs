@@ -1,10 +1,6 @@
-﻿using Authenticate;
-using Authenticate.Helpers;
-using Authenticate.Services;
+﻿using MoneyKeeper.Authentication.Helpers;
+using MoneyKeeper.Authentication.Middlewares;
 using BL;
-using BL.Services;
-using DAL.Repositories;
-using DAL.Repositories.Categories;
 using DAL.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MoneyKeeper.BL;
+using MoneyKeeper.DAL;
 using MoneyKeeper.Providers;
+using MoneyKeeper.Authentication;
 
 namespace MoneyKeeper
 {
@@ -32,9 +31,6 @@ namespace MoneyKeeper
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-
-
-
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 					.AddJwtBearer(options =>
 					{
@@ -62,23 +58,15 @@ namespace MoneyKeeper
 
 			services.AddHttpContextAccessor();
 
-			services.AddTransient<IUserService, UserService>();
-			services.AddTransient<IJwtUtils, JwtUtils>();
-			services.AddTransient<IUserAuthService, UserAuthService>();
-			services.AddTransient<ICategoryService, CategoryService>();
-			services.AddTransient<ITransactionService, TransactionService>();
-			
+			services.ConfigureApiServices();
+			services.ConfigureAuthServices();
+			services.ConfigureRepos();
+
 			services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
-			services.AddSingleton<IDapperRepository, DapperRepository>();
-			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
-			services.AddSingleton<ITokensRepository, DapperTokensRepository>();
-			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();
-			services.AddSingleton<ITransactionsRepository, DapperTransactionsRepository>();
 
 			services.Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
-
 
 			services.AddControllers(options =>
 			{

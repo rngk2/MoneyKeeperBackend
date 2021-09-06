@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using MoneyKeeper.Globals;
 
-namespace DAL.Repositories.Categories
+namespace DAL.Repositories
 {
 	internal class DapperCategoriesRepository : ICategoriesRepository
 	{

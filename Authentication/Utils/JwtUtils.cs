@@ -5,12 +5,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Authenticate.Helpers;
 using DAL.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MoneyKeeper.Authentication.Helpers;
 
-namespace Authenticate
+namespace MoneyKeeper.Authentication.Utils
 {
     public interface IJwtUtils
     {
@@ -19,7 +19,7 @@ namespace Authenticate
         public RefreshToken GenerateRefreshToken(string ipAddress);
     }
 
-    public class JwtUtils : IJwtUtils
+    internal class JwtUtils : IJwtUtils
     {
         private readonly AuthSettings appSettings;
 

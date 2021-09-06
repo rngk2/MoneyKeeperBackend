@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Authentication.Models
+namespace MoneyKeepeer.Authentication.Models
 {
     public record RefreshTokenResponse(string Token)
     {

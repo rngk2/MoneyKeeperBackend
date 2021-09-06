@@ -3,13 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using BL.Dtos.Category;
 using DAL.Entities;
-using DAL.Repositories.Categories;
+using DAL.Repositories;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
 
 namespace BL.Services
 {
-	public class CategoryService : ICategoryService
+	internal class CategoryService : ICategoryService
 	{
 		private readonly ICategoriesRepository repository;
 

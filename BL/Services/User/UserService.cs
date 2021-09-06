@@ -8,7 +8,6 @@ using BL.Extensions;
 using DAL.Entities;
 using DAL.Models;
 using DAL.Repositories;
-using DAL.Repositories.Categories;
 using MoneyKeepeer.Utils.Extensions;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
@@ -16,7 +15,7 @@ using MoneyKeeper.Utils.Extensions;
 
 namespace BL.Services
 {
-	public class UserService : IUserService
+	internal class UserService : IUserService
 	{
 		private readonly IUsersRepository usersRepository;
 		private readonly ICategoriesRepository categoriesRepository;

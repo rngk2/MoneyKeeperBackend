@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Authenticate.Helpers;
-using Authenticate.Models;
-using Authentication.Models;
 using BCrypt.Net;
 using DAL.Entities;
 using DAL.Repositories;
 using Microsoft.Extensions.Options;
+using MoneyKeepeer.Authentication.Models;
 using MoneyKeeper.Api.Results;
+using MoneyKeeper.Authentication.Helpers;
+using MoneyKeeper.Authentication.Utils;
 using MoneyKeeper.Globals.Errors;
 using MoneyKeeper.Utils.Extensions;
 
-namespace Authenticate.Services
+namespace MoneyKeeper.Authentication.Services
 {
 	public interface IUserAuthService
 	{
@@ -25,7 +25,7 @@ namespace Authenticate.Services
 		Task<Result<User>> GetById(int id);
 	}
 
-	public class UserAuthService : IUserAuthService
+	internal class UserAuthService : IUserAuthService
 	{
 		private readonly ITokensRepository tokensRepository;
 		private readonly IUsersRepository usersRepository;

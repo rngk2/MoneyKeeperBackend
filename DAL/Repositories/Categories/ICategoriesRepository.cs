@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DAL.Entities;
 
-namespace DAL.Repositories.Categories
+namespace DAL.Repositories
 {
 	public interface ICategoriesRepository
 	{
