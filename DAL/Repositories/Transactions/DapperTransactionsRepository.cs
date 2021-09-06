@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
-using DAL.Utils;
 using MoneyKeeper.Globals;
 
 namespace DAL.Repositories
 {
-	public class DapperTransactionsRepository : ITransactionsRepository
+	internal class DapperTransactionsRepository : ITransactionsRepository
 	{
 		private readonly IDapperRepository repository;
 

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
-using DAL.Utils;
 
 namespace DAL.Repositories
 {
-	public class DapperTokensRepository : ITokensRepository
+	internal class DapperTokensRepository : ITokensRepository
 	{
 		private readonly IDapperRepository dapperRepository;
 

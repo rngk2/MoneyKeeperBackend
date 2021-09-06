@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using DAL.Entities;
 using DAL.Settings;
-using DAL.Utils;
 using DAL.Models;
 using DAL.Repositories.Categories;
 using MoneyKeeper.Globals;
 
 namespace DAL.Repositories
 {
-	public class DapperUsersRepository : IUsersRepository
+	internal class DapperUsersRepository : IUsersRepository
 	{
 		private readonly IDapperRepository dapperRepository;
 		private readonly ICategoriesRepository categoriesRepository;

@@ -6,7 +6,7 @@ using MoneyKeeper.Globals;
 
 namespace DAL.Repositories.Categories
 {
-	public class DapperCategoriesRepository : ICategoriesRepository
+	internal class DapperCategoriesRepository : ICategoriesRepository
 	{
 		private readonly IDapperRepository dapperRepository;
 
