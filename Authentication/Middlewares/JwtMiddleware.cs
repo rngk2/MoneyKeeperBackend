@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using MoneyKeeper.Api.Results;
 using MoneyKeeper.Authentication.Helpers;
 using MoneyKeeper.Authentication.Services;
 using MoneyKeeper.Authentication.Utils;
@@ -32,7 +33,12 @@ namespace MoneyKeeper.Authentication.Middlewares
                 if (userId != null)
                 {
                     // attach user to context on successful jwt validation
-                    context.Items["User"] = await userService.GetById(userId.Value);
+                    var (user, _) = await userService.GetById(userId.Value).Unwrap();
+
+                    if (user is not null) 
+                    {
+                        context.Items["User"] = user;
+                    }
                 }
             }
 

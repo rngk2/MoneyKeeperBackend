@@ -30,7 +30,7 @@ namespace BL.Services
 		{
 			var category = await repository.GetCategory(categoryId);
 
-			return category is not null && category.Id == userId
+			return category is not null && category.UserId == userId
 				? category
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find category: #{categoryId}");
 		}
@@ -64,7 +64,7 @@ namespace BL.Services
 			return created;
 		}
 
-		public async Task<Result<Category>> UpdateCategoryToUser([NotNull] Category existingCategory, [NotNull] UpdateCategoryDto categoryDto)
+		public async Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto)
 		{
 			Category updatedCategory = existingCategory with
 			{
