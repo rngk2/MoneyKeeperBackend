@@ -61,7 +61,7 @@ namespace MoneyKeeper.Controllers
 			return await transactionService.GetTransactions
 		}*/
 
-		[HttpGet("ofUser")]
+		[HttpGet("user/transactions")]
 		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactionsOfUser(
 			[Required] int from, [Required] int to, string? like = null, DateTimeOffset? when = null)
 		{
