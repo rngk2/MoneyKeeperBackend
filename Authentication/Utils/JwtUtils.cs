@@ -30,7 +30,6 @@ namespace Authenticate
 
         public string GenerateJwtToken(int userId)
         {
-            // generate token that is valid for 5 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -58,26 +57,22 @@ namespace Authenticate
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     ClockSkew = TimeSpan.FromMinutes(5)
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
-                // return user id from JWT token if validation successful
                 return userId;
             }
-            catch
+            catch (Exception)
             {
-                // return null if validation fails
                 return null;
             }
         }
 
         public RefreshToken GenerateRefreshToken(string ipAddress)
         {
-            // generate token that is valid for 7 days
             using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
             var randomBytes = new byte[64];
             rngCryptoServiceProvider.GetBytes(randomBytes);

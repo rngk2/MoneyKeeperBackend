@@ -84,14 +84,11 @@ namespace Authenticate.Services
 				return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN, "Invalid refresh token");
 			}
 
-			// replace old refresh token with a new one (rotate token)
 			var newRefreshToken = RotateRefreshToken(refreshToken, ipAddress);
 			await tokensRepository.AddRefreshToken(newRefreshToken);
 
-			// remove old refresh tokens from user
 			await tokensRepository.RemoveOldRefreshTokensOf(user.Id);
 
-			// generate new jwt
 			var jwtToken = jwtUtils.GenerateJwtToken(user.Id);
 
 			return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
@@ -146,7 +143,6 @@ namespace Authenticate.Services
 			return user;
 		}
 
-		// helper methods
 		private async Task<Result<User>> GetUserByRefreshToken(string token)
 		{
 			var user = await tokensRepository.GetUserByRefreshToken(token);

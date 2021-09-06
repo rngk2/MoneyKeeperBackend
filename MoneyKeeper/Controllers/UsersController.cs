@@ -53,7 +53,6 @@ namespace MoneyKeeper.Controllers
                 : user.AsDto();
         }
 
-        // POST /users
         [HttpPost]
         public async Task<ApiResult<UserDto>> CreateUser(CreateUserDto userDto)
         {
@@ -192,8 +191,6 @@ namespace MoneyKeeper.Controllers
               return Ok(_userService.Get);
               return Ok();
           }*/
-
-        // helper methods
 
         private void SetTokenCookie(string token)
         {
