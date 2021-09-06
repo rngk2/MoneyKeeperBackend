@@ -9,6 +9,10 @@ namespace BL.Services
 {
 	public interface ICategoryService
 	{
+		static readonly IReadOnlyCollection<string> DEFAULT_CATEGORIES_NAMES = new[] {
+				"Earnings"
+		};
+
 		Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId);
 
 		Task<Result<Category>> GetCategory(int id, int userId);

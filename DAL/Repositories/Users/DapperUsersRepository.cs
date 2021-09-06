@@ -103,20 +103,10 @@ namespace DAL.Repositories
 
 			int createdId = await dapperRepository.QuerySingleWithOutput<int>(sql, user);
 
-			await AddDefaultCategoriesToUser(createdId);
-
 			return createdId;
 		}
 
-		private async Task AddDefaultCategoriesToUser(int userId)
-		{
-			await categoriesRepository.CreateCategory(new()
-			{
-				Name = "Earnings",
-				UserId = userId
-			});
-		}
-
+		
 		public async Task<bool> UpdateUser(User userData)
 		{
 			string sql = @"

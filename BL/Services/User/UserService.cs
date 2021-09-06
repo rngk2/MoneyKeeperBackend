@@ -8,6 +8,7 @@ using BL.Extensions;
 using DAL.Entities;
 using DAL.Models;
 using DAL.Repositories;
+using DAL.Repositories.Categories;
 using MoneyKeepeer.Utils.Extensions;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
@@ -17,16 +18,18 @@ namespace BL.Services
 {
 	public class UserService : IUserService
 	{
-		private readonly IUsersRepository repository;
+		private readonly IUsersRepository usersRepository;
+		private readonly ICategoriesRepository categoriesRepository;
 
-		public UserService(IUsersRepository usersRepository)
+		public UserService(IUsersRepository usersRepository, ICategoriesRepository categoriesRepository)
 		{
-			repository = usersRepository;
+			this.usersRepository = usersRepository;
+			this.categoriesRepository = categoriesRepository;
 		}
 
 		public async Task<Result<User>> GetUser(int id)
 		{
-			var user = await repository.GetUser(id);
+			var user = await usersRepository.GetUser(id);
 			return user is not null
 				? user
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with id: {id}");
@@ -34,7 +37,7 @@ namespace BL.Services
 
 		public async Task<Result<User>> GetUser(string email)
 		{
-			var user = await repository.GetUser(email);
+			var user = await usersRepository.GetUser(email);
 			return user is not null
 				? user
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with email: {email}");
@@ -43,17 +46,17 @@ namespace BL.Services
 
 		public async Task<Result<IEnumerable<SummaryUnit>>> GetSummaryForUser(int id)
 		{
-			return new SuccessResult<IEnumerable<SummaryUnit>>(await repository.GetSummaryForUser(id));
+			return new SuccessResult<IEnumerable<SummaryUnit>>(await usersRepository.GetSummaryForUser(id));
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForYear(int id)
 		{
-			return ComputeTotal(await repository.GetSummaryForUser_ForYear(id));
+			return ComputeTotal(await usersRepository.GetSummaryForUser_ForYear(id));
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForMonth(int id)
 		{
-			return ComputeTotal(await repository.GetSummaryForUser_ForMonth(id));
+			return ComputeTotal(await usersRepository.GetSummaryForUser_ForMonth(id));
 		}
 
 		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<SummaryUnit> summaryUnits)
@@ -86,7 +89,9 @@ namespace BL.Services
 				Password = userDto.Password.Hash()
 			};
 
-			int createdId = await repository.CreateUser(newUser);
+			int createdId = await usersRepository.CreateUser(newUser);
+
+			await AddDefaultCategoriesToUser(createdId);
 
 			User created = newUser with
 			{
@@ -95,6 +100,19 @@ namespace BL.Services
 
 			return created;
 		}
+
+		private async Task AddDefaultCategoriesToUser(int userId)
+		{
+			foreach (var defaultCategoryName in ICategoryService.DEFAULT_CATEGORIES_NAMES)
+			{
+				await categoriesRepository.CreateCategory(new()
+				{
+					Name = defaultCategoryName,
+					UserId = userId
+				});
+			}
+		}
+
 
 
 		public async Task<Result<User>> UpdateUser(int id, [NotNull] UpdateUserDto userDto)
@@ -117,7 +135,7 @@ namespace BL.Services
 				Password = returnDefaultIfNull(userDto.Password?.Hash(), existingUser.Password).ToString()
 			};
 
-			return await repository.UpdateUser(updatedUser)
+			return await usersRepository.UpdateUser(updatedUser)
 				? updatedUser
 				: new Error(ApiResultErrorCodes.CANNOT_UPDATE, $"Error occured while updating user: #{existingUser.Id}");
 		}
@@ -131,7 +149,7 @@ namespace BL.Services
 				return error.Wrap();
 			}
 
-			return await repository.DeleteUser(id)
+			return await usersRepository.DeleteUser(id)
 				? toDelete
 				: new Error(ApiResultErrorCodes.CANNOT_DELETE, $"Error occured while user: #{id}");
 		}
