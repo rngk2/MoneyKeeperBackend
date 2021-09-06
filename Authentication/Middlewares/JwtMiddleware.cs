@@ -24,7 +24,7 @@ namespace MoneyKeeper.Authentication.Middlewares
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IUserAuthService userService, IJwtUtils jwtUtils)
+        public async Task Invoke(HttpContext context, IAuthService userService, IJwtUtils jwtUtils)
         {
             if (!context.Request.Path.Value.Contains(_skipRoutes.First()))
             {

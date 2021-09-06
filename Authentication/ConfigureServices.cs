@@ -9,7 +9,7 @@ namespace MoneyKeeper.Authentication
 		public static void ConfigureAuthServices(this IServiceCollection services)
 		{
 			services.AddTransient<IJwtUtils, JwtUtils>();
-			services.AddTransient<IUserAuthService, UserAuthService>();
+			services.AddTransient<IAuthService, AuthService>();
 		}
 	}
 }

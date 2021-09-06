@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using BCrypt.Net;
 using DAL.Entities;
 using DAL.Repositories;
 using Microsoft.Extensions.Options;
@@ -15,7 +12,7 @@ using MoneyKeeper.Utils.Extensions;
 
 namespace MoneyKeeper.Authentication.Services
 {
-	public interface IUserAuthService
+	public interface IAuthService
 	{
 		Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest model, string ipAddress);
 		Task<Result<AuthenticateResponse>> RefreshToken(string token, string ipAddress);
@@ -25,7 +22,7 @@ namespace MoneyKeeper.Authentication.Services
 		Task<Result<User>> GetById(int id);
 	}
 
-	internal class UserAuthService : IUserAuthService
+	internal class AuthService : IAuthService
 	{
 		private readonly ITokensRepository tokensRepository;
 		private readonly IUsersRepository usersRepository;
@@ -33,7 +30,7 @@ namespace MoneyKeeper.Authentication.Services
 
 		private IJwtUtils jwtUtils;
 
-		public UserAuthService(
+		public AuthService(
 			IUsersRepository usersRepository,
 			ITokensRepository tokensRepository,
 			IOptions<AuthSettings> appSettings,

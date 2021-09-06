@@ -25,10 +25,10 @@ namespace MoneyKeeper.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
-        private readonly IUserAuthService authService;
+        private readonly IAuthService authService;
         private readonly ICurrentUserProvider currentUserProvider;
 
-        public UsersController(IUserService userService, IUserAuthService authService, ICurrentUserProvider currentUserProvider)
+        public UsersController(IUserService userService, IAuthService authService, ICurrentUserProvider currentUserProvider)
         {
             this.userService = userService;
             this.authService = authService;
@@ -130,78 +130,6 @@ namespace MoneyKeeper.Controllers
             }
 
             return (await userService.GetTotalForUser_ForYear(contextUser.Id).Unwrap()).Value!;
-        }
-
-
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public async Task<ApiResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
-        {
-            var (response, error) = await authService.Authenticate(model, currentUserProvider.GetCurrentUserIp()).Unwrap();
-
-            if (error)
-            {
-                return error.Wrap();
-            }
-
-            SetTokenCookie(response.RefreshToken);
-            return response;
-        }
-
-        [AllowAnonymous]
-        [HttpPost("refresh-token")]
-        public async Task<ApiResult<RefreshTokenResponse>> RefreshToken()
-        {
-            var refreshToken = Request.Cookies["refreshToken"];
-            var (response, error) = await authService.GetNewAccessToken(refreshToken).Unwrap();
-            RefreshTokenResponse rtResponse = response;
-
-            return error
-                ? error.Wrap()
-                : rtResponse;
-        }
-
-        /* [HttpPost("revoke-token")]
-		 public IActionResult RevokeToken(RevokeTokenRequest model)
-		 {
-			 // accept refresh token in request body or cookie
-			 var token = model.Token ?? Request.Cookies["refreshToken"];
-
-			 if (string.IsNullOrEmpty(token))
-				 return BadRequest(new { message = "Token is required" });
-
-			 _userService.RevokeToken(token, ipAddress());
-			 return Ok(new { message = "Token revoked" });
-		 }*/
-
-        /*[HttpGet]
-		public IActionResult GetAll()
-		{
-			var users = _userService.GetAll();
-			return Ok(users);
-
-			return Ok();
-		}*/
-
-        /*  [HttpGet("{id}/refresh-tokens")]
-          public async Task<IActionResult> GetRefreshTokens(int id)
-          {
-              var user = await _userService.GetById(id);
-              return Ok(_userService.Get);
-              return Ok();
-          }*/
-
-        private void SetTokenCookie(string token)
-        {
-            // append cookie with refresh token to the http response
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7),
-                SameSite = SameSiteMode.Lax,
-                Secure = true
-            };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
     }
 }
