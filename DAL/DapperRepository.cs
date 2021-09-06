@@ -9,7 +9,7 @@ using DAL.Settings;
 
 namespace DAL.Repositories
 {
-	public class DapperRepository : IDapperRepository
+	internal class DapperRepository : IDapperRepository
 	{
 		private readonly string connectionString;
 

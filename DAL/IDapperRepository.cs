@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-	public interface IDapperRepository
+	internal interface IDapperRepository
 	{
 		Task<O> QuerySingleWithOutput<O>(string sql, object? @params = null);
 
