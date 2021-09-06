@@ -11,6 +11,7 @@ using DAL.Repositories;
 using Microsoft.Extensions.Options;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
+using MoneyKeeper.Utils.Extensions;
 
 namespace Authenticate.Services
 {
@@ -49,7 +50,7 @@ namespace Authenticate.Services
             var user = await usersRepository.GetUser(model.Email);
 
             // validate
-            if (user is null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+            if (user is null || user.Password.HashEquals(model.Password))
             {
                 return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), "Email or password is incorrect");
             }

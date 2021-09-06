@@ -1,4 +1,6 @@
-﻿namespace BL.Extensions
+﻿using BCrypt.Net;
+
+namespace MoneyKeeper.Utils.Extensions
 {
 	public static class StringExtensions
 	{
