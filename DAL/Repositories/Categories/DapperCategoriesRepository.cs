@@ -10,8 +10,6 @@ namespace DAL.Repositories.Categories
 	{
 		private readonly IDapperRepository dapperRepository;
 
-		private const string CATEGORIES_TABLE_NAME = "Categories";
-
 		public DapperCategoriesRepository(IDapperRepository dapperRepository)
 		{
 			this.dapperRepository = dapperRepository;
@@ -19,22 +17,22 @@ namespace DAL.Repositories.Categories
 
 		public async Task<IEnumerable<Category>> GetCategories(int userId)
 		{
-			string sql = $"select * from {CATEGORIES_TABLE_NAME} where UserId = @userId";
+			string sql = "select * from Categories where UserId = @userId";
 
 			return await dapperRepository.QueryAny<Category>(sql, new { userId });
 		}
 
 		public async Task<IEnumerable<Category>> GetCategories()
 		{
-			string sql = $"select * from {CATEGORIES_TABLE_NAME}";
+			string sql = "select * from Categories";
 
 			return await dapperRepository.QueryAny<Category>(sql);
 		}
 
 		public async Task<Category> GetCategory(int id)
 		{
-			string sql = $@"
-					select * from {CATEGORIES_TABLE_NAME} 
+			string sql = @"
+					select * from Categories 
 					where 
 						Id = @id
 			";
@@ -44,8 +42,8 @@ namespace DAL.Repositories.Categories
 
 		public async Task<Category> GetCategory(int userId, string categoryName)
 		{
-			string sql = $@"
-					select * from {CATEGORIES_TABLE_NAME} 
+			string sql = @"
+					select * from Categories 
 					where 
 						UserId = @userId and Name = @categoryName
 			";
@@ -55,8 +53,8 @@ namespace DAL.Repositories.Categories
 
 		public async Task<int> CreateCategory(Category category)
 		{
-			string sql = $@"
-					insert into {CATEGORIES_TABLE_NAME}
+			string sql = @"
+					insert into Categories
 						(Name, UserId)
 					output 
 						inserted.Id
@@ -69,9 +67,9 @@ namespace DAL.Repositories.Categories
 
 		public async Task<bool> UpdateCategory(Category category)
 		{
-			string sql = $@"
+			string sql = @"
 					update 
-						{CATEGORIES_TABLE_NAME}
+						Categories
 					set
 						Name = @Name
 					where
@@ -83,8 +81,8 @@ namespace DAL.Repositories.Categories
 
 		public async Task<bool> DeleteCategory(int userId, string categoryName)
 		{
-			string sql = $@"
-					delete from {CATEGORIES_TABLE_NAME}
+			string sql = @"
+					delete from Categories
 					where 
 						UserId = @userId and Name = @categoryName
 			";
@@ -94,8 +92,8 @@ namespace DAL.Repositories.Categories
 
 		public async Task<bool> DeleteCategory(int id)
 		{
-			string sql = $@"
-					delete from {CATEGORIES_TABLE_NAME}
+			string sql = @"
+					delete from Categories
 					where 
 						Id = @id
 			";

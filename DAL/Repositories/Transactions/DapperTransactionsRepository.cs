@@ -13,8 +13,6 @@ namespace DAL.Repositories
 	{
 		private readonly IDapperRepository repository;
 
-		private const string TRANSACTIONS_TABLE_NAME = "Transactions";
-
 		public DapperTransactionsRepository(IDapperRepository repository)
 		{
 			this.repository = repository;
@@ -22,9 +20,9 @@ namespace DAL.Repositories
 
 		public async Task<Transaction> GetTransaction(int id)
 		{
-			string sql = $@"
+			string sql = @"
 				select * 
-					from {TRANSACTIONS_TABLE_NAME}
+					from Transactions
 				where
 					Id = @id
 			";
@@ -34,9 +32,9 @@ namespace DAL.Repositories
 
 		public async Task<Transaction> GetTransaction(int id, int userId)
 		{
-			string sql = $@"
+			string sql = @"
 				select * 
-					from {TRANSACTIONS_TABLE_NAME}
+					from Transactions
 				where
 					Id = @id and UserId = @userId
 			";
@@ -46,7 +44,7 @@ namespace DAL.Repositories
 
 		public async Task<IEnumerable<Transaction>> GetTransactions()
 		{
-			string sql = $"select * from {TRANSACTIONS_TABLE_NAME}";
+			string sql = "select * from Transactions";
 
 			return await repository.QueryAny<Transaction>(sql);
 		}
@@ -79,8 +77,8 @@ namespace DAL.Repositories
 
 		public async Task<int> CreateTransaction(Transaction transaction)
 		{
-			string sql = @$"
-				insert into {TRANSACTIONS_TABLE_NAME}
+			string sql = @"
+				insert into Transactions
 					(UserId, CategoryId, Amount, Timestamp, Comment)
 				output 
 					inserted.Id
@@ -93,9 +91,9 @@ namespace DAL.Repositories
 
 		public async Task<bool> DeleteTransaction(int id)
 		{
-			string sql = @$"
+			string sql = @"
 				delete 
-					from {TRANSACTIONS_TABLE_NAME} 
+					from Transactions 
 				where 
 					Id = @id
 			";

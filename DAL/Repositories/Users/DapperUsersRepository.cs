@@ -16,8 +16,6 @@ namespace DAL.Repositories
 		private readonly IDapperRepository dapperRepository;
 		private readonly ICategoriesRepository categoriesRepository;
 
-		private const string USERS_TABLE_NAME = "Users";
-
 		public DapperUsersRepository(IDapperRepository dapperRepository, ICategoriesRepository categoriesRepository)
 		{
 			this.dapperRepository = dapperRepository;
@@ -26,25 +24,25 @@ namespace DAL.Repositories
 
 		public async Task<User> GetUser(int id)
 		{
-			string sql = $"select * from {USERS_TABLE_NAME} where Id = @id";
+			string sql = "select * from Users where Id = @id";
 
 			return (await dapperRepository.QueryAny<User>(sql, new { id })).FirstOrDefault();
 		}
 
 		public async Task<User> GetUser(string email)
 		{
-			string sql = $"select * from {USERS_TABLE_NAME} where Email = @email";
+			string sql = "select * from Users where Email = @email";
 
 			return (await dapperRepository.QueryAny<User>(sql, new { email })).FirstOrDefault();
 		}
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
 		{
-			string sql = @$"
+			string sql = @"
 					select 
 						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
 					from 
-						{USERS_TABLE_NAME} 
+						Users 
 					join 
 						Categories on Users.Id = Categories.UserId
 					left outer join 
@@ -58,11 +56,11 @@ namespace DAL.Repositories
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id)
 		{
-			string sql = @$"
+			string sql = @"
 					select 
 						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
 					from 
-						{USERS_TABLE_NAME} 
+						Users 
 					join 
 						Categories on Users.Id = Categories.UserId
 					left outer join 
@@ -76,11 +74,11 @@ namespace DAL.Repositories
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id)
 		{
-			string sql = @$"
+			string sql = @"
 					select 
 						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
 					from 
-						{USERS_TABLE_NAME} 
+						Users 
 					join 
 						Categories on Users.Id = Categories.UserId
 					left outer join 
@@ -94,8 +92,8 @@ namespace DAL.Repositories
 
 		public async Task<int> CreateUser(User user)
 		{
-			string sql = @$"
-					insert into {USERS_TABLE_NAME}
+			string sql = @"
+					insert into Users
 						([FirstName], [LastName], [Email], [Password])
 					output 
 						inserted.Id
@@ -121,9 +119,9 @@ namespace DAL.Repositories
 
 		public async Task<bool> UpdateUser(User userData)
 		{
-			string sql = @$"
+			string sql = @"
 					update
-						{USERS_TABLE_NAME}
+						Users
 					set 
 						FirstName = @FirstName,
 						LastName = @LastName,
@@ -138,8 +136,8 @@ namespace DAL.Repositories
 
 		public async Task<bool> DeleteUser(int id)
 		{
-			string sql_deleteUser = @$"
-					delete from {USERS_TABLE_NAME}
+			string sql_deleteUser = @"
+					delete from Users
 					where
 						Id = @id
 			";
