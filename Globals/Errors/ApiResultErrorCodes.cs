@@ -8,6 +8,12 @@ namespace MoneyKeeper.Globals.Errors
 {
 	public enum ApiResultErrorCodes
 	{
-		USER_IS_MISSING
+		USER_IS_MISSING,
+		ALREADY_EXISTS,
+		NOT_FOUND,
+		PROHIBITED,
+		INVALID_REFRESH_TOKEN,
+		CANNOT_UPDATE,
+		CANNOT_DELETE
 	}
 }

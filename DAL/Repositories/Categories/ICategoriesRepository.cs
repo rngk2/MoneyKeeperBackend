@@ -10,17 +10,16 @@ namespace DAL.Repositories.Categories
 
 		Task<Category> GetCategory(int userId, string categoryName);
 
-		Task<IEnumerable<Category>> GetCategoriesOfUser(int userId);
+		Task<IEnumerable<Category>> GetCategories(int userId);
 
-		Task<IEnumerable<Category>> GetCategories();
-
-		Task<int> AddCategoryToUser(Category category);
+		Task<int> CreateCategory(Category category);
 		
-		Task UpdateCategoryToUser(Category category);
-		
-		Task DeleteCategory(int id);
+		Task<bool> UpdateCategory(Category category);
 
-		Task DeleteCategoryToUser(int userId, string categoryName);
+		Task<bool> DeleteCategory(int id);
+
+		Task<bool> DeleteCategory(int userId, string categoryName);
+
 
 	}
 }

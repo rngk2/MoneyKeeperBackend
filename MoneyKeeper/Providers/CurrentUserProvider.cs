@@ -4,12 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using Microsoft.AspNetCore.Http;
+using MoneyKeeper.Api.Results;
+using MoneyKeeper.Globals.Errors;
 
 namespace MoneyKeeper.Providers
 {
 	public interface ICurrentUserProvider
 	{
-		User GetCurrentUser();
+		Result<User> GetCurrentUser();
+
+		string GetCurrentUserIp();
 	}
 
 
@@ -22,9 +26,21 @@ namespace MoneyKeeper.Providers
 			this.httpContextAccessor = httpContextAccessor;
 		}
 
-		public User GetCurrentUser()
+		public Result<User> GetCurrentUser()
 		{
-			return httpContextAccessor.HttpContext.Items["User"] as User;
+			return httpContextAccessor?.HttpContext?.Items["User"] is not User user
+				? new Error(ApiResultErrorCodes.USER_IS_MISSING.ToString(), "No user provided in HttpContext")
+				: user;
 		}
-	}
+
+        public string GetCurrentUserIp()
+        {
+			if (httpContextAccessor.HttpContext?.Request.Headers.ContainsKey("X-Forwarded-For") is not null)
+			{
+				return httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-For"].ToString();
+			}
+			
+			return httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.MapToIPv4().ToString()!;
+		}
+    }
 }

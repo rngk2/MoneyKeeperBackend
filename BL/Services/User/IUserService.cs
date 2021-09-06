@@ -3,27 +3,26 @@ using System.Threading.Tasks;
 using BL.Dtos.User;
 using DAL.Entities;
 using DAL.Models;
+using MoneyKeeper.Api.Results;
 
 namespace BL.Services
 {
 	public interface IUserService
 	{
-		Task<User> CreateUser(CreateUserDto userDto);
+		Task<Result<User>> GetUser(int id);
 
-		Task DeleteUser(int id);
+		Task<Result<User>> GetUser(string email);
 
-		Task<User> GetUser(int id);
+		Task<Result<IEnumerable<SummaryUnit>>> GetSummaryForUser(int id);
 
-		Task<User> GetUser(string email);
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForMonth(int id);
 
-		Task<IEnumerable<User>> GetUsers();
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForYear(int id);
 
-		Task UpdateUser(User existingUser, UpdateUserDto userDto);
+		Task<Result<User>> CreateUser(CreateUserDto userDto);
 
-		Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id);
+		Task<Result<User>> UpdateUser(int id, UpdateUserDto userDto);
 
-		Task<Dictionary<string, decimal>> GetTotalForUser_ForMonth(int id);
-
-		Task<Dictionary<string, decimal>> GetTotalForUser_ForYear(int id);
+		Task<Result<User>> DeleteUser(int id);
 	}
 }

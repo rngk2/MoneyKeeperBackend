@@ -15,9 +15,11 @@ namespace DAL.Repositories
 
 		Task<Transaction> GetTransaction(int id);
 
+		Task<Transaction> GetTransaction(int id, int userId);
+
 		Task<int> CreateTransaction(Transaction transaction);
 
-		Task DeleteTransaction(int id);
+		Task<bool> DeleteTransaction(int id);
 
 	}
 }

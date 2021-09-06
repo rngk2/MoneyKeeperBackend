@@ -11,6 +11,8 @@ using BL.Services;
 using Globals.Errors;
 using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
+using MoneyKeeper.Api.Results;
+using MoneyKeeper.Globals.Errors;
 
 namespace MoneyKeeper.Controllers
 {
@@ -30,76 +32,117 @@ namespace MoneyKeeper.Controllers
 
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+		public async Task<ApiResult<CategoryDto>> GetCategory(int id)
 		{
-			var category = await categoryService.GetCategory(id);
-			return category is null ? NotFound() : category.AsDto();
+			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			var (category, service_error) = await categoryService.GetCategory(id, contextUser.Id).Unwrap();
+
+			return service_error
+				? service_error.Wrap()
+				: category.AsDto();
 		}
 
 		[HttpGet]
-		public async Task<IEnumerable<CategoryDto>> GetCategoriesOfUser()
+		public async Task<ApiResult<IEnumerable<CategoryDto>>> GetCategoriesOfUser()
 		{
-			return (await categoryService.GetCategoriesOfUser(currentUserProvider.GetCurrentUser().Id))
-				.Select(category => category.AsDto());
+			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			var (categories, service_error) = await categoryService.GetCategoriesOfUser(contextUser.Id).Unwrap();
+
+			return service_error
+				? service_error.Wrap()
+				: categories.Select(c => c.AsDto()).ToList();
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<CategoryDto>> AddCategoryToUser(CreateCategoryDto categoryDto)
+		public async Task<ApiResult<CategoryDto>> AddCategoryToUser(CreateCategoryDto categoryDto)
 		{
-			if ((await categoryService.GetCategory(categoryDto.UserId, categoryDto.Name)) is not null)
+			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
 			{
-				return StatusCode(409, $"User#{categoryDto.UserId} alredy has category with name={categoryDto.Name}");
+				return provider_error.Wrap();
 			}
 
-			Category createdCategory = await categoryService.AddCategoryToUser(categoryDto);
+			if (categoryDto.UserId != contextUser.Id)
+            {
+				return new Error(ApiResultErrorCodes.PROHIBITED.ToString(), $"User: #{contextUser.Id} cannot add category to user: #{categoryDto.UserId}");
+            }
 
-			return CreatedAtAction(
-					nameof(GetCategory),
-					new { id = createdCategory.Id },
-					createdCategory.AsDto()
-				);
+			var (created, service_error) = await categoryService.AddCategoryToUser(categoryDto).Unwrap();
+
+			return service_error
+				? service_error.Wrap()
+				: created.AsDto();
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> UpdateCategoryToUser(int id, UpdateCategoryDto categoryDto)
+		public async Task<ApiResult<CategoryDto>> UpdateCategoryToUser(int categoryId, UpdateCategoryDto categoryDto)
 		{
-			var existingCategory = await categoryService.GetCategory(id);
+			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
 
-			if (existingCategory is null) 
+			if (provider_error)
 			{
-				return NotFound();
+				return provider_error.Wrap();
 			}
 
-			try
-			{
-				await categoryService.UpdateCategoryToUser(existingCategory, categoryDto);
-				return NoContent();
-			}
-			catch (SqlException e)
-			{
-				if (e.Number == ((int)SqlErrorCodes.DUBLICATE_KEY_ERROR))  
-				{
-					return StatusCode(409, $"User#{existingCategory.UserId} alredy has category with name={categoryDto.Name}");
-				}
+			var (existingCategory, service_getError) = await categoryService.GetCategory(categoryId, contextUser.Id).Unwrap();
 
-				return StatusCode(500);
-			}
+			if (service_getError)
+            {
+				return service_getError.Wrap();
+            }
+
+			var (updated, service_updateError) = await categoryService.UpdateCategoryToUser(existingCategory, categoryDto).Unwrap();
+
+			return service_updateError
+				? service_updateError.Wrap()
+				: updated.AsDto();
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ActionResult> DeleteCategory(int id)
+		public async Task<ApiResult<CategoryDto>> DeleteCategory(int id)
 		{
-			await categoryService.DeleteCategory(id);
+			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
 
-			return NoContent();
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			var (deleted, error) = await categoryService.DeleteCategoryToUser(id, contextUser.Id).Unwrap();
+
+			return error
+				? error.Wrap()
+				: deleted.AsDto();
 		}
 
-		[HttpDelete("byname/{categoryName}")]	
-		public async Task<ActionResult> DeleteCategory(string categoryName)
-		{
-			await categoryService.DeleteCategoryToUser(currentUserProvider.GetCurrentUser().Id, categoryName);
+        [HttpDelete("byName/{categoryName}")]
+        public async Task<ApiResult<CategoryDto>> DeleteCategory(string categoryName)
+        {
+			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
 
-			return NoContent();
-		}
-	}
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			var (deleted, service_error) = await categoryService.DeleteCategoryToUser(categoryName, contextUser.Id).Unwrap();
+
+            return service_error
+				? service_error.Wrap()
+				: deleted.AsDto();
+        }
+    }
 }

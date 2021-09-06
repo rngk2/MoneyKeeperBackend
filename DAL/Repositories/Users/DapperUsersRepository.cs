@@ -7,6 +7,7 @@ using DAL.Settings;
 using DAL.Utils;
 using DAL.Models;
 using DAL.Repositories.Categories;
+using MoneyKeeper.Globals;
 
 namespace DAL.Repositories
 {
@@ -34,68 +35,6 @@ namespace DAL.Repositories
 			string sql = $"select * from {USERS_TABLE_NAME} where Email = @email";
 
 			return (await dapperRepository.QueryAny<User>(sql, new { email })).FirstOrDefault();
-		}
-
-		public async Task<IEnumerable<User>> GetUsers()
-		{
-			string sql = "select * from users";
-
-			return await dapperRepository.QueryAny<User>(sql);
-		}
-
-		public async Task<int> CreateUser(User user)
-		{
-			string sql = @$"
-					insert into {USERS_TABLE_NAME}
-						([FirstName], [LastName], [Email], [Password])
-					output 
-						inserted.Id
-					values 
-						(@FirstName, @LastName, @Email, @Password)
-			";
-
-			int createdId = await dapperRepository.QuerySingleWithOutput<int>(sql, user);
-
-			await AddDefaultCategoriesToUser(createdId);
-
-			return createdId;
-		}
-
-		private async Task AddDefaultCategoriesToUser(int userId)
-		{
-			await categoriesRepository.AddCategoryToUser(new()
-			{
-				Name = "Earnings",
-				UserId = userId
-			});
-		}
-
-		public async Task UpdateUser(User userData)
-		{
-			string sql = @$"
-					update
-						{USERS_TABLE_NAME}
-					set 
-						FirstName = @FirstName,
-						LastName = @LastName,
-						Email = @Email,
-						Password = @Password
-					where
-						Id = @Id		
-			";
-
-			await dapperRepository.ExecuteAny(sql, userData);
-		}
-
-		public async Task DeleteUser(int id)
-		{
-			string sql = @$"
-					delete from {USERS_TABLE_NAME}
-					where
-						Id = @id
-			";
-
-			await dapperRepository.ExecuteAny(sql, new { id });
 		}
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
@@ -133,7 +72,7 @@ namespace DAL.Repositories
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
 		}
-		
+
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id)
 		{
 			string sql = @$"
@@ -150,6 +89,61 @@ namespace DAL.Repositories
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
+		}
+
+		public async Task<int> CreateUser(User user)
+		{
+			string sql = @$"
+					insert into {USERS_TABLE_NAME}
+						([FirstName], [LastName], [Email], [Password])
+					output 
+						inserted.Id
+					values 
+						(@FirstName, @LastName, @Email, @Password)
+			";
+
+			int createdId = await dapperRepository.QuerySingleWithOutput<int>(sql, user);
+
+			await AddDefaultCategoriesToUser(createdId);
+
+			return createdId;
+		}
+
+		private async Task AddDefaultCategoriesToUser(int userId)
+		{
+			await categoriesRepository.CreateCategory(new()
+			{
+				Name = "Earnings",
+				UserId = userId
+			});
+		}
+
+		public async Task<bool> UpdateUser(User userData)
+		{
+			string sql = @$"
+					update
+						{USERS_TABLE_NAME}
+					set 
+						FirstName = @FirstName,
+						LastName = @LastName,
+						Email = @Email,
+						Password = @Password
+					where
+						Id = @Id		
+			";
+
+			return await dapperRepository.ExecuteAny(sql, userData) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+		}
+
+		public async Task<bool> DeleteUser(int id)
+		{
+			string sql_deleteUser = @$"
+					delete from {USERS_TABLE_NAME}
+					where
+						Id = @id
+			";
+
+			return await dapperRepository.ExecuteAny(sql_deleteUser, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }

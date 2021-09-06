@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
+using MoneyKeeper.Globals;
 
 namespace DAL.Repositories.Categories
 {
@@ -16,7 +17,7 @@ namespace DAL.Repositories.Categories
 			this.dapperRepository = dapperRepository;
 		}
 
-		public async Task<IEnumerable<Category>> GetCategoriesOfUser(int userId)
+		public async Task<IEnumerable<Category>> GetCategories(int userId)
 		{
 			string sql = $"select * from {CATEGORIES_TABLE_NAME} where UserId = @userId";
 
@@ -32,21 +33,29 @@ namespace DAL.Repositories.Categories
 
 		public async Task<Category> GetCategory(int id)
 		{
-			string sql = $"select * from {CATEGORIES_TABLE_NAME} where Id = @id";
+			string sql = $@"
+					select * from {CATEGORIES_TABLE_NAME} 
+					where 
+						Id = @id
+			";
 
-			return (await dapperRepository.QueryAny<Category>(sql, new { id })).FirstOrDefault();
+			return (await dapperRepository.QueryAny<Category>(sql, new { id })).FirstOrDefault()!;
 		}
 
 		public async Task<Category> GetCategory(int userId, string categoryName)
 		{
-			string sql = $"select * from {CATEGORIES_TABLE_NAME} where UserId = @userId and Name = @categoryName";
+			string sql = $@"
+					select * from {CATEGORIES_TABLE_NAME} 
+					where 
+						UserId = @userId and Name = @categoryName
+			";
 
-			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault();
+			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault()!;
 		}
 
-		public async Task<int> AddCategoryToUser(Category category)
+		public async Task<int> CreateCategory(Category category)
 		{
-			string sql = @$"
+			string sql = $@"
 					insert into {CATEGORIES_TABLE_NAME}
 						(Name, UserId)
 					output 
@@ -58,21 +67,9 @@ namespace DAL.Repositories.Categories
 			return await dapperRepository.QuerySingleWithOutput<int>(sql, category);
 		}
 
-		public async Task DeleteCategory(int id)
+		public async Task<bool> UpdateCategory(Category category)
 		{
-			string sql = @$"
-					delete from {CATEGORIES_TABLE_NAME}
-					where
-						Id = @id
-							
-			";
-
-			await dapperRepository.ExecuteAny(sql, new { id });
-		}
-
-		public async Task UpdateCategoryToUser(Category category)
-		{
-			string sql = @$"
+			string sql = $@"
 					update 
 						{CATEGORIES_TABLE_NAME}
 					set
@@ -81,14 +78,29 @@ namespace DAL.Repositories.Categories
 						Id = @Id
 			";
 
-			await dapperRepository.ExecuteAny(sql, category);
+			return await dapperRepository.ExecuteAny(sql, category) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
-		public async Task DeleteCategoryToUser(int userId, string categoryName)
+		public async Task<bool> DeleteCategory(int userId, string categoryName)
 		{
-			var sql = $"delete from {CATEGORIES_TABLE_NAME} where UserId = @userId and Name = @categoryName";
+			string sql = $@"
+					delete from {CATEGORIES_TABLE_NAME}
+					where 
+						UserId = @userId and Name = @categoryName
+			";
 
-			await dapperRepository.ExecuteAny(sql, new { userId, categoryName });
+			return await dapperRepository.ExecuteAny(sql, new { userId, categoryName }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+		}
+
+		public async Task<bool> DeleteCategory(int id)
+        {
+			string sql = $@"
+					delete from {CATEGORIES_TABLE_NAME}
+					where 
+						Id = @id
+			";
+
+			return await dapperRepository.ExecuteAny(sql, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }

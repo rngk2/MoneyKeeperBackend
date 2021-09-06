@@ -13,19 +13,16 @@ namespace DAL.Repositories
 
 		Task<User> GetUser(string email);
 
-		Task<IEnumerable<User>> GetUsers();
-
-		Task<int> CreateUser(User user);
-
-		Task UpdateUser(User user);
-
-		Task DeleteUser(int id);
-
 		Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id);
 
 		Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id);
 
 		Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id);
 
+		Task<int> CreateUser(User user);
+
+		Task<bool> UpdateUser(User user);
+
+		Task<bool> DeleteUser(int id);
 	}
 }
