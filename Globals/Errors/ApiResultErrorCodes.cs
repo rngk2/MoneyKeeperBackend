@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MoneyKeeper.Globals.Errors
 {
-	public enum ApiResultErrorCodes
+	public class ApiResultErrorCodes
 	{
-		USER_IS_MISSING,
-		ALREADY_EXISTS,
-		NOT_FOUND,
-		PROHIBITED,
-		INVALID_REFRESH_TOKEN,
-		CANNOT_UPDATE,
-		CANNOT_DELETE
+		public static readonly string USER_IS_MISSING = "USER_IS_MISSING";
+		public static readonly string ALREADY_EXISTS = "ALREADY_EXISTS";
+		public static readonly string NOT_FOUND = "NOT_FOUND";
+		public static readonly string PROHIBITED = "PROHIBITED";
+		public static readonly string INVALID_REFRESH_TOKEN = "INVALID_REFRESH_TOKEN";
+		public static readonly string CANNOT_UPDATE = "CANNOT_UPDATE";
+		public static readonly string CANNOT_DELETE = "CANNOT_DELETE";
 	}
 }

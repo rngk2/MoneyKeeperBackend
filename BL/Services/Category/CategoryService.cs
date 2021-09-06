@@ -23,7 +23,7 @@ namespace BL.Services
 			var category = await repository.GetCategory(userId, categoryName);
 			return category is not null
 				? category
-				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find category: {categoryName} of user: #{userId}");
+				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find category: {categoryName} of user: #{userId}");
 		}
 
 		public async Task<Result<Category>> GetCategory(int categoryId, int userId)
@@ -32,7 +32,7 @@ namespace BL.Services
 
 			return category is not null && category.Id == userId
 				? category
-				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find category: #{categoryId}");
+				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find category: #{categoryId}");
 		}
 
 		public async Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId)
@@ -44,7 +44,7 @@ namespace BL.Services
 		{
 			if (await GetCategory(categoryDto.UserId, categoryDto.Name) is not null)
 			{
-				return new Error(ApiResultErrorCodes.ALREADY_EXISTS.ToString(),
+				return new Error(ApiResultErrorCodes.ALREADY_EXISTS,
 					$"User: {categoryDto.UserId} already has category with name: {categoryDto.Name}");
 			}
 
@@ -73,7 +73,7 @@ namespace BL.Services
 
 			return await repository.UpdateCategory(updatedCategory)
 				? updatedCategory
-				: new Error(ApiResultErrorCodes.CANNOT_UPDATE.ToString(), $"Error occured while updating category: #{existingCategory.Id}");
+				: new Error(ApiResultErrorCodes.CANNOT_UPDATE, $"Error occured while updating category: #{existingCategory.Id}");
 		}
 
 		public async Task<Result<Category>> DeleteCategoryToUser(string categoryName, int userId)
@@ -87,7 +87,7 @@ namespace BL.Services
 
 			return await repository.DeleteCategory(userId, categoryName)
 				? toDelete
-				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), "Error occured while deleting");
+				: new Error(ApiResultErrorCodes.CANNOT_DELETE, "Error occured while deleting");
 		}
 
 		public async Task<Result<Category>> DeleteCategoryToUser(int categoryId, int userId)
@@ -100,12 +100,12 @@ namespace BL.Services
 			}
 			else if (toDelete.Id != userId)
 			{
-				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User {userId} has no category with id: {categoryId}");
+				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User {userId} has no category with id: {categoryId}");
 			}
 
 			return await repository.DeleteCategory(categoryId)
 				? toDelete
-				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), "Error occured while deleting");
+				: new Error(ApiResultErrorCodes.CANNOT_DELETE, "Error occured while deleting");
 		}
 
 	}

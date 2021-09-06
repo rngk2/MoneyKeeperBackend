@@ -29,7 +29,7 @@ namespace MoneyKeeper.Providers
 		public Result<User> GetCurrentUser()
 		{
 			return httpContextAccessor?.HttpContext?.Items["User"] is not User user
-				? new Error(ApiResultErrorCodes.USER_IS_MISSING.ToString(), "No user provided in HttpContext")
+				? new Error(ApiResultErrorCodes.USER_IS_MISSING, "No user provided in HttpContext")
 				: user;
 		}
 

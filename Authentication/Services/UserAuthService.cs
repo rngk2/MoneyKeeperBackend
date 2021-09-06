@@ -52,7 +52,7 @@ namespace Authenticate.Services
 			// validate
 			if (user is null || user.Password.HashEquals(model.Password))
 			{
-				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), "Email or password is incorrect");
+				return new Error(ApiResultErrorCodes.NOT_FOUND, "Email or password is incorrect");
 			}
 
 			// authentication successful so generate jwt and refresh tokens
@@ -81,7 +81,7 @@ namespace Authenticate.Services
 
 			if (!refreshToken.IsActive)
 			{
-				return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN.ToString(), "Invalid refresh token");
+				return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN, "Invalid refresh token");
 			}
 
 			// replace old refresh token with a new one (rotate token)
@@ -103,7 +103,7 @@ namespace Authenticate.Services
 
 			if (!refrshToken.IsActive)
 			{
-				return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN.ToString(), "Invalid refresh token");
+				return new Error(ApiResultErrorCodes.INVALID_REFRESH_TOKEN, "Invalid refresh token");
 			}
 
 			var (user, error) = await GetUserByRefreshToken(token).Unwrap();
@@ -140,7 +140,7 @@ namespace Authenticate.Services
 
 			if (user is null)
 			{
-				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User: #{id} not found");
+				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User: #{id} not found");
 			}
 
 			return user;
@@ -153,7 +153,7 @@ namespace Authenticate.Services
 
 			if (user is null)
 			{
-				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), "Cannot find any user with provided token");
+				return new Error(ApiResultErrorCodes.NOT_FOUND, "Cannot find any user with provided token");
 			}
 
 			return user;

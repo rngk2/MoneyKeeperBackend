@@ -26,7 +26,7 @@ namespace BL.Services
 
 			if (transaction is null)
 			{
-				return new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"User #{userId} has no transaction with id: {id}");
+				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User #{userId} has no transaction with id: {id}");
 			}
 
 			return transaction;
@@ -74,7 +74,7 @@ namespace BL.Services
 
 			return await repository.DeleteTransaction(id)
 				? toDelete
-				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), $"Error occured while deleting");
+				: new Error(ApiResultErrorCodes.CANNOT_DELETE, $"Error occured while deleting");
 		}
 	}
 }

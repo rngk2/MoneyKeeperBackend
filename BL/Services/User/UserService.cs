@@ -28,7 +28,7 @@ namespace BL.Services
 			var user = await repository.GetUser(id);
 			return user is not null
 				? user
-				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find user with id: {id}");
+				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with id: {id}");
 		}
 
 		public async Task<Result<User>> GetUser(string email)
@@ -36,7 +36,7 @@ namespace BL.Services
 			var user = await repository.GetUser(email);
 			return user is not null
 				? user
-				: new Error(ApiResultErrorCodes.NOT_FOUND.ToString(), $"Cannot find user with email: {email}");
+				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with email: {email}");
 		}
 
 
@@ -74,7 +74,7 @@ namespace BL.Services
 		{
 			if (await GetUser(userDto.Email) is not null)
 			{
-				return new Error(ApiResultErrorCodes.ALREADY_EXISTS.ToString(), $"Already have user with email: {userDto.Email}");
+				return new Error(ApiResultErrorCodes.ALREADY_EXISTS, $"Already have user with email: {userDto.Email}");
 			}
 
 			User newUser = new()
@@ -118,7 +118,7 @@ namespace BL.Services
 
 			return await repository.UpdateUser(updatedUser)
 				? updatedUser
-				: new Error(ApiResultErrorCodes.CANNOT_UPDATE.ToString(), $"Error occured while updating user: #{existingUser.Id}");
+				: new Error(ApiResultErrorCodes.CANNOT_UPDATE, $"Error occured while updating user: #{existingUser.Id}");
 		}
 
 		public async Task<Result<User>> DeleteUser(int id)
@@ -132,7 +132,7 @@ namespace BL.Services
 
 			return await repository.DeleteUser(id)
 				? toDelete
-				: new Error(ApiResultErrorCodes.CANNOT_DELETE.ToString(), $"Error occured while user: #{id}");
+				: new Error(ApiResultErrorCodes.CANNOT_DELETE, $"Error occured while user: #{id}");
 		}
 	}
 }
