@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MoneyKeeper.Authentication.Helpers;
+using MoneyKeeper.Authentication.Services;
+using MoneyKeeper.Authentication.Utils;
 
 namespace MoneyKeeper.Authentication.Middlewares
 {
