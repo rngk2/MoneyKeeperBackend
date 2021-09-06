@@ -79,17 +79,6 @@ namespace DAL.Repositories.Categories
 			return await dapperRepository.ExecuteAny(sql, category) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
-		public async Task<bool> DeleteCategory(int userId, string categoryName)
-		{
-			string sql = @"
-					delete from Categories
-					where 
-						UserId = @userId and Name = @categoryName
-			";
-
-			return await dapperRepository.ExecuteAny(sql, new { userId, categoryName }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
-		}
-
 		public async Task<bool> DeleteCategory(int id)
 		{
 			string sql = @"

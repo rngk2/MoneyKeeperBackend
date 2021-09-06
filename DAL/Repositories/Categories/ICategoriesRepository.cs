@@ -17,9 +17,5 @@ namespace DAL.Repositories.Categories
 		Task<bool> UpdateCategory(Category category);
 
 		Task<bool> DeleteCategory(int id);
-
-		Task<bool> DeleteCategory(int userId, string categoryName);
-
-
 	}
 }

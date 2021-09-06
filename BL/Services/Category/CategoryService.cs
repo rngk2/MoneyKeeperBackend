@@ -85,7 +85,7 @@ namespace BL.Services
 				return error.Wrap();
 			}
 
-			return await repository.DeleteCategory(userId, categoryName)
+			return await repository.DeleteCategory(toDelete.Id)
 				? toDelete
 				: new Error(ApiResultErrorCodes.CANNOT_DELETE, "Error occured while deleting");
 		}
