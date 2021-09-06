@@ -50,7 +50,7 @@ namespace Authenticate.Services
 			var user = await usersRepository.GetUser(model.Email);
 
 			// validate
-			if (user is null || user.Password.HashEquals(model.Password))
+			if (user is null || !user.Password.HashEquals(model.Password))
 			{
 				return new Error(ApiResultErrorCodes.NOT_FOUND, "Email or password is incorrect");
 			}
