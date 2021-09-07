@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DAL.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MoneyKeepeer.Authentication;
 using MoneyKeeper.Authentication.Helpers;
 
 namespace MoneyKeeper.Authentication.Utils
@@ -31,14 +32,17 @@ namespace MoneyKeeper.Authentication.Utils
         public string GenerateJwtToken(int userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.UTF8.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(type: "id", value: userId.ToString()) }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256),
+                Issuer = JwtAuthOptions.ISSUER,
+                Audience = JwtAuthOptions.AUDIENCE
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
             return tokenHandler.WriteToken(token);
         }
 

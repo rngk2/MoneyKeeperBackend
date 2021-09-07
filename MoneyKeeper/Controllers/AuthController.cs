@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyKeepeer.Authentication.Models;
 using MoneyKeeper.Api.Results;
-using MoneyKeeper.Attributes;
 using MoneyKeeper.Authentication.Services;
 using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Api.Controllers
 {
-	[Route("[controller]")]
-	[ApiController]
-	public class AuthController : ControllerBase
-	{
+    [Route("[controller]")]
+    [ApiController]
+    [Authorize]
+    public class AuthController : ControllerBase
+    {
         private readonly IAuthService authService;
         private readonly ICurrentUserProvider currentUserProvider;
-
+ 
         public AuthController(IAuthService authService, ICurrentUserProvider currentUserProvider)
         {
             this.authService = authService;

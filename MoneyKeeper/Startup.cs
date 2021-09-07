@@ -14,6 +14,8 @@ using MoneyKeeper.BL;
 using MoneyKeeper.DAL;
 using MoneyKeeper.Providers;
 using MoneyKeeper.Authentication;
+using MoneyKeepeer.Authentication;
+using System.Text;
 
 namespace MoneyKeeper
 {
@@ -42,7 +44,9 @@ namespace MoneyKeeper
 							ValidateAudience = true,
 							ValidAudience = JwtAuthOptions.AUDIENCE,
 							ValidateLifetime = true,
-							IssuerSigningKey = JwtAuthOptions.SymmetricSecurityKey,
+							IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+								Configuration.GetSection(nameof(AuthSettings)).Get<AuthSettings>().Secret)
+							),
 							ValidateIssuerSigningKey = true,
 						};
 					});
@@ -63,7 +67,6 @@ namespace MoneyKeeper
 			services.ConfigureRepos();
 
 			services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-
 
 			services.Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 			services.Configure<DapperSettings>(Configuration.GetSection(nameof(DapperSettings)));
@@ -93,10 +96,10 @@ namespace MoneyKeeper
 
 			app.UseRouting();
 
-
 			app.UseCors(allowFrontendPolicy);
 
-			app.UseMiddleware<JwtMiddleware>();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

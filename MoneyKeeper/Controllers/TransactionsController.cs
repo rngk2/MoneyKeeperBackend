@@ -8,10 +8,10 @@ using BL.Dtos.Transaction;
 using BL.Extensions;
 using BL.Services;
 using Globals.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyKeeper.Api.Results;
-using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
 
 namespace MoneyKeeper.Controllers

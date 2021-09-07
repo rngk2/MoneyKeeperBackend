@@ -9,10 +9,10 @@ using BL.Dtos.Category;
 using BL.Extensions;
 using BL.Services;
 using Globals.Errors;
-using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyKeeper.Controllers
 {

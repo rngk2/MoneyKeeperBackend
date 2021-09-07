@@ -13,9 +13,9 @@ using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoneyKeeper.Api.Results;
-using MoneyKeeper.Attributes;
 using MoneyKeeper.Providers;
 using MoneyKeepeer.Authentication.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyKeeper.Controllers
 {
@@ -99,7 +99,7 @@ namespace MoneyKeeper.Controllers
             var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
-            {
+            { 
                 return provider_error.Wrap();
             }
 
