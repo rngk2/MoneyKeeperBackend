@@ -1,5 +1,4 @@
 ﻿using MoneyKeeper.Authentication.Helpers;
-using MoneyKeeper.Authentication.Middlewares;
 using BL;
 using DAL.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
