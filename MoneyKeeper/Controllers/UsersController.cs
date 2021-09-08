@@ -38,7 +38,7 @@ namespace MoneyKeeper.Controllers
         [HttpGet]
         public async Task<ApiResult<UserDto>> GetUser()
         {
-            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
             {
@@ -62,7 +62,7 @@ namespace MoneyKeeper.Controllers
         [HttpPut]
         public async Task<ApiResult<UserDto>> UpdateUser(UpdateUserDto userDto)
         {
-            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
             {
@@ -79,7 +79,7 @@ namespace MoneyKeeper.Controllers
         [HttpDelete]
         public async Task<ApiResult<UserDto>> DeleteUser()
         {
-            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
             {
@@ -96,7 +96,7 @@ namespace MoneyKeeper.Controllers
         [HttpGet("summary")]
         public async Task<ApiResult<IEnumerable<SummaryUnit>>> GetSummary_ForMonth()
         {
-            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
             { 
@@ -109,7 +109,7 @@ namespace MoneyKeeper.Controllers
         [HttpGet("total/month")]
         public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal_ForMonth()
         {
-            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
             {
@@ -122,7 +122,7 @@ namespace MoneyKeeper.Controllers
         [HttpGet("total/year")]
         public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal_ForYear()
         {
-            var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
             if (provider_error)
             {

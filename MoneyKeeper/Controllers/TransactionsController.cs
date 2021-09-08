@@ -34,7 +34,7 @@ namespace MoneyKeeper.Controllers
 		[HttpGet("{id}")]
 		public async Task<ApiResult<TransactionDto>> GetTransaction(int id)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -51,7 +51,7 @@ namespace MoneyKeeper.Controllers
 		/*[HttpGet]
 		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactions()
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -65,7 +65,7 @@ namespace MoneyKeeper.Controllers
 		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactionsOfUser(
 			[Required] int from, [Required] int to, string? like = null, DateTimeOffset? when = null)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -84,7 +84,7 @@ namespace MoneyKeeper.Controllers
 		[HttpPost]
 		public async Task<ApiResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -101,7 +101,7 @@ namespace MoneyKeeper.Controllers
 		[HttpDelete("{id}")]
 		public async Task<ApiResult<TransactionDto>> DeleteTransaction(int id)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{

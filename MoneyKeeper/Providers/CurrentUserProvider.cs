@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using MoneyKeeper.Api.Results;
+using MoneyKeeper.Authentication.Services;
 using MoneyKeeper.Globals.Errors;
 
 namespace MoneyKeeper.Providers
 {
 	public interface ICurrentUserProvider
 	{
-		Result<User> GetCurrentUser();
+		Task<Result<User>> GetCurrentUser();
 
 		string GetCurrentUserIp();
 	}
@@ -20,17 +22,35 @@ namespace MoneyKeeper.Providers
 	public class CurrentUserProvider : ICurrentUserProvider
 	{
 		private readonly IHttpContextAccessor httpContextAccessor;
+		private readonly ClaimsPrincipal? userClaims;
+		
+		private readonly IAuthService authService;
 
-		public CurrentUserProvider(IHttpContextAccessor httpContextAccessor)
+		public CurrentUserProvider(IHttpContextAccessor httpContextAccessor, IAuthService authService)
 		{
 			this.httpContextAccessor = httpContextAccessor;
+			this.authService = authService;
+
+			userClaims = httpContextAccessor.HttpContext?.User;
 		}
 
-		public Result<User> GetCurrentUser()
+		public async Task<Result<User>> GetCurrentUser()
 		{
-			return httpContextAccessor?.HttpContext?.Items["User"] is not User user
-				? new Error(ApiResultErrorCodes.USER_IS_MISSING, "No user provided in HttpContext")
-				: user;
+			if (userClaims is null)
+			{
+				return new Error(ApiResultErrorCodes.USER_IS_MISSING, "No user provided in HttpContext");
+			}
+
+			int userId = int.Parse(userClaims.Claims.Where(c => c.Type == "id").First().Value);
+
+			var (user, service_error) = await authService.GetById(userId).Unwrap();
+
+			if (service_error is not null) 
+			{
+				throw new Exception(service_error.Code + ": " + service_error.Message);
+			}
+
+			return user;
 		}
 
         public string GetCurrentUserIp()

@@ -34,7 +34,7 @@ namespace MoneyKeeper.Controllers
 		[HttpGet("{id}")]
 		public async Task<ApiResult<CategoryDto>> GetCategory(int id)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -51,7 +51,7 @@ namespace MoneyKeeper.Controllers
 		[HttpGet]
 		public async Task<ApiResult<IEnumerable<CategoryDto>>> GetCategoriesOfUser()
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -68,7 +68,7 @@ namespace MoneyKeeper.Controllers
 		[HttpPost]
 		public async Task<ApiResult<CategoryDto>> AddCategoryToUser(CreateCategoryDto categoryDto)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -90,7 +90,7 @@ namespace MoneyKeeper.Controllers
 		[HttpPut("{id}")]
 		public async Task<ApiResult<CategoryDto>> UpdateCategoryToUser(int categoryId, UpdateCategoryDto categoryDto)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -114,7 +114,7 @@ namespace MoneyKeeper.Controllers
 		[HttpDelete("{id}")]
 		public async Task<ApiResult<CategoryDto>> DeleteCategory(int id)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
@@ -131,7 +131,7 @@ namespace MoneyKeeper.Controllers
 		[HttpDelete]
 		public async Task<ApiResult<CategoryDto>> DeleteCategory(string categoryName)
 		{
-			var (contextUser, provider_error) = currentUserProvider.GetCurrentUser().Unwrap();
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
 			if (provider_error)
 			{
