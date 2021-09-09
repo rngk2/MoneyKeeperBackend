@@ -38,15 +38,13 @@ namespace DAL.Repositories
 		{
 			string sql = @"
 					select 
-						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
+						Transactions.*, Categories.Name CategoryName 
 					from 
-						Users 
-					join 
-						Categories on Users.Id = Categories.UserId
-					left outer join 
-						Transactions on Categories.Id = Transactions.CategoryId
-					where 
-						Users.Id=@id
+						Transactions
+					join
+						Categories on Categories.Id = Transactions.CategoryId
+					where
+						Transactions.UserId = @id
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
@@ -56,15 +54,13 @@ namespace DAL.Repositories
 		{
 			string sql = @"
 					select 
-						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
+						Transactions.*, Categories.Name CategoryName 
 					from 
-						Users 
-					join 
-						Categories on Users.Id = Categories.UserId
-					left outer join 
-						Transactions on Categories.Id = Transactions.CategoryId
-					where 
-						Users.Id=@id and month(Timestamp) = month(getdate())
+						Transactions
+					join
+						Categories on Categories.Id = Transactions.CategoryId
+					where
+						Transactions.UserId = @id and month(Timestamp) = month(getdate())
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
@@ -74,15 +70,13 @@ namespace DAL.Repositories
 		{
 			string sql = @"
 					select 
-						Users.Id UserId, Categories.Name CategoryName, Categories.Id CategoryId, Transactions.*
+						Transactions.*, Categories.Name CategoryName 
 					from 
-						Users 
-					join 
-						Categories on Users.Id = Categories.UserId
-					left outer join 
-						Transactions on Categories.Id = Transactions.CategoryId
-					where 
-						Users.Id=@id and year(Timestamp) = year(getdate())
+						Transactions
+					join
+						Categories on Categories.Id = Transactions.CategoryId
+					where
+						Transactions.UserId = @id and year(Timestamp) = year(getdate())
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
