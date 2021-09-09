@@ -48,12 +48,12 @@ namespace BL.Services
 			return new SuccessResult<IEnumerable<SummaryUnit>>(await usersRepository.GetSummaryForUser(id));
 		}
 
-		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForYear(int id)
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id)
 		{
 			return ComputeTotal(await usersRepository.GetSummaryForUser_ForYear(id));
 		}
 
-		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForMonth(int id)
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id)
 		{
 			return ComputeTotal(await usersRepository.GetSummaryForUser_ForMonth(id));
 		}

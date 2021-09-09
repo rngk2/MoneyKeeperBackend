@@ -94,7 +94,7 @@ namespace MoneyKeeper.Controllers
         }
 
         [HttpGet("summary")]
-        public async Task<ApiResult<IEnumerable<SummaryUnit>>> GetSummary_ForMonth()
+        public async Task<ApiResult<IEnumerable<SummaryUnit>>> GetSummaryForMonth()
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -107,7 +107,7 @@ namespace MoneyKeeper.Controllers
         }
 
         [HttpGet("total/month")]
-        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal_ForMonth()
+        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotalForMonth()
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -116,11 +116,11 @@ namespace MoneyKeeper.Controllers
                 return provider_error.Wrap();
             }
 
-            return (await userService.GetTotalForUser_ForMonth(contextUser.Id).Unwrap()).Value!;
+            return (await userService.GetTotalForUserForMonth(contextUser.Id).Unwrap()).Value!;
         }
 
         [HttpGet("total/year")]
-        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal_ForYear()
+        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotalForYear()
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -129,7 +129,7 @@ namespace MoneyKeeper.Controllers
                 return provider_error.Wrap();
             }
 
-            return (await userService.GetTotalForUser_ForYear(contextUser.Id).Unwrap()).Value!;
+            return (await userService.GetTotalForUserForYear(contextUser.Id).Unwrap()).Value!;
         }
     }
 }

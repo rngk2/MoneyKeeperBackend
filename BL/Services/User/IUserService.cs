@@ -15,9 +15,9 @@ namespace BL.Services
 
 		Task<Result<IEnumerable<SummaryUnit>>> GetSummaryForUser(int id);
 
-		Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForMonth(int id);
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id);
 
-		Task<Result<Dictionary<string, decimal>>> GetTotalForUser_ForYear(int id);
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id);
 
 		Task<Result<User>> CreateUser(CreateUserDto userDto);
 
