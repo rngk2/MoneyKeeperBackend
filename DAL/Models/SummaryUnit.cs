@@ -14,7 +14,7 @@ namespace DAL.Models
 
 		public string CategoryName { get; init; }
 
-		public int CategoryId { get; set; }
+		public int CategoryId { get; init; }
 
 		public decimal Amount { get; init; }
 
