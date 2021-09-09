@@ -50,12 +50,12 @@ namespace BL.Services
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id)
 		{
-			return ComputeTotal(await usersRepository.GetSummaryForUser_ForYear(id));
+			return ComputeTotal(await usersRepository.GetSummaryForUserForYear(id));
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id)
 		{
-			return ComputeTotal(await usersRepository.GetSummaryForUser_ForMonth(id));
+			return ComputeTotal(await usersRepository.GetSummaryForUserForMonth(id));
 		}
 
 		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<SummaryUnit> summaryUnits)

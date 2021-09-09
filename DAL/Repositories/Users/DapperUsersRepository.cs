@@ -50,7 +50,7 @@ namespace DAL.Repositories
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
 		}
 
-		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id)
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUserForMonth(int id)
 		{
 			string sql = @"
 					select 
@@ -66,7 +66,7 @@ namespace DAL.Repositories
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
 		}
 
-		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id)
+		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUserForYear(int id)
 		{
 			string sql = @"
 					select 

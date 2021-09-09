@@ -15,9 +15,9 @@ namespace DAL.Repositories
 
 		Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id);
 
-		Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForMonth(int id);
+		Task<IEnumerable<SummaryUnit>> GetSummaryForUserForMonth(int id);
 
-		Task<IEnumerable<SummaryUnit>> GetSummaryForUser_ForYear(int id);
+		Task<IEnumerable<SummaryUnit>> GetSummaryForUserForYear(int id);
 
 		Task<int> CreateUser(User user);
 
