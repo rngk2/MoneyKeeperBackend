@@ -75,7 +75,7 @@ namespace BL.Services
 
 		public async Task<Result<User>> CreateUser(CreateUserDto userDto)
 		{
-			if (await GetUser(userDto.Email) is not null)
+			if ((await GetUser(userDto.Email).Unwrap()).Value is not null)
 			{
 				return new Error(ApiResultErrorCodes.ALREADY_EXISTS, $"Already have user with email: {userDto.Email}");
 			}
