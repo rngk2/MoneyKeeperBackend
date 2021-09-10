@@ -36,15 +36,15 @@ namespace DAL.Repositories
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
 		{
-			string sql = @"
+			string sql = @"					
 					select 
-						Transactions.*, Categories.Name CategoryName 
+						Categories.Name CategoryName, Transactions.*
 					from 
 						Transactions
-					join
+					right join
 						Categories on Categories.Id = Transactions.CategoryId
 					where
-						Transactions.UserId = @id
+						Categories.UserId = @id
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
@@ -52,15 +52,15 @@ namespace DAL.Repositories
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUserForMonth(int id)
 		{
-			string sql = @"
+			string sql = @"						
 					select 
-						Transactions.*, Categories.Name CategoryName 
+						Categories.Name CategoryName, Transactions.*
 					from 
 						Transactions
-					join
+					right join
 						Categories on Categories.Id = Transactions.CategoryId
 					where
-						Transactions.UserId = @id and month(Timestamp) = month(getdate())
+						Categories.UserId = @id and month(Timestamp) = month(getdate())
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
@@ -68,15 +68,15 @@ namespace DAL.Repositories
 
 		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUserForYear(int id)
 		{
-			string sql = @"
+			string sql = @"						
 					select 
-						Transactions.*, Categories.Name CategoryName 
+						Categories.Name CategoryName, Transactions.*
 					from 
 						Transactions
-					join
+					right join
 						Categories on Categories.Id = Transactions.CategoryId
 					where
-						Transactions.UserId = @id and year(Timestamp) = year(getdate())
+						Categories.UserId = @id and year(Timestamp) = year(getdate())
 			";
 
 			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });

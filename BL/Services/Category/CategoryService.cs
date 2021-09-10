@@ -42,7 +42,7 @@ namespace BL.Services
 
 		public async Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto)
 		{
-			if (await GetCategory(categoryDto.UserId, categoryDto.Name) is not null)
+			if ((await GetCategory(categoryDto.UserId, categoryDto.Name).Unwrap()).Value is not null)
 			{
 				return new Error(ApiResultErrorCodes.ALREADY_EXISTS,
 					$"User: {categoryDto.UserId} already has category with name: {categoryDto.Name}");

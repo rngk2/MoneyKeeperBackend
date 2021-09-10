@@ -91,7 +91,10 @@ namespace MoneyKeeper.Controllers
 				return provider_error.Wrap();
 			}
 
-			var (created, service_error) = await transactionService.CreateTransaction(transactionDto).Unwrap();
+			var (created, service_error) = await transactionService.CreateTransaction(transactionDto with
+			{
+				UserId = contextUser.Id
+			}).Unwrap();
 
 			return service_error
 				? service_error.Wrap()
