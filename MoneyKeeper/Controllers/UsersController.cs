@@ -52,7 +52,9 @@ namespace MoneyKeeper.Controllers
                 : user.AsDto();
         }
 
+
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ApiResult<UserDto>> CreateUser(CreateUserDto userDto)
         {
             var (user, error) = await userService.CreateUser(userDto).Unwrap();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BL.Dtos.Category
@@ -11,7 +12,7 @@ namespace BL.Dtos.Category
 		[Required]
 		public string Name { get; init; }
 
-		[Required]
+		[JsonIgnore]
 		public int UserId { get; init; }
 	}
 }

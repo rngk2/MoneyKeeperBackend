@@ -75,12 +75,10 @@ namespace MoneyKeeper.Controllers
 				return provider_error.Wrap();
 			}
 
-			if (categoryDto.UserId != contextUser.Id)
+			var (created, service_error) = await categoryService.AddCategoryToUser(categoryDto with
 			{
-				return new Error(ApiResultErrorCodes.PROHIBITED, $"User: #{contextUser.Id} cannot add category to user: #{categoryDto.UserId}");
-			}
-
-			var (created, service_error) = await categoryService.AddCategoryToUser(categoryDto).Unwrap();
+				UserId = contextUser.Id
+			}).Unwrap();
 
 			return service_error
 				? service_error.Wrap()
