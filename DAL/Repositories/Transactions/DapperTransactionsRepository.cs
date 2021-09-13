@@ -49,7 +49,13 @@ namespace DAL.Repositories
 		}
 
 		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(
-			int userId, Range range, string? like = null, DateTimeOffset? when = null)
+			int userId, 
+			Range range, 
+			string? like = null, 
+			DateTimeOffset? when = null,
+			string? orderBy = "Timestamp",
+			string? order = "desc"
+			)
 		{
 			string sql = @$"
 				select 
@@ -60,18 +66,26 @@ namespace DAL.Repositories
 					Categories on Categories.Id = Transactions.CategoryId
 				where
 					(Transactions.UserId = @userId)
-					{ (like is not null ? "and (Comment like @like or Categories.Name like @like)" : "") }
-					{ (when is not null ? $" and (month(Timestamp) = month(@when))" : "") }
+					{ (like is not null ? " and (Comment like @like or Categories.Name like @like)" : "") }
+					{ (when is not null ? " and (month(Timestamp) = month(@when))" : "") }
 				order by
-					Timestamp desc
+					@orderBy @order
 				offset
 					@start rows
 				fetch
 					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql,
-				new { start = range.Start.Value, next = range.End.Value - range.Start.Value, userId, like, when });
+			return await repository.QueryAny<Transaction>(sql, new 
+			{ 
+				start = range.Start.Value, 
+				next = range.End.Value - range.Start.Value, 
+				userId, 
+				like, 
+				when, 
+				orderBy, 
+				order 
+			});
 		}
 
 		public async Task<int> CreateTransaction(Transaction transaction)
