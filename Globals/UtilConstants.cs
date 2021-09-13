@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MoneyKeeper.Globals
 {
-	public enum UtilConstants
+	public sealed class UtilConstants
 	{
-		SQL_SINGLE_ROW_AFFECTED = 1
+		public static readonly int SQL_SINGLE_ROW_AFFECTED = 1;
 	}
 }
