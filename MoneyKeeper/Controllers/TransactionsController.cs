@@ -48,21 +48,8 @@ namespace MoneyKeeper.Controllers
 				: transaction.AsDto();
 		}
 
-		/*[HttpGet]
-		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactions()
-		{
-			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
-
-			if (provider_error)
-			{
-				return provider_error.Wrap();
-			}
-
-			return await transactionService.GetTransactions
-		}*/
-
 		[HttpGet("user/transactions")]
-		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactionsOfUser(
+		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactions(
 			[Required] int from, [Required] int to, string? like = null, DateTimeOffset? when = null)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
