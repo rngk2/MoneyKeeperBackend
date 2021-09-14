@@ -8,6 +8,7 @@ using BL.Extensions;
 using DAL.Entities;
 using DAL.Models;
 using DAL.Repositories;
+using Microsoft.Extensions.Caching.Memory;
 using MoneyKeepeer.Utils.Extensions;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
@@ -19,11 +20,13 @@ namespace BL.Services
 	{
 		private readonly IUsersRepository usersRepository;
 		private readonly ICategoriesRepository categoriesRepository;
+		private readonly IMemoryCache memoryCache;
 
-		public UserService(IUsersRepository usersRepository, ICategoriesRepository categoriesRepository)
+		public UserService(IUsersRepository usersRepository, ICategoriesRepository categoriesRepository, IMemoryCache memoryCache)
 		{
 			this.usersRepository = usersRepository;
 			this.categoriesRepository = categoriesRepository;
+			this.memoryCache = memoryCache;
 		}
 
 		public async Task<Result<User>> GetUser(int id)
@@ -96,6 +99,12 @@ namespace BL.Services
 			{
 				Id = createdId
 			};
+
+			memoryCache.Set(
+				created.Email, 
+				created, 
+				new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5))
+			);
 
 			return created;
 		}

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.Repositories;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using MoneyKeepeer.Authentication.Models;
 using MoneyKeeper.Api.Results;
@@ -27,6 +28,7 @@ namespace MoneyKeeper.Authentication.Services
 		private readonly ITokensRepository tokensRepository;
 		private readonly IUsersRepository usersRepository;
 		private readonly AuthSettings appSettings;
+		private readonly IMemoryCache memoryCache;
 
 		private IJwtUtils jwtUtils;
 
@@ -34,17 +36,22 @@ namespace MoneyKeeper.Authentication.Services
 			IUsersRepository usersRepository,
 			ITokensRepository tokensRepository,
 			IOptions<AuthSettings> appSettings,
-			IJwtUtils jwtUtils)
-		{
+			IJwtUtils jwtUtils,
+			IMemoryCache memoryCache
+		) {
 			this.usersRepository = usersRepository;
 			this.tokensRepository = tokensRepository;
 			this.appSettings = appSettings.Value;
 			this.jwtUtils = jwtUtils;
+			this.memoryCache = memoryCache;
 		}
 
 		public async Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest model, string ipAddress)
 		{
-			var user = await usersRepository.GetUser(model.Email);
+			if (!memoryCache.TryGetValue(model.Email, out User user))
+			{
+				user = await usersRepository.GetUser(model.Email);
+			}
 
 			// validate
 			if (user is null || !user.Password.HashEquals(model.Password))
