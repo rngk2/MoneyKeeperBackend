@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyKeeper.Globals
+namespace MoneyKeeper.DAL
 {
-	public sealed class UtilConstants
+	internal sealed class UtilConstants
 	{
-		public static readonly int SQL_SINGLE_ROW_AFFECTED = 1;
+		internal static readonly int SQL_SINGLE_ROW_AFFECTED = 1;
 	}
 }

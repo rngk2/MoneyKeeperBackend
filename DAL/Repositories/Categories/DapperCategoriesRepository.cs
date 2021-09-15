@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
-using MoneyKeeper.Globals;
+using MoneyKeeper.DAL;
 
 namespace DAL.Repositories
 {
@@ -76,7 +76,7 @@ namespace DAL.Repositories
 						Id = @Id
 			";
 
-			return await dapperRepository.ExecuteAny(sql, category) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await dapperRepository.ExecuteAny(sql, category) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
 		public async Task<bool> DeleteCategory(int id)
@@ -87,7 +87,7 @@ namespace DAL.Repositories
 						Id = @id
 			";
 
-			return await dapperRepository.ExecuteAny(sql, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await dapperRepository.ExecuteAny(sql, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }

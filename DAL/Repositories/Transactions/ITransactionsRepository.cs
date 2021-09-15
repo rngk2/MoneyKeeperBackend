@@ -11,7 +11,13 @@ namespace DAL.Repositories
 	{
 		Task<IEnumerable<Transaction>> GetTransactions();
 
-		Task<IEnumerable<Transaction>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = null);
+		Task<IEnumerable<Transaction>> GetTransactions(
+			int userId,
+			Range range,
+			string orderByField,
+			string order,
+			string? searchPattern = null
+		);
 
 		Task<Transaction> GetTransaction(int id);
 

@@ -6,6 +6,7 @@ using DAL.Entities;
 using DAL.Settings;
 using DAL.Models;
 using MoneyKeeper.Globals;
+using MoneyKeeper.DAL;
 
 namespace DAL.Repositories
 {
@@ -113,7 +114,7 @@ namespace DAL.Repositories
 						Id = @Id		
 			";
 
-			return await dapperRepository.ExecuteAny(sql, userData) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await dapperRepository.ExecuteAny(sql, userData) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
 		public async Task<bool> DeleteUser(int id)
@@ -124,7 +125,7 @@ namespace DAL.Repositories
 						Id = @id
 			";
 
-			return await dapperRepository.ExecuteAny(sql_deleteUser, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await dapperRepository.ExecuteAny(sql_deleteUser, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }

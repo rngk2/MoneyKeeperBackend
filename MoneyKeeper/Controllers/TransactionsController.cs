@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BL.Dtos.Transaction;
 using BL.Extensions;
 using BL.Services;
+using DAL.Entities;
 using Globals.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Providers;
+using static MoneyKeeper.Api.Types;
 
 namespace MoneyKeeper.Controllers
 {
@@ -21,7 +25,6 @@ namespace MoneyKeeper.Controllers
 	[Authorize]
 	public class TransactionsController : ControllerBase
 	{
-
 		private readonly ITransactionService transactionService;
 		private readonly ICurrentUserProvider currentUserProvider;
 
@@ -50,7 +53,12 @@ namespace MoneyKeeper.Controllers
 
 		[HttpGet("user/transactions")]
 		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactions(
-			[Required] int from, [Required] int to, string? like = null, DateTimeOffset? when = null)
+			[Required] int from,
+			[Required] int to,
+			TransactionField orderByField,
+			Order.OrderType order,
+			string? searchPattern = null
+		)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -60,7 +68,7 @@ namespace MoneyKeeper.Controllers
 			}
 
 			var (transactions, service_error) = await transactionService
-				.GetTransactionsOfUser(contextUser.Id, new Range(from, to), like, when)
+				.GetTransactions(contextUser.Id, new Range(from, to), orderByField.ToString(), order.ToString(), searchPattern)
 				.Unwrap();
 
 			return service_error

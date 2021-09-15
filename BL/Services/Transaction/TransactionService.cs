@@ -37,9 +37,16 @@ namespace BL.Services
 			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactions());
 		}
 
-		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = default)
-		{
-			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactionsOfUser(userId, range, like, when));
+		public async Task<Result<IEnumerable<Transaction>>> GetTransactions(
+			int userId,
+			Range range,
+			string orderByField,
+			string order,
+			string? searchPattern = null
+		) {
+			return new SuccessResult<IEnumerable<Transaction>>(
+				await repository.GetTransactions(userId, range, orderByField, order, searchPattern)
+			);
 		}
 
 		public async Task<Result<Transaction>> CreateTransaction(CreateTransactionDto transactionDto)

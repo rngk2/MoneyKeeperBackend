@@ -11,7 +11,13 @@ namespace BL.Services
 {
 	public interface ITransactionService
 	{
-		Task<Result<IEnumerable<Transaction>>> GetTransactionsOfUser(int userId, Range range, string? like = null, DateTimeOffset? when = null);
+		Task<Result<IEnumerable<Transaction>>> GetTransactions(
+			int userId, 
+			Range range,
+			string orderByField,
+			string order,
+			string? searchPattern = null
+		);
 
 		Task<Result<Transaction>> GetTransaction(int id, int userId);
 

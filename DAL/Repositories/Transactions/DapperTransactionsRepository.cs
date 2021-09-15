@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
+using MoneyKeeper.DAL;
 using MoneyKeeper.Globals;
 
 namespace DAL.Repositories
@@ -48,15 +49,13 @@ namespace DAL.Repositories
 			return await repository.QueryAny<Transaction>(sql);
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactionsOfUser(
+		public async Task<IEnumerable<Transaction>> GetTransactions(
 			int userId, 
 			Range range, 
-			string? like = null, 
-			DateTimeOffset? when = null,
-			string? orderBy = "Timestamp",
-			string? order = "desc"
-			)
-		{
+			string orderByField,
+			string order,
+			string? searchPattern = null 
+		) {
 			string sql = @$"
 				select 
 					Transactions.*, Categories.Name CategoryName
@@ -66,10 +65,9 @@ namespace DAL.Repositories
 					Categories on Categories.Id = Transactions.CategoryId
 				where
 					(Transactions.UserId = @userId)
-					{ (like is not null ? " and (Comment like @like or Categories.Name like @like)" : "") }
-					{ (when is not null ? " and (month(Timestamp) = month(@when))" : "") }
+					{ (searchPattern is not null ? " and (Comment like @searchPattern or Categories.Name like @searchPattern)" : "") }
 				order by
-					@orderBy @order
+					{orderByField} {order}
 				offset
 					@start rows
 				fetch
@@ -81,10 +79,9 @@ namespace DAL.Repositories
 				start = range.Start.Value, 
 				next = range.End.Value - range.Start.Value, 
 				userId, 
-				like, 
-				when, 
-				orderBy, 
-				order 
+				searchPattern,
+				orderByField,
+				order
 			});
 		}
 
@@ -111,7 +108,7 @@ namespace DAL.Repositories
 					Id = @id
 			";
 
-			return await repository.ExecuteAny(sql, new { id }) == (int)UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await repository.ExecuteAny(sql, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }
