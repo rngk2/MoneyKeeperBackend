@@ -61,6 +61,8 @@ namespace MoneyKeeper
 
 			services.AddHttpContextAccessor();
 
+			services.AddMemoryCache();
+
 			services.ConfigureApiServices();
 			services.ConfigureAuthServices();
 			services.ConfigureRepos();
