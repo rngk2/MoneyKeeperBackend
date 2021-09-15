@@ -1,0 +1,10 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MoneyKeeper.DAL.Models
+{
+	public record CategoryOverview(string CategoryName, decimal SpentThisMonth);
+}	

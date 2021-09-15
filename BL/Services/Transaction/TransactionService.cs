@@ -37,6 +37,11 @@ namespace BL.Services
 			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactions());
 		}
 
+		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsForCategories(int userId, Range categoriesRange)
+		{
+			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactionsForCategories(userId, categoriesRange));
+		}
+
 		public async Task<Result<IEnumerable<Transaction>>> GetTransactions(
 			int userId,
 			Range range,

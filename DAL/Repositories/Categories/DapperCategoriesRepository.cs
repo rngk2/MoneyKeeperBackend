@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Entities;
 using MoneyKeeper.DAL;
+using MoneyKeeper.DAL.Models;
 
 namespace DAL.Repositories
 {
@@ -49,6 +51,32 @@ namespace DAL.Repositories
 			";
 
 			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault()!;
+		}
+
+		public async Task<IEnumerable<CategoryOverview>> GetCategoriesOverview(int userId, Range range)
+		{	
+			string sql = @"
+				select
+					Categories.Name as CategoryName, 
+					(select sum(Amount) from Transactions where CategoryId = Categories.Id) as SpentThisMonth
+				from
+					Categories
+				where
+					Categories.UserId = @userId
+				order by
+					Categories.Name asc
+				offset 
+					@start rows
+				fetch 
+					next @next rows only
+			";
+
+			return await dapperRepository.QueryAny<CategoryOverview>(sql, new 
+			{
+				start = range.Start.Value,
+				next = range.End.Value - range.Start.Value,
+				userId
+			});
 		}
 
 		public async Task<int> CreateCategory(Category category)

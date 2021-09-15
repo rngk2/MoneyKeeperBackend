@@ -13,6 +13,8 @@ using MoneyKeeper.Providers;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using MoneyKeeper.DAL.Models;
 
 namespace MoneyKeeper.Controllers
 {
@@ -46,6 +48,23 @@ namespace MoneyKeeper.Controllers
 			return service_error
 				? service_error.Wrap()
 				: category.AsDto();
+		}
+
+		[HttpGet("overview")]
+		public async Task<ApiResult<IEnumerable<CategoryOverview>>> GetCategoriesOverview(int from, int to)
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			var (categories, service_error) = await categoryService.GetCategoriesOverview(contextUser.Id, new(from, to)).Unwrap();
+
+			return service_error
+				? service_error.Wrap()
+				: categories.ToList();
 		}
 
 		[HttpGet]
@@ -126,7 +145,7 @@ namespace MoneyKeeper.Controllers
 				: deleted.AsDto();
 		}
 
-		[HttpDelete]
+		[HttpDelete("byName/{categoryName}")]
 		public async Task<ApiResult<CategoryDto>> DeleteCategory(string categoryName)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();

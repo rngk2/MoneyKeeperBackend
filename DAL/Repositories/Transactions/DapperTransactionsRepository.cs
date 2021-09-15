@@ -49,6 +49,37 @@ namespace DAL.Repositories
 			return await repository.QueryAny<Transaction>(sql);
 		}
 
+		public async Task<IEnumerable<Transaction>> GetTransactionsForCategories(int userId, Range categoriesRange) 
+		{
+			string sql = @"
+				select 
+					Transactions.*, someCategories.Name as CategoryName 
+				from (
+						select
+							Id, [Name] 
+						from 
+							Categories 
+						where 
+							UserId = @userId 
+						order by 
+							[Name] asc 
+						offset 
+							@start rows 
+						fetch 
+							next @next rows only
+				) as someCategories
+				left join
+					Transactions on someCategories.Id = Transactions.CategoryId
+			";
+
+			return await repository.QueryAny<Transaction>(sql, new 
+			{
+				start = categoriesRange.Start.Value,
+				next = categoriesRange.End.Value - categoriesRange.Start.Value,
+				userId,
+			});
+		}
+
 		public async Task<IEnumerable<Transaction>> GetTransactions(
 			int userId, 
 			Range range, 
