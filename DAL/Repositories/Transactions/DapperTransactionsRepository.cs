@@ -61,10 +61,10 @@ namespace DAL.Repositories
 					Transactions.*, Categories.Name CategoryName
 				from
 					Transactions
-				join
+				right join
 					Categories on Categories.Id = Transactions.CategoryId
 				where
-					(Transactions.UserId = @userId)
+					(Categories.UserId = @userId)
 					{ (searchPattern is not null ? " and (Comment like @searchPattern or Categories.Name like @searchPattern)" : "") }
 				order by
 					{orderByField} {order}
