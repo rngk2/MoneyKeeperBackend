@@ -55,8 +55,8 @@ namespace MoneyKeeper.Controllers
 		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactions(
 			[Required] int from,
 			[Required] int to,
-			TransactionField orderByField,
-			Order.OrderType order,
+			[Required] TransactionField orderByField,
+			[Required] Order.OrderType order,
 			string? searchPattern = null
 		)
 		{
