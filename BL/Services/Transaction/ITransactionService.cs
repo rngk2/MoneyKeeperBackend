@@ -11,6 +11,8 @@ namespace BL.Services
 {
 	public interface ITransactionService
 	{
+		Task<Result<IEnumerable<Transaction>>> GetTransactionsForCategories(int userId, Range categoriesRange);
+
 		Task<Result<IEnumerable<Transaction>>> GetTransactions(
 			int userId, 
 			Range range,

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using BL.Dtos.Category;
 using DAL.Entities;
 using MoneyKeeper.Api.Results;
+using MoneyKeeper.DAL.Models;
 
 namespace BL.Services
 {
@@ -18,6 +20,8 @@ namespace BL.Services
 		Task<Result<Category>> GetCategory(int id, int userId);
 
 		Task<Result<Category>> GetCategory(int userId, string name);
+
+		Task<Result<IEnumerable<CategoryOverview>>> GetCategoriesOverview(int userId, Range range);
 
 		Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto);
 

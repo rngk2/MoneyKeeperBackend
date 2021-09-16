@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using BL.Dtos.Category;
 using DAL.Entities;
 using DAL.Repositories;
 using MoneyKeeper.Api.Results;
+using MoneyKeeper.DAL.Models;
 using MoneyKeeper.Globals.Errors;
 
 namespace BL.Services
@@ -33,6 +35,11 @@ namespace BL.Services
 			return category is not null && category.UserId == userId
 				? category
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find category: #{categoryId}");
+		}
+
+		public async Task<Result<IEnumerable<CategoryOverview>>> GetCategoriesOverview(int userId, Range range)
+		{
+			return new SuccessResult<IEnumerable<CategoryOverview>>(await repository.GetCategoriesOverview(userId, range));
 		}
 
 		public async Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId)
