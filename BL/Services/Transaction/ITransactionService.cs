@@ -23,6 +23,14 @@ namespace BL.Services
 
 		Task<Result<Transaction>> GetTransaction(int id, int userId);
 
+		Task<Result<IEnumerable<Transaction>>> GetSummaryForUser(int id);
+
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUser(int id);
+
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id);
+
+		Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id);
+
 		Task<Result<Transaction>> CreateTransaction(CreateTransactionDto transactionDto);
 
 		Task<Result<Transaction>> DeleteTransaction(int id, int userId);

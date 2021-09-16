@@ -8,7 +8,6 @@ using BL.Dtos.User;
 using BL.Extensions;
 using BL.Services;
 using DAL.Entities;
-using DAL.Models;
 using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -93,45 +92,6 @@ namespace MoneyKeeper.Controllers
             return service_error
                 ? service_error.Wrap()
                 : deleted.AsDto();
-        }
-
-        [HttpGet("summary")]
-        public async Task<ApiResult<IEnumerable<SummaryUnit>>> GetSummaryForMonth()
-        {
-            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
-
-            if (provider_error)
-            { 
-                return provider_error.Wrap();
-            }
-
-            return (await userService.GetSummaryForUser(contextUser.Id).Unwrap()).Value!.ToList();
-        }
-
-        [HttpGet("total/month")]
-        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotalForMonth()
-        {
-            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
-
-            if (provider_error)
-            {
-                return provider_error.Wrap();
-            }
-
-            return (await userService.GetTotalForUserForMonth(contextUser.Id).Unwrap()).Value!;
-        }
-
-        [HttpGet("total/year")]
-        public async Task<ApiResult<Dictionary<string, decimal>>> GetTotalForYear()
-        {
-            var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
-
-            if (provider_error)
-            {
-                return provider_error.Wrap();
-            }
-
-            return (await userService.GetTotalForUserForYear(contextUser.Id).Unwrap()).Value!;
         }
     }
 }

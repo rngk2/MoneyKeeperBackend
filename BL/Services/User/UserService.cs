@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BL.Dtos.User;
 using BL.Extensions;
 using DAL.Entities;
-using DAL.Models;
 using DAL.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using MoneyKeepeer.Utils.Extensions;
@@ -43,37 +42,6 @@ namespace BL.Services
 			return user is not null
 				? user
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with email: {email}");
-		}
-
-
-		public async Task<Result<IEnumerable<SummaryUnit>>> GetSummaryForUser(int id)
-		{
-			return new SuccessResult<IEnumerable<SummaryUnit>>(await usersRepository.GetSummaryForUser(id));
-		}
-
-		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id)
-		{
-			return ComputeTotal(await usersRepository.GetSummaryForUserForYear(id));
-		}
-
-		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id)
-		{
-			return ComputeTotal(await usersRepository.GetSummaryForUserForMonth(id));
-		}
-
-		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<SummaryUnit> summaryUnits)
-		{
-			Dictionary<string, decimal> computed = new();
-			foreach (var unit in summaryUnits)
-			{
-				decimal unitAmount = unit.Amount;
-				decimal contained = computed.GetValueOrDefault(unit.CategoryName);
-				decimal newVal = contained is default(decimal) ? unitAmount : contained + unitAmount;
-
-				computed[unit.CategoryName] = newVal;
-			}
-
-			return computed;
 		}
 
 		public async Task<Result<User>> CreateUser(CreateUserDto userDto)

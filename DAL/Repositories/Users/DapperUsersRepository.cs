@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using DAL.Entities;
 using DAL.Settings;
-using DAL.Models;
 using MoneyKeeper.Globals;
 using MoneyKeeper.DAL;
 
@@ -33,54 +32,6 @@ namespace DAL.Repositories
 			string sql = "select * from Users where Email = @email";
 
 			return (await dapperRepository.QueryAny<User>(sql, new { email })).FirstOrDefault();
-		}
-
-		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUser(int id)
-		{
-			string sql = @"					
-					select 
-						Categories.Name CategoryName, Transactions.*
-					from 
-						Transactions
-					right join
-						Categories on Categories.Id = Transactions.CategoryId
-					where
-						Categories.UserId = @id
-			";
-
-			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
-		}
-
-		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUserForMonth(int id)
-		{
-			string sql = @"						
-					select 
-						Categories.Name CategoryName, Transactions.*
-					from 
-						Transactions
-					right join
-						Categories on Categories.Id = Transactions.CategoryId
-					where
-						Categories.UserId = @id and month(Timestamp) = month(getdate())
-			";
-
-			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
-		}
-
-		public async Task<IEnumerable<SummaryUnit>> GetSummaryForUserForYear(int id)
-		{
-			string sql = @"						
-					select 
-						Categories.Name CategoryName, Transactions.*
-					from 
-						Transactions
-					right join
-						Categories on Categories.Id = Transactions.CategoryId
-					where
-						Categories.UserId = @id and year(Timestamp) = year(getdate())
-			";
-
-			return await dapperRepository.QueryAny<SummaryUnit>(sql, new { id });
 		}
 
 		public async Task<int> CreateUser(User user)

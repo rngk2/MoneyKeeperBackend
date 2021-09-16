@@ -9,7 +9,7 @@ namespace DAL.Repositories
 {
 	public interface ITransactionsRepository
 	{
-		Task<IEnumerable<Transaction>> GetTransactions();
+		Task<IEnumerable<Transaction>> GetTransactions(int userId);
 
 		Task<IEnumerable<Transaction>> GetTransactionsForCategories(int userId, Range categoriesRange);
 
@@ -24,6 +24,12 @@ namespace DAL.Repositories
 		Task<Transaction> GetTransaction(int id);
 
 		Task<Transaction> GetTransaction(int id, int userId);
+
+		Task<IEnumerable<Transaction>> GetSummaryForUser(int id);
+
+		Task<IEnumerable<Transaction>> GetSummaryForUserForMonth(int id);
+
+		Task<IEnumerable<Transaction>> GetSummaryForUserForYear(int id);
 
 		Task<int> CreateTransaction(Transaction transaction);
 

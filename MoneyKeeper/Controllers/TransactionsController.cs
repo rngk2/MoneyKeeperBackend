@@ -95,6 +95,62 @@ namespace MoneyKeeper.Controllers
 				: transactions.Select(t => t.AsDto()).ToList();
 		}
 
+
+		[HttpGet("summary")]
+		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetSummaryForMonth()
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			return (await transactionService.GetSummaryForUser(contextUser.Id).Unwrap())
+				.Value!
+				.Select(t => t.AsDto())
+				.ToList();
+		}
+
+		[HttpGet("total")]
+		public async Task<ApiResult<Dictionary<string, decimal>>> GetTotal()
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			return (await transactionService.GetTotalForUser(contextUser.Id).Unwrap()).Value!;
+		}
+
+		[HttpGet("total/month")]
+		public async Task<ApiResult<Dictionary<string, decimal>>> GetTotalForMonth()
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			return (await transactionService.GetTotalForUserForMonth(contextUser.Id).Unwrap()).Value!;
+		}
+
+		[HttpGet("total/year")]
+		public async Task<ApiResult<Dictionary<string, decimal>>> GetTotalForYear()
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			return (await transactionService.GetTotalForUserForYear(contextUser.Id).Unwrap()).Value!;
+		}
+
 		[HttpPost]
 		public async Task<ApiResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
 		{

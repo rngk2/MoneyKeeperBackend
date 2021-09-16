@@ -32,9 +32,39 @@ namespace BL.Services
 			return transaction;
 		}
 
-		public async Task<Result<IEnumerable<Transaction>>> GetTransactions()
+		public async Task<Result<IEnumerable<Transaction>>> GetSummaryForUser(int id)
 		{
-			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactions());
+			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetSummaryForUser(id));
+		}
+
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUser(id));
+		}
+
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUserForYear(id));
+		}
+
+		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id)
+		{
+			return ComputeTotal(await repository.GetSummaryForUserForMonth(id));
+		}
+
+		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<Transaction> summaryUnits)
+		{
+			Dictionary<string, decimal> computed = new();
+			foreach (var unit in summaryUnits)
+			{
+				decimal unitAmount = unit.Amount;
+				decimal contained = computed.GetValueOrDefault(unit.CategoryName);
+				decimal newVal = contained is default(decimal) ? unitAmount : contained + unitAmount;
+
+				computed[unit.CategoryName] = newVal;
+			}
+
+			return computed;
 		}
 
 		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsForCategories(int userId, Range categoriesRange)

@@ -42,11 +42,10 @@ namespace DAL.Repositories
 			return (await repository.QueryAny<Transaction>(sql, new { id, userId })).FirstOrDefault();
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactions()
+		public async Task<IEnumerable<Transaction>> GetTransactions(int userId)
 		{
-			string sql = "select * from Transactions";
-
-			return await repository.QueryAny<Transaction>(sql);
+			const string sql = "select * from Transactions where UserId = @userId";
+			return await repository.QueryAny<Transaction>(sql, new { userId });
 		}
 
 		public async Task<IEnumerable<Transaction>> GetTransactionsForCategories(int userId, Range categoriesRange) 
@@ -114,6 +113,54 @@ namespace DAL.Repositories
 				orderByField,
 				order
 			});
+		}
+
+		public async Task<IEnumerable<Transaction>> GetSummaryForUser(int id)
+		{
+			string sql = @"					
+					select 
+						Categories.Name CategoryName, Transactions.*
+					from 
+						Transactions
+					join
+						Categories on Categories.Id = Transactions.CategoryId
+					where
+						Categories.UserId = @id
+			";
+
+			return await repository.QueryAny<Transaction>(sql, new { id });
+		}
+
+		public async Task<IEnumerable<Transaction>> GetSummaryForUserForMonth(int id)
+		{
+			string sql = @"						
+					select 
+						Categories.Name CategoryName, Transactions.*
+					from 
+						Transactions
+					join
+						Categories on Categories.Id = Transactions.CategoryId
+					where
+						Categories.UserId = @id and month(Timestamp) = month(getdate())
+			";
+
+			return await repository.QueryAny<Transaction>(sql, new { id });
+		}
+
+		public async Task<IEnumerable<Transaction>> GetSummaryForUserForYear(int id)
+		{
+			string sql = @"						
+					select 
+						Categories.Name CategoryName, Transactions.*
+					from 
+						Transactions
+					join
+						Categories on Categories.Id = Transactions.CategoryId
+					where
+						Categories.UserId = @id and year(Timestamp) = year(getdate())
+			";
+
+			return await repository.QueryAny<Transaction>(sql, new { id });
 		}
 
 		public async Task<int> CreateTransaction(Transaction transaction)
