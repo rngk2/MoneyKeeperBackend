@@ -41,6 +41,7 @@ namespace MoneyKeeper.Api
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public enum TransactionField
 		{
+			CategoryName,
 			Amount,
 			Timestamp,
 			Comment

@@ -57,7 +57,7 @@ namespace DAL.Repositories
 		{	
 			string sql = @"
 				select
-					Categories.Name as CategoryName, 
+					Categories.Id as CategoryId, Categories.Name as CategoryName, 
 					(select sum(Amount) from Transactions where CategoryId = Categories.Id) as SpentThisMonth
 				from
 					Categories

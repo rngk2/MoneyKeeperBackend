@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace MoneyKeeper.DAL.Models
 {
-	public record CategoryOverview(string CategoryName, decimal SpentThisMonth);
+	public record CategoryOverview(int CategoryId, string CategoryName, decimal SpentThisMonth);
 }	
