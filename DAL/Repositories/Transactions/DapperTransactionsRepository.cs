@@ -91,7 +91,7 @@ namespace DAL.Repositories
 					Transactions.*, Categories.Name CategoryName
 				from
 					Transactions
-				right join
+				join
 					Categories on Categories.Id = Transactions.CategoryId
 				where
 					(Categories.UserId = @userId)
