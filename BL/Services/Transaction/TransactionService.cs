@@ -13,16 +13,18 @@ namespace BL.Services
 {
 	internal class TransactionService : ITransactionService
 	{
-		private readonly ITransactionsRepository repository;
+		private readonly ITransactionsRepository transactionsRepository;
+		private readonly ICategoriesRepository categoriesRepository;
 
-		public TransactionService(ITransactionsRepository repository)
+		public TransactionService(ITransactionsRepository repository, ICategoriesRepository categoriesRepository)
 		{
-			this.repository = repository;
+			this.transactionsRepository = repository;
+			this.categoriesRepository = categoriesRepository;
 		}
 
 		public async Task<Result<Transaction>> GetTransaction(int id, int userId)
 		{
-			Transaction transaction = await repository.GetTransaction(id, userId);
+			Transaction transaction = await transactionsRepository.GetTransaction(id, userId);
 
 			if (transaction is null)
 			{
@@ -34,22 +36,22 @@ namespace BL.Services
 
 		public async Task<Result<IEnumerable<Transaction>>> GetSummaryForUser(int id)
 		{
-			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetSummaryForUser(id));
+			return new SuccessResult<IEnumerable<Transaction>>(await transactionsRepository.GetSummaryForUser(id));
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser(int id)
 		{
-			return ComputeTotal(await repository.GetSummaryForUser(id));
+			return ComputeTotal(await transactionsRepository.GetSummaryForUser(id));
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id)
 		{
-			return ComputeTotal(await repository.GetSummaryForUserForYear(id));
+			return ComputeTotal(await transactionsRepository.GetSummaryForUserForYear(id));
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id)
 		{
-			return ComputeTotal(await repository.GetSummaryForUserForMonth(id));
+			return ComputeTotal(await transactionsRepository.GetSummaryForUserForMonth(id));
 		}
 
 		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<Transaction> summaryUnits)
@@ -67,9 +69,18 @@ namespace BL.Services
 			return computed;
 		}
 
-		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsForCategories(int userId, Range categoriesRange)
+		public async Task<Result<IEnumerable<Transaction>>> GetTransactionsForCategory(int userId, int categoryId, Range range)
 		{
-			return new SuccessResult<IEnumerable<Transaction>>(await repository.GetTransactionsForCategories(userId, categoriesRange));
+			bool userHasCategory = (await categoriesRepository.GetCategories(userId))
+				.Select(c => c.Id)
+				.Contains(categoryId);
+
+			if (!userHasCategory)
+			{
+				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User: #{userId} has no category with id: {categoryId}");
+			}
+
+			return new SuccessResult<IEnumerable<Transaction>>(await transactionsRepository.GetTransactionsForCategory(userId, categoryId, range));
 		}
 
 		public async Task<Result<IEnumerable<Transaction>>> GetTransactions(
@@ -80,7 +91,7 @@ namespace BL.Services
 			string? searchPattern = null
 		) {
 			return new SuccessResult<IEnumerable<Transaction>>(
-				await repository.GetTransactions(userId, range, orderByField, order, searchPattern)
+				await transactionsRepository.GetTransactions(userId, range, orderByField, order, searchPattern)
 			);
 		}
 
@@ -95,7 +106,7 @@ namespace BL.Services
 				Comment = transactionDto.Comment
 			};
 
-			int createdId = await repository.CreateTransaction(newTransaction);
+			int createdId = await transactionsRepository.CreateTransaction(newTransaction);
 
 			Transaction created = newTransaction with
 			{
@@ -114,7 +125,7 @@ namespace BL.Services
 				return error.Wrap();
 			}
 
-			return await repository.DeleteTransaction(id)
+			return await transactionsRepository.DeleteTransaction(id)
 				? toDelete
 				: new Error(ApiResultErrorCodes.CANNOT_DELETE, $"Error occured while deleting");
 		}

@@ -48,7 +48,7 @@ namespace DAL.Repositories
 			return await repository.QueryAny<Transaction>(sql, new { userId });
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactionsForCategories(int userId, Range categoriesRange) 
+		public async Task<IEnumerable<Transaction>> GetTransactionsForCategory(int userId, int categoryId, Range categoriesRange) 
 		{
 			string sql = @"
 				select 
@@ -59,7 +59,7 @@ namespace DAL.Repositories
 						from 
 							Categories 
 						where 
-							UserId = @userId 
+							UserId = @userId and Id = @categoryId
 						order by 
 							[Name] asc 
 						offset 
@@ -76,6 +76,7 @@ namespace DAL.Repositories
 				start = categoriesRange.Start.Value,
 				next = categoriesRange.End.Value - categoriesRange.Start.Value,
 				userId,
+				categoryId
 			});
 		}
 

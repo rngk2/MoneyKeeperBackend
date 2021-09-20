@@ -51,8 +51,8 @@ namespace MoneyKeeper.Controllers
 				: transaction.AsDto();
 		}
 
-		[HttpGet("categories/transactions")]
-		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactionsForCategories([Required] int from, [Required] int to)
+		[HttpGet("category/{categoryId}/transactions")]
+		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactionsForCategories(int categoryId, [Required] int from, [Required] int to)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -62,7 +62,7 @@ namespace MoneyKeeper.Controllers
 			}
 
 			var (transactions, service_error) = await transactionService
-				.GetTransactionsForCategories(contextUser.Id, new Range(from, to))
+				.GetTransactionsForCategory(contextUser.Id, categoryId, new Range(from, to))
 				.Unwrap();
 
 			return service_error
