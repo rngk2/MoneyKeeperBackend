@@ -104,7 +104,7 @@ namespace MoneyKeeper.Controllers
 				: created.AsDto();
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut("{categoryId}")]
 		public async Task<ApiResult<CategoryDto>> UpdateCategoryToUser(int categoryId, UpdateCategoryDto categoryDto)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
