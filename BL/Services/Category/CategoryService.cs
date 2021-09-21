@@ -105,7 +105,7 @@ namespace BL.Services
 			{
 				return error.Wrap();
 			}
-			else if (toDelete.Id != userId)
+			else if (toDelete.UserId != userId)
 			{
 				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User {userId} has no category with id: {categoryId}");
 			}
