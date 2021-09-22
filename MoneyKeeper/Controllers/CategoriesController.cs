@@ -65,6 +65,23 @@ namespace MoneyKeeper.Controllers
 			return service_error
 				? service_error.Wrap()
 				: categories.ToList();
+		}	
+		
+		[HttpGet("overview/{categoryId}")]
+		public async Task<ApiResult<CategoryOverview>> GetCategoriesOverview(int categoryId)
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			var (category, service_error) = await categoryService.GetCategoryOverview(contextUser.Id, categoryId).Unwrap();
+
+			return service_error
+				? service_error.Wrap()
+				: category;
 		}
 
 		[HttpGet]

@@ -14,6 +14,8 @@ namespace DAL.Repositories
 
 		Task<IEnumerable<CategoryOverview>> GetCategoriesOverview(int userId, Range range);
 
+		Task<CategoryOverview> GetCategoryOverview(int categoryId);
+
 		Task<IEnumerable<Category>> GetCategories(int userId);
 
 		Task<int> CreateCategory(Category category);

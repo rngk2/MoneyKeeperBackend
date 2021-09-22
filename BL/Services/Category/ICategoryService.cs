@@ -23,6 +23,8 @@ namespace BL.Services
 
 		Task<Result<IEnumerable<CategoryOverview>>> GetCategoriesOverview(int userId, Range range);
 
+		Task<Result<CategoryOverview>> GetCategoryOverview(int userId, int categoryId);
+
 		Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto);
 
 		Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto);

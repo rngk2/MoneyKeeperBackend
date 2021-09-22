@@ -58,11 +58,11 @@ namespace DAL.Repositories
 			string sql = @"
 				select
 					Categories.Id as CategoryId, Categories.Name as CategoryName, 
-					(select sum(Amount) from Transactions where CategoryId = Categories.Id) as SpentThisMonth
+					(select sum(Amount) from Transactions where CategoryId = Categories.Id and [Name] != 'Earnings') as SpentThisMonth
 				from
 					Categories
 				where
-					Categories.UserId = @userId
+					Categories.UserId = @userId and [Name] != 'Earnings' 
 				order by
 					Categories.Name asc
 				offset 
@@ -77,6 +77,21 @@ namespace DAL.Repositories
 				next = range.End.Value - range.Start.Value,
 				userId
 			});
+		}
+
+		public async Task<CategoryOverview> GetCategoryOverview(int categoryId)
+		{
+			string sql = @"
+				select
+					Categories.Id as CategoryId, Categories.Name as CategoryName, 
+					(select sum(Amount) from Transactions where CategoryId = Categories.Id) as SpentThisMonth
+				from
+					Categories
+				where
+					Categories.Id = @categoryId
+			";
+
+			return (await dapperRepository.QueryAny<CategoryOverview>(sql, new { categoryId })).FirstOrDefault()!;
 		}
 
 		public async Task<int> CreateCategory(Category category)

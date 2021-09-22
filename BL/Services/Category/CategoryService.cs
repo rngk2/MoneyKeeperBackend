@@ -42,6 +42,22 @@ namespace BL.Services
 			return new SuccessResult<IEnumerable<CategoryOverview>>(await repository.GetCategoriesOverview(userId, range));
 		}
 
+		public async Task<Result<CategoryOverview>> GetCategoryOverview(int userId, int categoryId)
+		{
+			var (category, error) = await GetCategory(categoryId, userId).Unwrap();
+
+			if (error)
+			{
+				return error.Wrap();
+			}
+			else if (category.UserId != userId)
+			{
+				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User {userId} has no category with id: {categoryId}");
+			}
+
+			return await repository.GetCategoryOverview(categoryId);
+		}
+
 		public async Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId)
 		{
 			return new SuccessResult<IEnumerable<Category>>(await repository.GetCategories(userId));
