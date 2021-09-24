@@ -36,7 +36,7 @@ namespace MoneyKeeper.Authentication.Utils
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(type: "id", value: userId.ToString()) }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Expires = DateTime.UtcNow.AddMinutes(JwtAuthOptions.TTL_MINUTES),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256),
                 Issuer = JwtAuthOptions.ISSUER,
                 Audience = JwtAuthOptions.AUDIENCE
@@ -61,7 +61,7 @@ namespace MoneyKeeper.Authentication.Utils
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.FromMinutes(5)
+                    ClockSkew = TimeSpan.FromMinutes(JwtAuthOptions.TTL_MINUTES)
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;

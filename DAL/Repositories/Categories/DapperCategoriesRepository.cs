@@ -42,7 +42,7 @@ namespace DAL.Repositories
 			return (await dapperRepository.QueryAny<Category>(sql, new { id })).FirstOrDefault()!;
 		}
 
-		public async Task<Category> GetCategory(int userId, string categoryName)
+		public async Task<Category?> GetCategory(int userId, string categoryName)
 		{
 			string sql = @"
 					select * from Categories 
@@ -50,7 +50,7 @@ namespace DAL.Repositories
 						UserId = @userId and Name = @categoryName
 			";
 
-			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault()!;
+			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault();
 		}
 
 		public async Task<IEnumerable<CategoryOverview>> GetCategoriesOverview(int userId, Range range)
@@ -91,7 +91,7 @@ namespace DAL.Repositories
 					Categories.Id = @categoryId
 			";
 
-			return (await dapperRepository.QueryAny<CategoryOverview>(sql, new { categoryId })).FirstOrDefault()!;
+			return (await dapperRepository.QueryAny<CategoryOverview>(sql, new { categoryId })).FirstOrDefault();
 		}
 
 		public async Task<int> CreateCategory(Category category)
