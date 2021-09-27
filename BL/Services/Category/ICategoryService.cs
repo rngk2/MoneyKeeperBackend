@@ -25,6 +25,8 @@ namespace BL.Services
 
 		Task<Result<CategoryOverview>> GetCategoryOverview(int userId, int categoryId);
 
+		Task<Result<CategoryOverview>> GetEarningsOverview(int userId);
+
 		Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto);
 
 		Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto);

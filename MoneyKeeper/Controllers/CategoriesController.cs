@@ -84,6 +84,19 @@ namespace MoneyKeeper.Controllers
 				: category;
 		}
 
+		[HttpGet("earnings/overview")]
+		public async Task<ApiResult<CategoryOverview>> GetEarningsOverview()
+		{
+			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
+
+			if (provider_error)
+			{
+				return provider_error.Wrap();
+			}
+
+			return (await categoryService.GetEarningsOverview(contextUser.Id).Unwrap()).Value!;
+		}
+
 		[HttpGet]
 		public async Task<ApiResult<IEnumerable<CategoryDto>>> GetCategoriesOfUser()
 		{

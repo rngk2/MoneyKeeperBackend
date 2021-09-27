@@ -51,24 +51,20 @@ namespace DAL.Repositories
 		public async Task<IEnumerable<Transaction>> GetTransactionsForCategory(int userId, int categoryId, Range categoriesRange) 
 		{
 			string sql = @"
-				select 
-					Transactions.*, someCategories.Name as CategoryName 
-				from (
-						select
-							Id, [Name] 
-						from 
-							Categories 
-						where 
-							UserId = @userId and Id = @categoryId
-						order by 
-							[Name] asc 
-						offset 
-							@start rows 
-						fetch 
-							next @next rows only
-				) as someCategories
-				left join
-					Transactions on someCategories.Id = Transactions.CategoryId
+				select
+					Categories.Name as CategoryName, Transactions.*
+				from
+					Categories
+				inner join
+					Transactions on Transactions.CategoryId = Categories.Id
+				where
+					Categories.Id = @categoryId and Categories.UserId = @userId 
+				order by 
+					Timestamp desc
+				offset
+					 @start rows
+				fetch
+					next @next rows only
 			";
 
 			return await repository.QueryAny<Transaction>(sql, new 
@@ -126,7 +122,7 @@ namespace DAL.Repositories
 					join
 						Categories on Categories.Id = Transactions.CategoryId
 					where
-						Categories.UserId = @id
+						Categories.UserId = @id and Categories.Name != 'Earnings'
 			";
 
 			return await repository.QueryAny<Transaction>(sql, new { id });
@@ -142,7 +138,7 @@ namespace DAL.Repositories
 					join
 						Categories on Categories.Id = Transactions.CategoryId
 					where
-						Categories.UserId = @id and month(Timestamp) = month(getdate())
+						Categories.UserId = @id and month(Timestamp) = month(getdate()) and Categories.Name != 'Earnings'
 			";
 
 			return await repository.QueryAny<Transaction>(sql, new { id });
@@ -158,7 +154,7 @@ namespace DAL.Repositories
 					join
 						Categories on Categories.Id = Transactions.CategoryId
 					where
-						Categories.UserId = @id and year(Timestamp) = year(getdate())
+						Categories.UserId = @id and year(Timestamp) = year(getdate()) and Categories.Name != 'Earnings'
 			";
 
 			return await repository.QueryAny<Transaction>(sql, new { id });

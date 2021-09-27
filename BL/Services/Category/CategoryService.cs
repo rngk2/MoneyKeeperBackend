@@ -63,6 +63,11 @@ namespace BL.Services
 			return new SuccessResult<IEnumerable<Category>>(await repository.GetCategories(userId));
 		}
 
+		public async Task<Result<CategoryOverview>> GetEarningsOverview(int userId)
+		{
+			return await repository.GetEarningsOverview(userId);
+		}
+
 		public async Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto)
 		{
 			if ((await GetCategory(categoryDto.UserId, categoryDto.Name).Unwrap()).Value is not null)
