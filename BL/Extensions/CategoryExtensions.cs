@@ -1,7 +1,7 @@
-﻿using BL.Dtos.Category;
-using Entities = DAL.Entities;
+﻿using MoneyKeeper.BL.Dtos.Category;
+using Entities = MoneyKeeper.DAL.Entities;
 
-namespace BL.Extensions
+namespace MoneyKeeper.BL.Extensions
 {
 	public static class CategoryExtensions
 	{

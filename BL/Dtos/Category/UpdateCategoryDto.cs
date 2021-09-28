@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BL.Dtos.Category
+namespace MoneyKeeper.BL.Dtos.Category
 {
 	public class UpdateCategory
 	{

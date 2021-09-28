@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BL.Dtos.User
+namespace MoneyKeeper.BL.Dtos.User
 {
 	public record User
 	{

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using DAL.Entities;
 using Microsoft.AspNetCore.Http;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.Utils.Results;
 using MoneyKeeper.Authentication.Services;
 using MoneyKeeper.Globals.Errors;
+using MoneyKeeper.BL.Dtos.User;
 
-namespace MoneyKeeper.Providers
+namespace MoneyKeeper.Api.Providers
 {
 	public interface ICurrentUserProvider
 	{

@@ -1,7 +1,7 @@
-﻿using BL.Dtos.User;
-using Enity = DAL.Entities;
+﻿using MoneyKeeper.BL.Dtos.User;
+using Enity = MoneyKeeper.DAL.Entities;
 
-namespace BL.Extensions
+namespace MoneyKeeper.BL.Extensions
 {
     public static class UserExtensions
     {
@@ -11,6 +11,7 @@ namespace BL.Extensions
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
+            Password = user.Password
         };
 
         public static Enity.User AsEntity(this User user) => new Enity.User
@@ -19,6 +20,7 @@ namespace BL.Extensions
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
+            Password = user.Password
         };
     }
 }

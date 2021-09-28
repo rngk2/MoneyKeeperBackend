@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using BL.Dtos.Category;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.BL.Dtos.Category;
+using MoneyKeeper.Utils.Results;
 using MoneyKeeper.DAL.Models;
 
-namespace BL.Services
+namespace MoneyKeeper.BL.Services
 {
 	public interface ICategoryService
 	{

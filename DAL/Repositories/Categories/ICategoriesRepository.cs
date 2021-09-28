@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DAL.Entities;
+using MoneyKeeper.DAL.Entities;
 using MoneyKeeper.DAL.Models;
 
-namespace DAL.Repositories
+namespace MoneyKeeper.DAL.Repositories
 {
 	public interface ICategoriesRepository
 	{

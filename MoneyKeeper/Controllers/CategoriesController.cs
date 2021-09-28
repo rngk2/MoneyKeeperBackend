@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-using BL.Dtos.Category;
-using BL.Extensions;
-using BL.Services;
-using Globals.Errors;
-using MoneyKeeper.Providers;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.BL.Dtos.Category;
+using MoneyKeeper.BL.Extensions;
+using MoneyKeeper.BL.Services;
 using MoneyKeeper.Globals.Errors;
+using MoneyKeeper.Api.Providers;
+using MoneyKeeper.Utils.Results;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using MoneyKeeper.BL;
 using MoneyKeeper.DAL.Models;
 
 namespace MoneyKeeper.Controllers

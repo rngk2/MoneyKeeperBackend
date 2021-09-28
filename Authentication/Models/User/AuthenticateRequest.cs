@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyKeepeer.Authentication.Models
+namespace MoneyKeeper.Authentication.Models
 {
     public class AuthenticateRequest
     {

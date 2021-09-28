@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DAL\MoneyKeeper.DAL.csproj" />
     <ProjectReference Include="..\Globals\MoneyKeeper.Globals.csproj" />
-    <ProjectReference Include="..\MoneyKeepeer.Utils\MoneyKeepeer.Utils.csproj" />
   </ItemGroup>
 
 </Project>

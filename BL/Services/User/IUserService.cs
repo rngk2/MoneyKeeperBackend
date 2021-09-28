@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BL.Dtos.User;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.BL.Dtos.User;
+using MoneyKeeper.Utils.Results;
 
-namespace BL.Services
+namespace MoneyKeeper.BL.Services
 {
 	public interface IUserService
 	{

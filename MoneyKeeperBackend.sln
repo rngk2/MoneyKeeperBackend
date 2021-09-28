@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.Authentication"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.Globals", "Globals\MoneyKeeper.Globals.csproj", "{02451381-0C1C-4F88-AB48-476522B6FB79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyKeepeer.Utils", "MoneyKeepeer.Utils\MoneyKeepeer.Utils.csproj", "{E26BD3A5-7B12-44C5-89CE-EA17EE75DB40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyKeeper.Utils", "MoneyKeepeer.Utils\MoneyKeeper.Utils.csproj", "{E26BD3A5-7B12-44C5-89CE-EA17EE75DB40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

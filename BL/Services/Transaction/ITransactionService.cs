@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BL.Dtos.Transaction;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.BL.Dtos.Transaction;
+using MoneyKeeper.Utils.Results;
 
-namespace BL.Services
+namespace MoneyKeeper.BL.Services
 {
 	public interface ITransactionService
 	{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DAL.Entities
+namespace MoneyKeeper.DAL.Entities
 {
 	public record Transaction
 	{

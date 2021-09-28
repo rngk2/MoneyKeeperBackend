@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Globals\MoneyKeeper.Globals.csproj" />
-    <ProjectReference Include="..\MoneyKeepeer.Utils\MoneyKeepeer.Utils.csproj" />
+    <ProjectReference Include="..\MoneyKeepeer.Utils\MoneyKeeper.Utils.csproj" />
   </ItemGroup>
 
 </Project> 

@@ -5,10 +5,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.Entities;
+using MoneyKeeper.DAL.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MoneyKeepeer.Authentication;
+using MoneyKeeper.Authentication;
 using MoneyKeeper.Authentication.Helpers;
 
 namespace MoneyKeeper.Authentication.Utils

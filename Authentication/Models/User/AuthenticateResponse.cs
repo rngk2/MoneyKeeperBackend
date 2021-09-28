@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using DAL.Entities;
+using MoneyKeeper.BL.Dtos.User;
 
-namespace MoneyKeepeer.Authentication.Models
+namespace MoneyKeeper.Authentication.Models
 {
     public class AuthenticateResponse
     {

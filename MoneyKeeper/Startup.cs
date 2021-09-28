@@ -1,6 +1,5 @@
 ﻿using MoneyKeeper.Authentication.Helpers;
-using BL;
-using DAL.Settings;
+using MoneyKeeper.BL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,12 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MoneyKeeper.BL;
-using MoneyKeeper.DAL;
-using MoneyKeeper.Providers;
+using MoneyKeeper.Api.Providers;
 using MoneyKeeper.Authentication;
-using MoneyKeepeer.Authentication;
+using MoneyKeeper.Authentication;
 using System.Text;
+using MoneyKeeper.DAL.Settings;
+using MoneyKeeper.DAL;
 
 namespace MoneyKeeper
 {

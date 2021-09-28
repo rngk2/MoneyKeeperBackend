@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace MoneyKeeper.Api.Results
+namespace MoneyKeeper.Utils.Results
 {
     public static class ResultExtensions
     {

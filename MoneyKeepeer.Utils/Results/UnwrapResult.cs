@@ -1,4 +1,4 @@
-namespace MoneyKeeper.Api.Results
+namespace MoneyKeeper.Utils.Results
 {
     public class UnwrapResult<TValue>
     {

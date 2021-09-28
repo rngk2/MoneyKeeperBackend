@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DAL.Settings
+namespace MoneyKeeper.DAL.Settings
 {
 	public class DapperSettings
 	{

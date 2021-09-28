@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BL.Dtos.Transaction;
-using BL.Extensions;
-using DAL.Repositories;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.BL.Dtos.Transaction;
+using MoneyKeeper.BL.Extensions;
+using MoneyKeeper.BL.Services;
+using MoneyKeeper.DAL.Repositories;
 using MoneyKeeper.Globals.Errors;
+using MoneyKeeper.Utils.Results;
 
-namespace BL.Services
+namespace MoneyKeeper.BL.Services
 {
 	internal class TransactionService : ITransactionService
 	{

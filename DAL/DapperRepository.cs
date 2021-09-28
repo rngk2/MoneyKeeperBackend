@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Options;
-using DAL.Settings;
+using MoneyKeeper.DAL.Settings;
 
-namespace DAL.Repositories
+namespace MoneyKeeper.DAL.Repositories
 {
 	internal class DapperRepository : IDapperRepository
 	{

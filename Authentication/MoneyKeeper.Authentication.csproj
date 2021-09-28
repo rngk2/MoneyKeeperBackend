@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BL\MoneyKeeper.BL.csproj" />
     <ProjectReference Include="..\DAL\MoneyKeeper.DAL.csproj" />
-    <ProjectReference Include="..\MoneyKeepeer.Utils\MoneyKeepeer.Utils.csproj" />
+    <ProjectReference Include="..\MoneyKeepeer.Utils\MoneyKeeper.Utils.csproj" />
   </ItemGroup>
 
 </Project>

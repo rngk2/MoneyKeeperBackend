@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DAL.Entities;
+using MoneyKeeper.DAL.Entities;
 
-namespace DAL.Repositories
+namespace MoneyKeeper.DAL.Repositories
 {
 	public interface IUsersRepository
 	{

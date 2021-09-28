@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace BL.Dtos.Transaction
+namespace MoneyKeeper.BL.Dtos.Transaction
 {
 	public record CreateTransaction
 	{

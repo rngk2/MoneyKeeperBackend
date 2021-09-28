@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DAL.Repositories
+namespace MoneyKeeper.DAL.Repositories
 {
 	internal interface IDapperRepository
 	{

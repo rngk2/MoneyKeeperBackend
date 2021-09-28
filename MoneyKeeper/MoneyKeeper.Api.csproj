@@ -45,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Authentication\MoneyKeeper.Authentication.csproj" />
     <ProjectReference Include="..\BL\MoneyKeeper.BL.csproj" />
+    <ProjectReference Include="..\DAL\MoneyKeeper.DAL.csproj" />
     <ProjectReference Include="..\Globals\MoneyKeeper.Globals.csproj" />
   </ItemGroup>
 	<ItemGroup>

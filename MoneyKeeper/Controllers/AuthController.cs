@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoneyKeepeer.Authentication.Models;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.Authentication.Models;
+using MoneyKeeper.Utils.Results;
 using MoneyKeeper.Authentication.Services;
-using MoneyKeeper.Providers;
+using MoneyKeeper.Api.Providers;
 
 namespace MoneyKeeper.Api.Controllers
 {

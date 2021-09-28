@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DAL.Entities;
-using DAL.Repositories;
+using MoneyKeeper.DAL.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using MoneyKeepeer.Authentication.Models;
-using MoneyKeeper.Api.Results;
+using MoneyKeeper.Authentication.Models;
+using MoneyKeeper.Utils.Results;
 using MoneyKeeper.Authentication.Helpers;
 using MoneyKeeper.Authentication.Utils;
 using MoneyKeeper.Globals.Errors;
 using MoneyKeeper.Utils.Extensions;
+using MoneyKeeper.BL.Dtos.User;
+using MoneyKeeper.BL.Extensions;
 
 namespace MoneyKeeper.Authentication.Services
 {
@@ -50,7 +51,7 @@ namespace MoneyKeeper.Authentication.Services
 		{
 			if (!memoryCache.TryGetValue(model.Email, out User user))
 			{
-				user = await usersRepository.GetUser(model.Email);
+				user = (await usersRepository.GetUser(model.Email)).AsDto();
 			}
 
 			// validate
@@ -144,7 +145,7 @@ namespace MoneyKeeper.Authentication.Services
 				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User: #{id} not found");
 			}
 
-			return user;
+			return user.AsDto();
 		}
 
 		private async Task<Result<User>> GetUserByRefreshToken(string token)
@@ -156,10 +157,10 @@ namespace MoneyKeeper.Authentication.Services
 				return new Error(ApiResultErrorCodes.NOT_FOUND, "Cannot find any user with provided token");
 			}
 
-			return user;
+			return user.AsDto();
 		}
 
-		private RefreshToken RotateRefreshToken(RefreshToken refreshToken, string ipAddress)
+		private DAL.Entities.RefreshToken RotateRefreshToken(DAL.Entities.RefreshToken refreshToken, string ipAddress)
 		{
 			var newRefreshToken = jwtUtils.GenerateRefreshToken(ipAddress);
 
@@ -182,7 +183,7 @@ namespace MoneyKeeper.Authentication.Services
 			 }
 		 }*/
 
-		private void RevokeRefreshToken(RefreshToken token, string ipAddress, string reason = null, string replacedByToken = null)
+		private void RevokeRefreshToken( DAL.Entities.RefreshToken token, string ipAddress, string reason = null, string replacedByToken = null)
 		{
 			token.Revoked = DateTime.UtcNow;
 			token.RevokedByIp = ipAddress;

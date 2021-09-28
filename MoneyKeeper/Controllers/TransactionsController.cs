@@ -5,16 +5,16 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using BL.Dtos.Transaction;
-using BL.Extensions;
-using BL.Services;
-using Globals.Errors;
+using MoneyKeeper.BL.Dtos.Transaction;
+using MoneyKeeper.BL.Extensions;
+using MoneyKeeper.BL.Services;
+using MoneyKeeper.Globals.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
-using MoneyKeeper.Api.Results;
-using MoneyKeeper.Providers;
+using MoneyKeeper.Utils.Results;
+using MoneyKeeper.Api.Providers;
 using static MoneyKeeper.Api.Types;
 
 namespace MoneyKeeper.Controllers

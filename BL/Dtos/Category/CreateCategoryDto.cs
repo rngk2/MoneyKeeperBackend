@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace BL.Dtos.Category
+namespace MoneyKeeper.BL.Dtos.Category
 {
 	public record CreateCategory
 	{

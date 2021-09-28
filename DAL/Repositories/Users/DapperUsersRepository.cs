@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using DAL.Entities;
-using DAL.Settings;
+using MoneyKeeper.DAL.Entities;
+using MoneyKeeper.DAL.Settings;
 using MoneyKeeper.Globals;
 using MoneyKeeper.DAL;
 
-namespace DAL.Repositories
+namespace MoneyKeeper.DAL.Repositories
 {
 	internal class DapperUsersRepository : IUsersRepository
 	{

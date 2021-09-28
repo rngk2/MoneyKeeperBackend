@@ -1,7 +1,7 @@
-﻿using BL.Dtos.Transaction;
-using Entity = DAL.Entities;
+﻿using MoneyKeeper.BL.Dtos.Transaction;
+using Entity = MoneyKeeper.DAL.Entities;
 
-namespace BL.Extensions
+namespace MoneyKeeper.BL.Extensions
 {
 	public static class TransactionExtensions
 	{

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Globals.Errors
+namespace MoneyKeeper.Globals.Errors
 {
 	public enum SqlErrorCodes : int
 	{

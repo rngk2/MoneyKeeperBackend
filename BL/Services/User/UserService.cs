@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using BL.Dtos.User;
-using BL.Extensions;
-using DAL.Repositories;
+using MoneyKeeper.BL.Dtos.User;
+using MoneyKeeper.BL.Extensions;
+using MoneyKeeper.DAL.Repositories;
 using Microsoft.Extensions.Caching.Memory;
-using MoneyKeepeer.Utils.Extensions;
-using MoneyKeeper.Api.Results;
-using MoneyKeeper.Globals.Errors;
 using MoneyKeeper.Utils.Extensions;
+using MoneyKeeper.Utils.Results;
+using MoneyKeeper.Globals.Errors;
 
-namespace BL.Services
+namespace MoneyKeeper.BL.Services
 {
 	internal class UserService : IUserService
 	{

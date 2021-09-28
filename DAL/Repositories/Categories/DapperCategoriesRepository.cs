@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DAL.Entities;
+using MoneyKeeper.DAL.Entities;
 using MoneyKeeper.DAL;
 using MoneyKeeper.DAL.Models;
 
-namespace DAL.Repositories
+namespace MoneyKeeper.DAL.Repositories
 {
 	internal class DapperCategoriesRepository : ICategoriesRepository
 	{

@@ -4,16 +4,15 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using MoneyKeeper.Authentication.Services;
-using BL.Dtos.User;
-using BL.Extensions;
-using BL.Services;
-using Globals.Errors;
+using MoneyKeeper.Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoneyKeeper.Api.Results;
-using MoneyKeeper.Providers;
-using MoneyKeepeer.Authentication.Models;
+using MoneyKeeper.Utils.Results;
+using MoneyKeeper.Api.Providers;
+using MoneyKeeper.Authentication.Models;
 using Microsoft.AspNetCore.Authorization;
+using MoneyKeeper.BL.Services;
+using MoneyKeeper.BL.Dtos.User;
 
 namespace MoneyKeeper.Controllers
 {
@@ -79,7 +78,7 @@ namespace MoneyKeeper.Controllers
         }
 
         [HttpDelete]
-        public async Task<ApiResult<global::BL.Dtos.User.User>> DeleteUser()
+        public async Task<ApiResult<global::MoneyKeeper.BL.Dtos.User.User>> DeleteUser()
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
