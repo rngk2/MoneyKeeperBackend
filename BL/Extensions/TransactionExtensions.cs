@@ -1,16 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Dtos.Transaction;
-using DAL.Entities;
+﻿using BL.Dtos.Transaction;
+using Entity = DAL.Entities;
 
 namespace BL.Extensions
 {
 	public static class TransactionExtensions
 	{
-		public static TransactionDto AsDto(this Transaction transaction) => new TransactionDto
+		public static Transaction AsDto(this Entity.Transaction transaction) => new Transaction
+		{
+			Id = transaction.Id,
+			UserId = transaction.UserId,
+			CategoryId = transaction.CategoryId,
+			CategoryName = transaction.CategoryName,
+			Amount = transaction.Amount,
+			Timestamp = transaction.Timestamp,
+			Comment = transaction.Comment
+		};
+
+		public static Entity.Transaction AsEntity(this Transaction transaction) => new Entity.Transaction
 		{
 			Id = transaction.Id,
 			UserId = transaction.UserId,

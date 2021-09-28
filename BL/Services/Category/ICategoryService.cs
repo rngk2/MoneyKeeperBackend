@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using BL.Dtos.Category;
-using DAL.Entities;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.DAL.Models;
 
@@ -27,9 +26,9 @@ namespace BL.Services
 
 		Task<Result<CategoryOverview>> GetEarningsOverview(int userId);
 
-		Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto);
+		Task<Result<Category>> AddCategoryToUser(CreateCategory categoryDto);
 
-		Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto);
+		Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategory categoryDto);
 
 		Task<Result<Category>> DeleteCategoryToUser(string categoryName, int userId);
 

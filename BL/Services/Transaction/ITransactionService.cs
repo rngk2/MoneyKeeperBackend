@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Dtos.Transaction;
-using DAL.Entities;
 using MoneyKeeper.Api.Results;
 
 namespace BL.Services
@@ -31,7 +30,7 @@ namespace BL.Services
 
 		Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id);
 
-		Task<Result<Transaction>> CreateTransaction(CreateTransactionDto transactionDto);
+		Task<Result<Transaction>> CreateTransaction(CreateTransaction transactionDto);
 
 		Task<Result<Transaction>> DeleteTransaction(int id, int userId);
 	}

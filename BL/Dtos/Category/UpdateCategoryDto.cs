@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.Category
 {
-	public class UpdateCategoryDto
+	public class UpdateCategory
 	{
 		public string Name { get; init; }
 	}

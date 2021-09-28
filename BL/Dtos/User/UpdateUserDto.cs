@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.User
 {
-	public record UpdateUserDto
+	public record UpdateUser
 	{
 		public string FirstName { get; init; }
 

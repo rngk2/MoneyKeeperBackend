@@ -7,7 +7,6 @@ using MoneyKeeper.Authentication.Services;
 using BL.Dtos.User;
 using BL.Extensions;
 using BL.Services;
-using DAL.Entities;
 using Globals.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +34,7 @@ namespace MoneyKeeper.Controllers
         }
 
         [HttpGet]
-        public async Task<ApiResult<UserDto>> GetUser()
+        public async Task<ApiResult<User>> GetUser()
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -48,20 +47,22 @@ namespace MoneyKeeper.Controllers
 
             return service_error is not null
                 ? service_error.Wrap()
-                : user.AsDto();
+                : user;
         }
 
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult<UserDto>> CreateUser(CreateUserDto userDto)
+        public async Task<ApiResult<User>> CreateUser(CreateUser userDto)
         {
             var (user, error) = await userService.CreateUser(userDto).Unwrap();
-            return error ? error.Wrap() : user.AsDto();
+            return error 
+                ? error.Wrap() 
+                : user;
         }
 
         [HttpPut]
-        public async Task<ApiResult<UserDto>> UpdateUser(UpdateUserDto userDto)
+        public async Task<ApiResult<User>> UpdateUser(UpdateUser userDto)
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -74,11 +75,11 @@ namespace MoneyKeeper.Controllers
 
             return service_error
                 ? service_error.Wrap()
-                : updatedUser.AsDto();
+                : updatedUser;
         }
 
         [HttpDelete]
-        public async Task<ApiResult<UserDto>> DeleteUser()
+        public async Task<ApiResult<global::BL.Dtos.User.User>> DeleteUser()
         {
             var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -91,7 +92,7 @@ namespace MoneyKeeper.Controllers
 
             return service_error
                 ? service_error.Wrap()
-                : deleted.AsDto();
+                : deleted;
         }
     }
 }

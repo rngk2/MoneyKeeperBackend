@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.Transaction
 {
-	public record CreateTransactionDto
+	public record CreateTransaction
 	{
 		[JsonIgnore]
 		public int UserId { get; init; }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using BL.Dtos.Category;
-using DAL.Entities;
+using BL.Extensions;
 using DAL.Repositories;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.DAL.Models;
@@ -24,7 +25,7 @@ namespace BL.Services
 		{
 			var category = await repository.GetCategory(userId, categoryName);
 			return category is not null
-				? category
+				? category.AsDto()
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find category: {categoryName} of user: #{userId}");
 		}
 
@@ -33,7 +34,7 @@ namespace BL.Services
 			var category = await repository.GetCategory(categoryId);
 
 			return category is not null && category.UserId == userId
-				? category
+				? category.AsDto()
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find category: #{categoryId}");
 		}
 
@@ -60,7 +61,8 @@ namespace BL.Services
 
 		public async Task<Result<IEnumerable<Category>>> GetCategoriesOfUser(int userId)
 		{
-			return new SuccessResult<IEnumerable<Category>>(await repository.GetCategories(userId));
+			return (await repository.GetCategories(userId))
+				.Select(c => c.AsDto()).ToList();
 		}
 
 		public async Task<Result<CategoryOverview>> GetEarningsOverview(int userId)
@@ -68,7 +70,7 @@ namespace BL.Services
 			return await repository.GetEarningsOverview(userId);
 		}
 
-		public async Task<Result<Category>> AddCategoryToUser([NotNull] CreateCategoryDto categoryDto)
+		public async Task<Result<Category>> AddCategoryToUser(CreateCategory categoryDto)
 		{
 			if ((await GetCategory(categoryDto.UserId, categoryDto.Name).Unwrap()).Value is not null)
 			{
@@ -82,7 +84,7 @@ namespace BL.Services
 				UserId = categoryDto.UserId
 			};
 
-			int createdId = await repository.CreateCategory(category);
+			int createdId = await repository.CreateCategory(category.AsEntity());
 
 			Category created = category with
 			{
@@ -92,14 +94,14 @@ namespace BL.Services
 			return created;
 		}
 
-		public async Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategoryDto categoryDto)
+		public async Task<Result<Category>> UpdateCategoryToUser(Category existingCategory, UpdateCategory categoryDto)
 		{
 			Category updatedCategory = existingCategory with
 			{
 				Name = categoryDto.Name is null ? existingCategory.Name : categoryDto.Name
 			};
 
-			return await repository.UpdateCategory(updatedCategory)
+			return await repository.UpdateCategory(updatedCategory.AsEntity())
 				? updatedCategory
 				: new Error(ApiResultErrorCodes.CANNOT_UPDATE, $"Error occured while updating category: #{existingCategory.Id}");
 		}

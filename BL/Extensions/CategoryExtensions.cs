@@ -1,11 +1,18 @@
 ﻿using BL.Dtos.Category;
-using DAL.Entities;
+using Entities = DAL.Entities;
 
 namespace BL.Extensions
 {
 	public static class CategoryExtensions
 	{
-		public static CategoryDto AsDto(this Category category) => new CategoryDto
+		public static Category AsDto(this Entities.Category category) => new Category
+		{
+			Id = category.Id,
+			Name = category.Name,
+			UserId = category.UserId
+		};
+
+		public static Entities.Category AsEntity(this Category category) => new Entities.Category
 		{
 			Id = category.Id,
 			Name = category.Name,

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.Category
 {
-	public record CreateCategoryDto
+	public record CreateCategory
 	{
 		[Required]
 		public string Name { get; init; }

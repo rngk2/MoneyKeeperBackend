@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.User
 {
-	public record CreateUserDto
+	public record CreateUser
 	{
 		[Required]
 		public string FirstName { get; init; }

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-using DAL.Entities;
 using BL.Dtos.Category;
 using BL.Extensions;
 using BL.Services;
@@ -34,7 +33,7 @@ namespace MoneyKeeper.Controllers
 
 
 		[HttpGet("{id}")]
-		public async Task<ApiResult<CategoryDto>> GetCategory(int id)
+		public async Task<ApiResult<Category>> GetCategory(int id)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -47,7 +46,7 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: category.AsDto();
+				: category;
 		}
 
 		[HttpGet("overview")]
@@ -98,7 +97,7 @@ namespace MoneyKeeper.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ApiResult<IEnumerable<CategoryDto>>> GetCategoriesOfUser()
+		public async Task<ApiResult<IEnumerable<Category>>> GetCategoriesOfUser()
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -111,11 +110,11 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: categories.Select(c => c.AsDto()).ToList();
+				: categories.ToList();
 		}
 
 		[HttpPost]
-		public async Task<ApiResult<CategoryDto>> AddCategoryToUser(CreateCategoryDto categoryDto)
+		public async Task<ApiResult<Category>> AddCategoryToUser(CreateCategory categoryDto)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -131,11 +130,11 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: created.AsDto();
+				: created;
 		}
 
 		[HttpPut("{categoryId}")]
-		public async Task<ApiResult<CategoryDto>> UpdateCategoryToUser(int categoryId, UpdateCategoryDto categoryDto)
+		public async Task<ApiResult<Category>> UpdateCategoryToUser(int categoryId, UpdateCategory categoryDto)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -155,11 +154,11 @@ namespace MoneyKeeper.Controllers
 
 			return service_updateError
 				? service_updateError.Wrap()
-				: updated.AsDto();
+				: updated;
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ApiResult<CategoryDto>> DeleteCategory(int id)
+		public async Task<ApiResult<Category>> DeleteCategory(int id)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -172,11 +171,11 @@ namespace MoneyKeeper.Controllers
 
 			return error
 				? error.Wrap()
-				: deleted.AsDto();
+				: deleted;
 		}
 
 		[HttpDelete]
-		public async Task<ApiResult<CategoryDto>> DeleteCategory([FromQuery] string categoryName)
+		public async Task<ApiResult<Category>> DeleteCategory([FromQuery] string categoryName)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -189,7 +188,7 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: deleted.AsDto();
+				: deleted;
 		}
 	}
 }

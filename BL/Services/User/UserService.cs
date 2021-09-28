@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using BL.Dtos.User;
 using BL.Extensions;
-using DAL.Entities;
 using DAL.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using MoneyKeepeer.Utils.Extensions;
@@ -32,7 +31,7 @@ namespace BL.Services
 		{
 			var user = await usersRepository.GetUser(id);
 			return user is not null
-				? user
+				? user.AsDto()
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with id: {id}");
 		}
 
@@ -40,11 +39,11 @@ namespace BL.Services
 		{
 			var user = await usersRepository.GetUser(email);
 			return user is not null
-				? user
+				? user.AsDto()
 				: new Error(ApiResultErrorCodes.NOT_FOUND, $"Cannot find user with email: {email}");
 		}
 
-		public async Task<Result<User>> CreateUser(CreateUserDto userDto)
+		public async Task<Result<User>> CreateUser(CreateUser userDto)
 		{
 			if ((await GetUser(userDto.Email).Unwrap()).Value is not null)
 			{
@@ -59,7 +58,7 @@ namespace BL.Services
 				Password = userDto.Password.Hash()
 			};
 
-			int createdId = await usersRepository.CreateUser(newUser);
+			int createdId = await usersRepository.CreateUser(newUser.AsEntity());
 
 			await AddDefaultCategoriesToUser(createdId);
 
@@ -89,9 +88,7 @@ namespace BL.Services
 			}
 		}
 
-
-
-		public async Task<Result<User>> UpdateUser(int id, [NotNull] UpdateUserDto userDto)
+		public async Task<Result<User>> UpdateUser(int id, UpdateUser userDto)
 		{
 			Func<object, object, object> returnDefaultIfNull = (object nullable, object @default)
 				=> nullable is null ? @default : nullable;
@@ -111,7 +108,7 @@ namespace BL.Services
 				Password = returnDefaultIfNull(userDto.Password?.Hash(), existingUser.Password).ToString()
 			};
 
-			return await usersRepository.UpdateUser(updatedUser)
+			return await usersRepository.UpdateUser(updatedUser.AsEntity())
 				? updatedUser
 				: new Error(ApiResultErrorCodes.CANNOT_UPDATE, $"Error occured while updating user: #{existingUser.Id}");
 		}

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using BL.Dtos.Transaction;
 using BL.Extensions;
 using BL.Services;
-using DAL.Entities;
 using Globals.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +34,7 @@ namespace MoneyKeeper.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ApiResult<TransactionDto>> GetTransaction(int id)
+		public async Task<ApiResult<Transaction>> GetTransaction(int id)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -48,11 +47,11 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: transaction.AsDto();
+				: transaction;
 		}
 
 		[HttpGet("category/{categoryId}/transactions")]
-		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactionsForCategories(int categoryId, [Required] int from, [Required] int to)
+		public async Task<ApiResult<IEnumerable<Transaction>>> GetTransactionsForCategories(int categoryId, [Required] int from, [Required] int to)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -67,11 +66,11 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: transactions.Select(t => t.AsDto()).ToList();
+				: transactions.ToList();
 		}
 
 		[HttpGet("user/transactions")]
-		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetTransactions(
+		public async Task<ApiResult<IEnumerable<Transaction>>> GetTransactions(
 			[Required] int from,
 			[Required] int to,
 			[Required] TransactionField orderByField,
@@ -92,12 +91,12 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: transactions.Select(t => t.AsDto()).ToList();
+				: transactions.ToList();
 		}
 
 
 		[HttpGet("summary")]
-		public async Task<ApiResult<IEnumerable<TransactionDto>>> GetSummaryForMonth()
+		public async Task<ApiResult<IEnumerable<Transaction>>> GetSummaryForMonth()
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -108,7 +107,6 @@ namespace MoneyKeeper.Controllers
 
 			return (await transactionService.GetSummaryForUser(contextUser.Id).Unwrap())
 				.Value!
-				.Select(t => t.AsDto())
 				.ToList();
 		}
 
@@ -152,7 +150,7 @@ namespace MoneyKeeper.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ApiResult<TransactionDto>> CreateTransaction(CreateTransactionDto transactionDto)
+		public async Task<ApiResult<Transaction>> CreateTransaction(CreateTransaction transactionDto)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -168,11 +166,11 @@ namespace MoneyKeeper.Controllers
 
 			return service_error
 				? service_error.Wrap()
-				: created.AsDto();
+				: created;
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ApiResult<TransactionDto>> DeleteTransaction(int id)
+		public async Task<ApiResult<Transaction>> DeleteTransaction(int id)
 		{
 			var (contextUser, provider_error) = await currentUserProvider.GetCurrentUser().Unwrap();
 
@@ -185,7 +183,7 @@ namespace MoneyKeeper.Controllers
 
 			return error
 				? error.Wrap()
-				: deleted.AsDto();
+				: deleted;
 		}
 
 	}

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.Category
 {
-	public record CategoryDto
+	public record Category
 	{
 		public int Id { get; init; }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Dtos.Transaction
 {
-	public record TransactionDto
+	public record Transaction
 	{
 		public int Id { get; init; }
 

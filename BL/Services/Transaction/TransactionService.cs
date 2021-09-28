@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Dtos.Transaction;
+using BL.Extensions;
 using DAL.Repositories;
-using DAL.Entities;
 using MoneyKeeper.Api.Results;
 using MoneyKeeper.Globals.Errors;
 
@@ -24,7 +24,7 @@ namespace BL.Services
 
 		public async Task<Result<Transaction>> GetTransaction(int id, int userId)
 		{
-			Transaction transaction = await transactionsRepository.GetTransaction(id, userId);
+			Transaction transaction = (await transactionsRepository.GetTransaction(id, userId)).AsDto();
 
 			if (transaction is null)
 			{
@@ -36,22 +36,30 @@ namespace BL.Services
 
 		public async Task<Result<IEnumerable<Transaction>>> GetSummaryForUser(int id)
 		{
-			return new SuccessResult<IEnumerable<Transaction>>(await transactionsRepository.GetSummaryForUser(id));
+			return (await transactionsRepository.GetSummaryForUser(id))
+				.Select(t => t.AsDto())
+				.ToList();
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUser(int id)
 		{
-			return ComputeTotal(await transactionsRepository.GetSummaryForUser(id));
+			return ComputeTotal((await transactionsRepository.GetSummaryForUser(id))
+				.Select(t => t.AsDto())
+			);
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForYear(int id)
 		{
-			return ComputeTotal(await transactionsRepository.GetSummaryForUserForYear(id));
+			return ComputeTotal((await transactionsRepository.GetSummaryForUserForYear(id))
+					.Select(t => t.AsDto())	
+			);
 		}
 
 		public async Task<Result<Dictionary<string, decimal>>> GetTotalForUserForMonth(int id)
 		{
-			return ComputeTotal(await transactionsRepository.GetSummaryForUserForMonth(id));
+			return ComputeTotal((await transactionsRepository.GetSummaryForUserForMonth(id))
+				.Select(t => t.AsDto())
+			);
 		}
 
 		private static Dictionary<string, decimal> ComputeTotal(IEnumerable<Transaction> summaryUnits)
@@ -80,7 +88,9 @@ namespace BL.Services
 				return new Error(ApiResultErrorCodes.NOT_FOUND, $"User: #{userId} has no category with id: {categoryId}");
 			}
 
-			return new SuccessResult<IEnumerable<Transaction>>(await transactionsRepository.GetTransactionsForCategory(userId, categoryId, range));
+			return (await transactionsRepository.GetTransactionsForCategory(userId, categoryId, range))
+				.Select(t => t.AsDto())
+				.ToList();
 		}
 
 		public async Task<Result<IEnumerable<Transaction>>> GetTransactions(
@@ -90,12 +100,12 @@ namespace BL.Services
 			string order,
 			string? searchPattern = null
 		) {
-			return new SuccessResult<IEnumerable<Transaction>>(
-				await transactionsRepository.GetTransactions(userId, range, orderByField, order, searchPattern)
-			);
+			return (await transactionsRepository.GetTransactions(userId, range, orderByField, order, searchPattern))
+				.Select(t => t.AsDto())
+				.ToList();
 		}
 
-		public async Task<Result<Transaction>> CreateTransaction(CreateTransactionDto transactionDto)
+		public async Task<Result<Transaction>> CreateTransaction(CreateTransaction transactionDto)
 		{
 			Transaction newTransaction = new()
 			{
@@ -106,7 +116,7 @@ namespace BL.Services
 				Comment = transactionDto.Comment
 			};
 
-			int createdId = await transactionsRepository.CreateTransaction(newTransaction);
+			int createdId = await transactionsRepository.CreateTransaction(newTransaction.AsEntity());
 
 			Transaction created = newTransaction with
 			{
