@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoneyKeeper.Api.Providers;
 using MoneyKeeper.Authentication;
-using MoneyKeeper.Authentication;
 using System.Text;
 using MoneyKeeper.DAL.Settings;
 using MoneyKeeper.DAL;

@@ -204,8 +204,6 @@ $RECYCLE.BIN/
 *.msp
 
 # Project Files
-appsettings.Development.json
-appsettings.json
 
 #Secrets
 [Ss]ecrets/
