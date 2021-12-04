@@ -77,7 +77,7 @@ namespace MoneyKeeper.BL.Services
 
 		private async Task AddDefaultCategoriesToUser(int userId)
 		{
-			foreach (var defaultCategoryName in ICategoryService.DEFAULT_CATEGORIES_NAMES)
+			foreach (var defaultCategoryName in ICategoryService.DefaultCategoriesNames)
 			{
 				await categoriesRepository.CreateCategory(new()
 				{
@@ -89,7 +89,7 @@ namespace MoneyKeeper.BL.Services
 
 		public async Task<Result<User>> UpdateUser(int id, UpdateUser userDto)
 		{
-			Func<object, object, object> returnDefaultIfNull = (object nullable, object @default)
+			Func<object?, object, object> returnDefaultIfNull = (object? nullable, object @default)
 				=> nullable is null ? @default : nullable;
 
 			var (existingUser, error) = await GetUser(id).Unwrap();
@@ -101,10 +101,10 @@ namespace MoneyKeeper.BL.Services
 
 			User updatedUser = existingUser with
 			{
-				FirstName = returnDefaultIfNull(userDto.FirstName, existingUser.FirstName).ToString(),
-				LastName = returnDefaultIfNull(userDto.LastName, existingUser.LastName).ToString(),
-				Email = returnDefaultIfNull(userDto.Email, existingUser.Email).ToString(),
-				Password = returnDefaultIfNull(userDto.Password?.Hash(), existingUser.Password).ToString()
+				FirstName = returnDefaultIfNull(userDto.FirstName, existingUser.FirstName).ToString()!,
+				LastName = returnDefaultIfNull(userDto.LastName, existingUser.LastName).ToString()!,
+				Email = returnDefaultIfNull(userDto.Email, existingUser.Email).ToString()!,
+				Password = returnDefaultIfNull(userDto.Password?.Hash(), existingUser.Password).ToString()!
 			};
 
 			return await usersRepository.UpdateUser(updatedUser.AsEntity())

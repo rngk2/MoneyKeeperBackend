@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MoneyKeeper.DAL.Settings
 {
-	public class DapperSettings
+	public sealed class DapperSettings
 	{
 		public string ConnectionString { get; set; }
 	}

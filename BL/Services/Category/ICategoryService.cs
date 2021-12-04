@@ -10,7 +10,7 @@ namespace MoneyKeeper.BL.Services
 {
 	public interface ICategoryService
 	{
-		static readonly IReadOnlyCollection<string> DEFAULT_CATEGORIES_NAMES = new[] {
+		static readonly IReadOnlyCollection<string> DefaultCategoriesNames = new[] {
 				"Earnings"
 		};
 
