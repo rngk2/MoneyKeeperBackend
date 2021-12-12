@@ -51,7 +51,7 @@ namespace MoneyKeeper.Authentication.Services
 		{
 			if (!memoryCache.TryGetValue(model.Email, out User user))
 			{
-				user = (await usersRepository.GetUser(model.Email)).AsDto();
+				user = (await usersRepository.GetUser(model.Email))?.AsDto();
 			}
 
 			// validate
