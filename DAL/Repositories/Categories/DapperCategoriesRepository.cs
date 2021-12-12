@@ -5,30 +5,27 @@ using System.Threading.Tasks;
 using MoneyKeeper.DAL.Entities;
 using MoneyKeeper.DAL;
 using MoneyKeeper.DAL.Models;
+using Microsoft.Extensions.Options;
+using MoneyKeeper.DAL.Settings;
 
 namespace MoneyKeeper.DAL.Repositories
 {
-	internal class DapperCategoriesRepository : ICategoriesRepository
+	internal class DapperCategoriesRepository : DapperRepository, ICategoriesRepository
 	{
-		private readonly IDapperRepository dapperRepository;
-
-		public DapperCategoriesRepository(IDapperRepository dapperRepository)
-		{
-			this.dapperRepository = dapperRepository;
-		}
+		public DapperCategoriesRepository(IOptions<DapperSettings> options): base(options) { } 
 
 		public async Task<IEnumerable<Category>> GetCategories(int userId)
 		{
 			string sql = "select * from Categories where UserId = @userId";
 
-			return await dapperRepository.QueryAny<Category>(sql, new { userId });
+			return await QueryAny<Category>(sql, new { userId });
 		}
 
 		public async Task<IEnumerable<Category>> GetCategories()
 		{
 			string sql = "select * from Categories";
 
-			return await dapperRepository.QueryAny<Category>(sql);
+			return await QueryAny<Category>(sql);
 		}
 
 		public async Task<Category> GetCategory(int id)
@@ -39,7 +36,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Id = @id
 			";
 
-			return (await dapperRepository.QueryAny<Category>(sql, new { id })).FirstOrDefault()!;
+			return (await QueryAny<Category>(sql, new { id })).FirstOrDefault()!;
 		}
 
 		public async Task<Category?> GetCategory(int userId, string categoryName)
@@ -50,7 +47,7 @@ namespace MoneyKeeper.DAL.Repositories
 						UserId = @userId and Name = @categoryName
 			";
 
-			return (await dapperRepository.QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault();
+			return (await QueryAny<Category>(sql, new { userId, categoryName })).FirstOrDefault();
 		}
 
 		public async Task<IEnumerable<CategoryOverview>> GetCategoriesOverview(int userId, Range range)
@@ -71,7 +68,7 @@ namespace MoneyKeeper.DAL.Repositories
 					next @next rows only
 			";
 
-			return await dapperRepository.QueryAny<CategoryOverview>(sql, new 
+			return await QueryAny<CategoryOverview>(sql, new 
 			{
 				start = range.Start.Value,
 				next = range.End.Value - range.Start.Value,
@@ -91,7 +88,7 @@ namespace MoneyKeeper.DAL.Repositories
 					Categories.Id = @categoryId
 			";
 
-			return (await dapperRepository.QueryAny<CategoryOverview>(sql, new { categoryId })).FirstOrDefault();
+			return (await QueryAny<CategoryOverview>(sql, new { categoryId })).FirstOrDefault()!;
 		}
 
 		public async Task<CategoryOverview> GetEarningsOverview(int userId)
@@ -106,7 +103,7 @@ namespace MoneyKeeper.DAL.Repositories
 					Categories.Name = 'Earnings' and Categories.UserId = @userId
 			";
 
-			return (await dapperRepository.QueryAny<CategoryOverview>(sql, new { userId })).FirstOrDefault();
+			return (await QueryAny<CategoryOverview>(sql, new { userId })).FirstOrDefault()!;
 		}
 
 		public async Task<int> CreateCategory(Category category)
@@ -120,7 +117,7 @@ namespace MoneyKeeper.DAL.Repositories
 						(@Name, @UserId)
 			";
 
-			return await dapperRepository.QuerySingleWithOutput<int>(sql, category);
+			return await QuerySingleWithOutput<int>(sql, category);
 		}
 
 		public async Task<bool> UpdateCategory(Category category)
@@ -134,7 +131,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Id = @Id
 			";
 
-			return await dapperRepository.ExecuteAny(sql, category) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await ExecuteAny(sql, category) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
 		public async Task<bool> DeleteCategory(int id)
@@ -145,7 +142,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Id = @id
 			";
 
-			return await dapperRepository.ExecuteAny(sql, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await ExecuteAny(sql, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }

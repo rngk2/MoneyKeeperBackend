@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using MoneyKeeper.DAL.Entities;
+using MoneyKeeper.DAL.Settings;
 
 namespace MoneyKeeper.DAL.Repositories
 {
-	internal class DapperTokensRepository : ITokensRepository
+	internal class DapperTokensRepository : DapperRepository, ITokensRepository
 	{
-		private readonly IDapperRepository dapperRepository;
-
-		public DapperTokensRepository(IDapperRepository dapperRepository)
-		{
-			this.dapperRepository = dapperRepository;
-		}
+		public DapperTokensRepository(IOptions<DapperSettings> options): base(options) { }
 
 		public async Task<RefreshToken> GetToken(string token)
 		{
 			var getTokenQuery = "select * from RTokens where Token = @token";
 			
-			return (await dapperRepository.QueryAny<RefreshToken>(getTokenQuery, new { token })).FirstOrDefault();
+			return (await QueryAny<RefreshToken>(getTokenQuery, new { token })).FirstOrDefault()!;
 		}
 
 		public async Task<User> GetUserByRefreshToken(string token)
@@ -34,7 +31,7 @@ namespace MoneyKeeper.DAL.Repositories
 					Token = @token
 			";
 			
-			return (await dapperRepository.QueryAny<User>(sql, new { token })).FirstOrDefault();
+			return (await QueryAny<User>(sql, new { token })).FirstOrDefault()!;
 		}
 
 		public async Task AddRefreshToken(RefreshToken token)
@@ -46,21 +43,21 @@ namespace MoneyKeeper.DAL.Repositories
 					(@UserId, @Token, @Expires, @Created, @CreatedByIp, @Revoked, @ReplacedByToken, @ReasonRevoked, @RevokedByIp)
 			";
 
-			await dapperRepository.ExecuteAny(sql, token);
+			await ExecuteAny(sql, token);
 		}
 
 		public async Task RemoveOldRefreshTokensOf(int userId)
 		{
 			var sql = "delete from RTokens where UserId = @userId and Expires <= CURRENT_TIMESTAMP";
 
-			await dapperRepository.ExecuteAny(sql, new { userId });
+			await ExecuteAny(sql, new { userId })!;
 		}
 
 		public async Task RemoveRefreshToken(string token)
 		{
 			string sql = "delete from RTokens where Token = @token";
 
-			await dapperRepository.ExecuteAny(sql, new { token });
+			await ExecuteAny(sql, new { token })!;
 		}
 	}
 }

@@ -6,17 +6,14 @@ using System.Threading.Tasks;
 using MoneyKeeper.DAL.Entities;
 using MoneyKeeper.DAL;
 using MoneyKeeper.Globals;
+using Microsoft.Extensions.Options;
+using MoneyKeeper.DAL.Settings;
 
 namespace MoneyKeeper.DAL.Repositories
 {
-	internal class DapperTransactionsRepository : ITransactionsRepository
+	internal class DapperTransactionsRepository : DapperRepository, ITransactionsRepository
 	{
-		private readonly IDapperRepository repository;
-
-		public DapperTransactionsRepository(IDapperRepository repository)
-		{
-			this.repository = repository;
-		}
+		public DapperTransactionsRepository(IOptions<DapperSettings> options): base(options) {	}
 
 		public async Task<Transaction> GetTransaction(int id)
 		{
@@ -27,7 +24,7 @@ namespace MoneyKeeper.DAL.Repositories
 					Id = @id
 			";
 
-			return (await repository.QueryAny<Transaction>(sql, new { id })).FirstOrDefault();
+			return (await QueryAny<Transaction>(sql, new { id })).FirstOrDefault()!;
 		}
 
 		public async Task<Transaction> GetTransaction(int id, int userId)
@@ -39,13 +36,14 @@ namespace MoneyKeeper.DAL.Repositories
 					Id = @id and UserId = @userId
 			";
 
-			return (await repository.QueryAny<Transaction>(sql, new { id, userId })).FirstOrDefault();
+			return (await QueryAny<Transaction>(sql, new { id, userId })).FirstOrDefault()!;
 		}
 
 		public async Task<IEnumerable<Transaction>> GetTransactions(int userId)
 		{
 			const string sql = "select * from Transactions where UserId = @userId";
-			return await repository.QueryAny<Transaction>(sql, new { userId });
+			
+			return await QueryAny<Transaction>(sql, new { userId });
 		}
 
 		public async Task<IEnumerable<Transaction>> GetTransactionsForCategory(int userId, int categoryId, Range categoriesRange) 
@@ -67,7 +65,7 @@ namespace MoneyKeeper.DAL.Repositories
 					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new 
+			return await QueryAny<Transaction>(sql, new 
 			{
 				start = categoriesRange.Start.Value,
 				next = categoriesRange.End.Value - categoriesRange.Start.Value,
@@ -101,7 +99,7 @@ namespace MoneyKeeper.DAL.Repositories
 					next @next rows only
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new 
+			return await QueryAny<Transaction>(sql, new 
 			{ 
 				start = range.Start.Value, 
 				next = range.End.Value - range.Start.Value, 
@@ -125,7 +123,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Categories.UserId = @id and Categories.Name != 'Earnings'
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { id });
+			return await QueryAny<Transaction>(sql, new { id });
 		}
 
 		public async Task<IEnumerable<Transaction>> GetSummaryForUserForMonth(int id)
@@ -141,7 +139,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Categories.UserId = @id and month(Timestamp) = month(getdate()) and Categories.Name != 'Earnings'
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { id });
+			return await QueryAny<Transaction>(sql, new { id });
 		}
 
 		public async Task<IEnumerable<Transaction>> GetSummaryForUserForYear(int id)
@@ -157,7 +155,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Categories.UserId = @id and year(Timestamp) = year(getdate()) and Categories.Name != 'Earnings'
 			";
 
-			return await repository.QueryAny<Transaction>(sql, new { id });
+			return await QueryAny<Transaction>(sql, new { id });
 		}
 
 		public async Task<int> CreateTransaction(Transaction transaction)
@@ -171,7 +169,7 @@ namespace MoneyKeeper.DAL.Repositories
 					(@UserId, @CategoryId, @Amount, @Timestamp, @Comment)
 			";
 
-			return await repository.QuerySingleWithOutput<int>(sql, transaction);
+			return await QuerySingleWithOutput<int>(sql, transaction);
 		}
 
 		public async Task<bool> DeleteTransaction(int id)
@@ -183,7 +181,7 @@ namespace MoneyKeeper.DAL.Repositories
 					Id = @id
 			";
 
-			return await repository.ExecuteAny(sql, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await ExecuteAny(sql, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }

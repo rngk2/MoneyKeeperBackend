@@ -12,7 +12,6 @@ namespace MoneyKeeper.DAL
 	{
 		public static void ConfigureRepos(this IServiceCollection services)
 		{
-			services.AddSingleton<IDapperRepository, DapperRepository>();
 			services.AddSingleton<IUsersRepository, DapperUsersRepository>();
 			services.AddSingleton<ITokensRepository, DapperTokensRepository>();
 			services.AddSingleton<ICategoriesRepository, DapperCategoriesRepository>();

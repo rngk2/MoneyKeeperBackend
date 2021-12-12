@@ -9,7 +9,7 @@ using MoneyKeeper.DAL.Settings;
 
 namespace MoneyKeeper.DAL.Repositories
 {
-	internal class DapperRepository : IDapperRepository
+	internal class DapperRepository
 	{
 		private readonly string connectionString;
 

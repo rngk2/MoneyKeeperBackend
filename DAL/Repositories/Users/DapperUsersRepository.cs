@@ -9,29 +9,23 @@ using MoneyKeeper.DAL;
 
 namespace MoneyKeeper.DAL.Repositories
 {
-	internal class DapperUsersRepository : IUsersRepository
+	internal class DapperUsersRepository : DapperRepository, IUsersRepository
 	{
-		private readonly IDapperRepository dapperRepository;
-		private readonly ICategoriesRepository categoriesRepository;
-
-		public DapperUsersRepository(IDapperRepository dapperRepository, ICategoriesRepository categoriesRepository)
-		{
-			this.dapperRepository = dapperRepository;
-			this.categoriesRepository = categoriesRepository;
-		}
+		public DapperUsersRepository(ICategoriesRepository categoriesRepository, IOptions<DapperSettings> options)
+			: base(options)	{ }
 
 		public async Task<User> GetUser(int id)
 		{
 			string sql = "select * from Users where Id = @id";
 
-			return (await dapperRepository.QueryAny<User>(sql, new { id })).FirstOrDefault();
+			return (await QueryAny<User>(sql, new { id })).FirstOrDefault();
 		}
 
 		public async Task<User> GetUser(string email)
 		{
 			string sql = "select * from Users where Email = @email";
 
-			return (await dapperRepository.QueryAny<User>(sql, new { email })).FirstOrDefault();
+			return (await QueryAny<User>(sql, new { email })).FirstOrDefault();
 		}
 
 		public async Task<int> CreateUser(User user)
@@ -45,7 +39,7 @@ namespace MoneyKeeper.DAL.Repositories
 						(@FirstName, @LastName, @Email, @Password)
 			";
 
-			int createdId = await dapperRepository.QuerySingleWithOutput<int>(sql, user);
+			int createdId = await QuerySingleWithOutput<int>(sql, user);
 
 			return createdId;
 		}
@@ -65,7 +59,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Id = @Id		
 			";
 
-			return await dapperRepository.ExecuteAny(sql, userData) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await ExecuteAny(sql, userData) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 
 		public async Task<bool> DeleteUser(int id)
@@ -76,7 +70,7 @@ namespace MoneyKeeper.DAL.Repositories
 						Id = @id
 			";
 
-			return await dapperRepository.ExecuteAny(sql_deleteUser, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
+			return await ExecuteAny(sql_deleteUser, new { id }) == UtilConstants.SQL_SINGLE_ROW_AFFECTED;
 		}
 	}
 }
