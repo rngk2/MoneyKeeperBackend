@@ -46,7 +46,7 @@ namespace MoneyKeeper.BL.Services
 		{
 			if ((await GetUser(userDto.Email).Unwrap()).Value is not null)
 			{
-				return new Error(ApiResultErrorCodes.ALREADY_EXISTS, $"Already have user with email: {userDto.Email}");
+				return new Error(ApiResultErrorCodes.ALREADY_EXISTS, $"Already have a user with email: {userDto.Email}");
 			}
 
 			User newUser = new()
